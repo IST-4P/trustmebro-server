@@ -16,11 +16,12 @@
     "baseUrl": ".",
     "paths": {
       "@common/configurations/*": ["libs/configurations/src/lib/*"],
-      "@common/constants": ["libs/constants/src/index.ts"],
-      "@common/utils": ["libs/utils/src/index.ts"],
-      "@common/interceptors": ["libs/interceptors/src/index.ts"],
+      "@common/constants/*": ["libs/constants/src/lib/*"],
+      "@common/utils/*": ["libs/utils/src/lib/*"],
+      "@common/interceptors/*": ["libs/interceptors/src/lib/*"],
       "@common/decorators": ["libs/decorators/src/index.ts"],
-      "@common/middlewares": ["libs/middlewares/src/index.ts"]
+      "@common/middlewares/*": ["libs/middlewares/src/lib/*"],
+      "@common/interfaces/*": ["libs/interfaces/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,18 +1,29 @@
 {
-  "name": "@hacmieu-trustmebro/source",
+  "name": "@trust-me-bro/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "dev": "pnpm nx reset && pnpm nx run-many -t serve --projects=web,auth",
+    "generate-ts-proto": "pnpm nx generate-ts-proto interfaces"
+  },
   "private": true,
   "dependencies": {
+    "@grpc/grpc-js": "^1.14.2",
+    "@grpc/proto-loader": "^0.8.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.0",
+    "@nestjs/microservices": "^11.1.9",
     "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/swagger": "^11.2.3",
     "axios": "^1.6.0",
+    "cookie": "^1.1.1",
+    "express": "^5.2.1",
     "nestjs-zod": "^5.0.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
+    "ts-proto": "^2.8.3",
+    "uuid": "^13.0.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
@@ -30,6 +41,7 @@
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
+    "@types/express": "^5.0.6",
     "@types/node": "20.19.9",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",

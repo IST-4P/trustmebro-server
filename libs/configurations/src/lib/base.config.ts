@@ -10,4 +10,12 @@ export const BaseConfigurationSchema = z
     IS_DEV: data.NODE_ENV === 'development',
   }));
 
-export const BaseConfig = BaseConfigurationSchema.parse(process.env);
+const configServer = BaseConfigurationSchema.safeParse(process.env);
+
+if (!configServer.success) {
+  console.log('Các giá trị trong .env không hợp lệ');
+  console.error(configServer.error);
+  process.exit(1);
+}
+
+export const BaseConfiguration = configServer.data;

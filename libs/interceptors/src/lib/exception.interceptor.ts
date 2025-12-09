@@ -1,0 +1,110 @@
+import { MetadataKeys } from '@common/constants/common.constant';
+import { HTTP_MESSAGE } from '@common/constants/http-message.constant';
+import {
+  CallHandler,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+  Logger,
+  NestInterceptor,
+} from '@nestjs/common';
+import { Request } from 'express';
+import { catchError, map, Observable } from 'rxjs';
+
+export interface StandardResponse<T = any> {
+  data: T;
+  message: string;
+  statusCode: number;
+  processId?: string;
+  duration?: string;
+}
+
+export class ExceptionInterceptor implements NestInterceptor {
+  private readonly logger = new Logger(ExceptionInterceptor.name);
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler<any>
+  ): Observable<any> | Promise<Observable<any>> {
+    const ctx = context.switchToHttp();
+    const request: Request & {
+      [MetadataKeys.PROCESS_ID]: string;
+      [MetadataKeys.START_TIME]: number;
+    } = ctx.getRequest();
+
+    const processId = request[MetadataKeys.PROCESS_ID];
+    const startTime = request[MetadataKeys.START_TIME];
+
+    return next.handle().pipe(
+      map((data) => {
+        const durationMs = Date.now() - startTime;
+        const response = ctx.getResponse();
+        const statusCode = response.statusCode;
+
+        // Data đã đúng format chuẩn
+        if (this.isStandardResponse(data)) {
+          return {
+            ...data,
+            processId,
+            duration: `${durationMs} ms`,
+          };
+        }
+
+        // Nếu data có message field
+        if (data && typeof data === 'object' && 'message' in data) {
+          const { message, data: innerData, ...rest } = data;
+          const responseData = innerData !== undefined ? innerData : rest;
+
+          return {
+            data: Object.keys(responseData).length > 0 ? responseData : {},
+            message: message as string,
+            statusCode,
+            processId,
+            duration: `${durationMs} ms`,
+          };
+        }
+
+        // Trường hợp còn lại
+        return {
+          data: data || {},
+          message: 'Success',
+          statusCode,
+          processId,
+          duration: `${durationMs} ms`,
+        };
+      }),
+      catchError((error) => {
+        this.logger.error(error);
+        const durationMs = Date.now() - startTime;
+        const message =
+          error?.response?.message ||
+          error.message ||
+          error ||
+          HTTP_MESSAGE.INTERNAL_SERVER_ERROR;
+        const code =
+          error?.response?.statusCode ||
+          error.status ||
+          HttpStatus.INTERNAL_SERVER_ERROR;
+        throw new HttpException(
+          {
+            data: null,
+            message,
+            statusCode: code,
+            duration: `${durationMs} ms`,
+            processId,
+          },
+          code
+        );
+      })
+    );
+  }
+
+  private isStandardResponse(data: any): data is StandardResponse {
+    return (
+      data &&
+      typeof data === 'object' &&
+      'data' in data &&
+      'message' in data &&
+      'statusCode' in data
+    );
+  }
+}

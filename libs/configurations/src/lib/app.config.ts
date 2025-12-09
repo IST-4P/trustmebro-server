@@ -2,6 +2,15 @@ import z from 'zod';
 
 export const AppConfigurationSchema = z.object({
   AUTH_SERVICE_PORT: z.coerce.number(),
+  BFF_WEB_SERVICE_PORT: z.coerce.number(),
 });
 
-export const AppConfiguration = AppConfigurationSchema.parse(process.env);
+const configServer = AppConfigurationSchema.safeParse(process.env);
+
+if (!configServer.success) {
+  console.log('Các giá trị trong .env không hợp lệ');
+  console.error(configServer.error);
+  process.exit(1);
+}
+
+export const AppConfiguration = configServer.data;
