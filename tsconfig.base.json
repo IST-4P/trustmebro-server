@@ -13,8 +13,17 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "esModuleInterop": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@common/configurations/*": ["libs/configurations/src/lib/*"],
+      "@common/constants/*": ["libs/constants/src/lib/*"],
+      "@common/utils/*": ["libs/utils/src/lib/*"],
+      "@common/interceptors/*": ["libs/interceptors/src/lib/*"],
+      "@common/decorators/*": ["libs/decorators/src/lib/*"],
+      "@common/middlewares/*": ["libs/middlewares/src/lib/*"],
+      "@common/interfaces/*": ["libs/interfaces/src/lib/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

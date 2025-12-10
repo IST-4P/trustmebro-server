@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package AUTH_SERVICE;
+
+service AuthService {
+  rpc LoginDirectAccessGrants(LoginRequest) returns (LoginResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (LoginResponse);
+  rpc Logout(LogoutRequest) returns (Empty);
+}
+
+//==================== Login ====================//
+message LoginRequest {
+  optional string processId = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message LoginResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+  int32 expiresIn = 3;
+  int32 refreshExpiresIn = 4;
+}
+
+// ==================== Refresh Token ====================//
+message RefreshTokenRequest {
+  optional string processId = 1;
+  string refreshToken = 2;
+}
+
+// ==================== Logout ====================//
+
+message LogoutRequest {
+  optional string processId = 1;
+  string refreshToken = 2;
+}
+
+message Empty {}
+

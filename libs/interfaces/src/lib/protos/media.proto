@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package MEDIA_SERVICE;
+
+service MediaService {
+  rpc CreatePresignedUrl(CreatePresignedUrlRequest) returns (CreatePresignedUrlResponse);
+}
+
+//==================== Login ====================//
+message CreatePresignedUrlRequest {
+  optional string processId = 1;
+  string filename = 2;
+}
+
+message CreatePresignedUrlResponse {
+  string presignedUrl = 1;
+  string url = 2;
+}
+
