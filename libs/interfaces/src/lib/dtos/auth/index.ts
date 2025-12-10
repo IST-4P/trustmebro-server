@@ -1,6 +1,7 @@
 import {
   LoginRequestSchema,
   LoginResponseSchema,
+  LogoutRequestSchema,
   RefreshTokenRequestSchema,
   RefreshTokenResponseSchema,
 } from '@common/interfaces/models/auth';
@@ -17,3 +18,5 @@ export class RefreshTokenRequestDto extends createZodDto(
 export class RefreshTokenResponseDto extends createZodDto(
   RefreshTokenResponseSchema
 ) {}
+
+export class LogoutRequestDto extends createZodDto(LogoutRequestSchema) {}

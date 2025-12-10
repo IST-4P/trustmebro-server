@@ -1,5 +1,6 @@
 import {
   LoginRequest,
+  LogoutRequest,
   RefreshTokenRequest,
 } from '@common/interfaces/models/auth';
 import { Injectable } from '@nestjs/common';
@@ -15,5 +16,9 @@ export class AuthService {
 
   refreshToken(data: RefreshTokenRequest) {
     return this.keycloakHttpService.refreshToken(data);
+  }
+
+  logout(data: LogoutRequest) {
+    return this.keycloakHttpService.logout(data);
   }
 }

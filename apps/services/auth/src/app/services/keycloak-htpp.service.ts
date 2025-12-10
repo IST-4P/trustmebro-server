@@ -2,6 +2,7 @@ import { KeycloakConfiguration } from '@common/configurations/keycloak.config';
 import { ExchangeClientTokenResponse } from '@common/interfaces/common/keycloak.interface';
 import {
   LoginRequest,
+  LogoutRequest,
   RefreshTokenRequest,
 } from '@common/interfaces/models/auth';
 import { Injectable, Logger } from '@nestjs/common';
@@ -92,5 +93,22 @@ export class KeycloakHttpService {
     );
 
     return data;
+  }
+
+  async logout(request: LogoutRequest) {
+    const body = new URLSearchParams();
+    body.append('client_id', this.clientId);
+    body.append('client_secret', this.clientSecret);
+    body.append('refresh_token', request.refreshToken);
+
+    await this.axiosInstance.post(
+      `/realms/${this.realm}/protocol/openid-connect/logout`,
+      body,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    );
   }
 }

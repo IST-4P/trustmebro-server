@@ -1,3 +1,4 @@
+import { ProcessId } from '@common/decorators/process-id.decorator';
 import { LoginRequestDto } from '@common/interfaces/dtos/auth';
 import {
   Body,
@@ -26,9 +27,13 @@ export class AuthController {
   @Post('login-postman')
   async loginDirectAccessGrants(
     @Body() body: LoginRequestDto,
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
+    @ProcessId() processId: string
   ) {
-    const result = await this.authService.loginDirectAccessGrants(body);
+    const result = await this.authService.loginDirectAccessGrants({
+      ...body,
+      processId,
+    });
     res.cookie('accessToken', result.accessToken, {
       ...cookieOptions,
       maxAge: result.expiresIn * 1000,
@@ -46,14 +51,18 @@ export class AuthController {
   @Post('refresh-token')
   async refreshToken(
     @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
+    @ProcessId() processId: string
   ) {
     const refreshToken = parse(req.headers.cookie || '').refreshToken;
     if (!refreshToken) {
       throw new UnauthorizedException('Error.MissingRefreshToken');
     }
 
-    const result = await this.authService.refreshToken({ refreshToken });
+    const result = await this.authService.refreshToken({
+      refreshToken,
+      processId,
+    });
 
     res.cookie('accessToken', result.accessToken, {
       ...cookieOptions,
@@ -68,5 +77,20 @@ export class AuthController {
     return {
       message: 'Message.RefreshTokenSuccessfully',
     };
+  }
+
+  @Post('logout')
+  logout(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+    @ProcessId() processId: string
+  ) {
+    res.clearCookie('accessToken', cookieOptions);
+    res.clearCookie('refreshToken', cookieOptions);
+    const refreshToken = parse(req.headers.cookie || '').refreshToken;
+    if (!refreshToken) {
+      throw new UnauthorizedException('Error.MissingRefreshToken');
+    }
+    return this.authService.logout({ refreshToken, processId });
   }
 }

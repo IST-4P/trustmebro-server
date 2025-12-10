@@ -1,11 +1,10 @@
 import {
-  LoginRequest,
-  RefreshTokenRequest,
-} from '@common/interfaces/models/auth';
-import {
   AUTH_SERVICE_NAME,
   AUTH_SERVICE_PACKAGE_NAME,
   AuthServiceClient,
+  LoginRequest,
+  LogoutRequest,
+  RefreshTokenRequest,
 } from '@common/interfaces/proto-types/auth';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -35,5 +34,9 @@ export class AuthService implements OnModuleInit {
   async refreshToken(data: RefreshTokenRequest) {
     const result = await firstValueFrom(this.authService.refreshToken(data));
     return result;
+  }
+
+  async logout(data: LogoutRequest) {
+    await firstValueFrom(this.authService.logout(data));
   }
 }

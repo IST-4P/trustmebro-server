@@ -1,14 +1,17 @@
+import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   LoginRequest,
   LoginResponse,
+  LogoutRequest,
   RefreshTokenRequest,
   RefreshTokenResponse,
 } from '@common/interfaces/models/auth';
-import { Controller } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from '../services/auth.service';
 
 @Controller()
+@UseInterceptors(GrpcLoggingInterceptor)
 export class AuthGrpcController {
   constructor(private readonly authService: AuthService) {}
 
@@ -32,5 +35,10 @@ export class AuthGrpcController {
       expiresIn: result.expires_in,
       refreshExpiresIn: result.refresh_expires_in,
     };
+  }
+
+  @GrpcMethod('AuthService', 'Logout')
+  async logout(data: LogoutRequest): Promise<void> {
+    await this.authService.logout(data);
   }
 }

@@ -12,6 +12,7 @@ export const protobufPackage = "AUTH_SERVICE";
 
 /** ==================== Login ====================// */
 export interface LoginRequest {
+  processId?: string | undefined;
   username: string;
   password: string;
 }
@@ -25,7 +26,16 @@ export interface LoginResponse {
 
 /** ==================== Refresh Token ====================// */
 export interface RefreshTokenRequest {
+  processId?: string | undefined;
   refreshToken: string;
+}
+
+export interface LogoutRequest {
+  processId?: string | undefined;
+  refreshToken: string;
+}
+
+export interface Empty {
 }
 
 export const AUTH_SERVICE_PACKAGE_NAME = "AUTH_SERVICE";
@@ -34,17 +44,21 @@ export interface AuthServiceClient {
   loginDirectAccessGrants(request: LoginRequest): Observable<LoginResponse>;
 
   refreshToken(request: RefreshTokenRequest): Observable<LoginResponse>;
+
+  logout(request: LogoutRequest): Observable<Empty>;
 }
 
 export interface AuthServiceController {
   loginDirectAccessGrants(request: LoginRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
 
   refreshToken(request: RefreshTokenRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
+
+  logout(request: LogoutRequest): Promise<Empty> | Observable<Empty> | Empty;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["loginDirectAccessGrants", "refreshToken"];
+    const grpcMethods: string[] = ["loginDirectAccessGrants", "refreshToken", "logout"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
