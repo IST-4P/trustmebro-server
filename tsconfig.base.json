@@ -16,6 +16,9 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
+      "@prisma-client/*": [
+        "apps/services/*/src/generated/prisma-client/client"
+      ],
       "@common/configurations/*": ["libs/configurations/src/lib/*"],
       "@common/constants/*": ["libs/constants/src/lib/*"],
       "@common/utils/*": ["libs/utils/src/lib/*"],

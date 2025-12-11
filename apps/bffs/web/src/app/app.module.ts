@@ -2,11 +2,12 @@ import { ExceptionInterceptor } from '@common/interceptors/exception.interceptor
 import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthModule } from './auth/auth.module';
-import { ImageModule } from './media/image/image.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { MediaModule } from './modules/media/media.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
-  imports: [AuthModule, ImageModule],
+  imports: [AuthModule, MediaModule, RoleModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,

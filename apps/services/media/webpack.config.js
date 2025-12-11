@@ -16,7 +16,7 @@ module.exports = {
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
       assets: [
-        './src/assets',
+        // './src/assets',
         {
           glob: 'media.proto',
           input: 'libs/interfaces/src/lib/protos',

@@ -1,0 +1,103 @@
+generator client {
+    provider     = "prisma-client"
+    output       = "../src/generated/prisma-client"
+    moduleFormat = "cjs"
+    // binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum USER_STATUS {
+    ACTIVE
+    INACTIVE
+    BLOCKED
+}
+
+enum GENDER {
+    MALE
+    FEMALE
+    OTHER
+}
+
+enum ROLE_NAME {
+    CUSTOMER
+    SELLER
+    MANAGER
+    ADMIN
+}
+
+model User {
+    id          String      @id @default(uuid())
+    firstName   String
+    lastName    String
+    email       String      @unique
+    username    String      @unique
+    phoneNumber String      @db.VarChar(20)
+    avatar      String      @db.VarChar(1000)
+    birthday    DateTime?
+    gender      GENDER
+    status      USER_STATUS @default(INACTIVE)
+
+    roleId   String
+    roleName String
+
+    updatedById Int?
+    deletedById Int?
+
+    deletedAt DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    addresses Address[]
+    shop      Shop?
+
+    @@unique([email, deletedAt])
+    @@unique([username, deletedAt])
+    @@index([deletedAt])
+    @@index([email])
+    @@index([username])
+    @@index([status])
+}
+
+model Address {
+    id        String   @id @default(uuid())
+    userId    String
+    fullName  String
+    phone     String   @db.VarChar(20)
+    address   String
+    ward      String?
+    district  String?
+    province  String?
+    isDefault Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+model Shop {
+    id          String  @id @default(uuid())
+    ownerId     String  @unique
+    name        String  @db.VarChar(500)
+    description String  @default("")
+    logo        String? @db.VarChar(1000)
+    address     String?
+    phone       String? @db.VarChar(20)
+    rating      Float   @default(0)
+    isOpen      Boolean @default(true)
+
+    createdById Int?
+    updatedById Int?
+    deletedById Int?
+
+    deletedAt DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    user User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+    @@index([deletedAt])
+    @@index([isOpen])
+}

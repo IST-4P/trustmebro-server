@@ -3,16 +3,20 @@ import { join } from 'path';
 import z from 'zod';
 
 export const GrpcConfigurationSchema = z.object({
-  AUTH_SERVICE_GRPC_URL: z.string(),
-  AUTH_SERVICE_PROTO_PATH: z.string(),
+  USER_ACCESS_SERVICE_GRPC_URL: z.string(),
+  USER_ACCESS_SERVICE_PROTO_PATH: z.string(),
 
   MEDIA_SERVICE_GRPC_URL: z.string(),
   MEDIA_SERVICE_PROTO_PATH: z.string(),
+
+  ROLE_SERVICE_GRPC_URL: z.string(),
+  ROLE_SERVICE_PROTO_PATH: z.string(),
 });
 
 export enum GrpcService {
-  AUTH_SERVICE = 'AUTH_SERVICE',
+  USER_ACCESS_SERVICE = 'USER_ACCESS_SERVICE',
   MEDIA_SERVICE = 'MEDIA_SERVICE',
+  ROLE_SERVICE = 'ROLE_SERVICE',
 }
 
 const configServer = GrpcConfigurationSchema.safeParse(process.env);

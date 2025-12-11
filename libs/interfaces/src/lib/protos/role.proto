@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package ROLE_SERVICE;
+
+service RoleService {
+  rpc GetRoleById(GetRoleByIdRequest) returns (RoleResponse);
+  rpc GetManyRoles(GetManyRolesRequest) returns (GetManyRolesResponse);
+  rpc CreateRole(CreateRoleRequest) returns (RoleResponse);
+  rpc UpdateRole(UpdateRoleRequest) returns (RoleResponse);
+  rpc DeleteRole(DeleteRoleRequest) returns (RoleResponse);
+}
+
+//==================== GetRoleById ====================//
+message GetRoleByIdRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message RoleResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string userIds = 4;
+  string createdById = 5;
+  string updatedById = 6;
+  string deletedById = 7;
+  string deletedAt = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+  repeated string permissions = 11;
+}
+
+//==================== GetManyRoles ====================//
+message GetManyRolesRequest {
+  optional string processId = 1;
+  optional int32 page = 2;
+  optional int32 limit = 3;
+}
+
+message GetManyRolesResponse {
+  repeated RoleResponse roles = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//==================== CreateRole ====================//
+message CreateRoleRequest {
+  optional string processId = 1;
+  string name = 2;
+  string description = 3;
+}
+
+//==================== UpdateRole ====================//
+message UpdateRoleRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string name = 3;
+  optional string description = 4;
+  string updatedById = 5;
+  repeated string permissionIds = 6;
+}
+
+//==================== DeleteRole ====================//
+message DeleteRoleRequest {
+  optional string processId = 1;
+  string id = 2;
+  string deletedById = 3;
+}
+
