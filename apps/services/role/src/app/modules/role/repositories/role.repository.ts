@@ -3,7 +3,6 @@ import {
   DeleteRoleRequest,
   GetManyRolesRequest,
   GetManyRolesResponse,
-  GetRoleRequest,
   GetRoleResponse,
   UpdateRoleRequest,
 } from '@common/interfaces/models/role/role';
@@ -48,7 +47,10 @@ export class RoleRepository {
     };
   }
 
-  find(data: GetRoleRequest): Promise<GetRoleResponse | null> {
+  find(
+    data: Prisma.RoleWhereInput,
+    withUserIds: boolean
+  ): Promise<GetRoleResponse | null> {
     const where: Prisma.RoleWhereInput = {
       deletedAt: null,
     };
@@ -60,6 +62,9 @@ export class RoleRepository {
     }
     return this.prismaService.role.findFirst({
       where,
+      omit: {
+        userIds: !withUserIds,
+      },
       include: {
         permissions: {
           where: {

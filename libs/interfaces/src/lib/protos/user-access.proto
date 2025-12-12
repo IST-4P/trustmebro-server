@@ -6,7 +6,7 @@ service UserAccessService {
   rpc LoginDirectAccessGrants(LoginRequest) returns (LoginResponse);
   rpc RefreshToken(RefreshTokenRequest) returns (LoginResponse);
   rpc Logout(LogoutRequest) returns (Empty);
-  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Register(RegisterRequest) returns (Empty);
 
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
 }
@@ -46,10 +46,8 @@ message RegisterRequest {
   string username = 4;
   string email = 5;
   string password = 6;
-}
-
-message RegisterResponse {
-  string userId = 1;
+  string phoneNumber = 7;
+  string gender = 8;
 }
 
 message Empty {}

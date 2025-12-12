@@ -18,6 +18,8 @@ export const RegisterRequestSchema = UserSchema.pick({
   firstName: true,
   lastName: true,
   email: true,
+  phoneNumber: true,
+  gender: true,
 }).extend({
   password: z.string(),
 });

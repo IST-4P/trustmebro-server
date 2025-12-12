@@ -10,10 +10,11 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "ROLE_SERVICE";
 
-/** ==================== GetRoleById ====================// */
-export interface GetRoleByIdRequest {
+/** ==================== GetRole ====================// */
+export interface GetRoleRequest {
   processId?: string | undefined;
-  id: string;
+  id?: string | undefined;
+  name?: string | undefined;
 }
 
 export interface RoleResponse {
@@ -21,6 +22,20 @@ export interface RoleResponse {
   name: string;
   description: string;
   userIds: string[];
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  permissions: string[];
+}
+
+/** ==================== GetRoleWithoutUserIds ====================// */
+export interface RoleWithoutUserIdsResponse {
+  id: string;
+  name: string;
+  description: string;
   createdById: string;
   updatedById: string;
   deletedById: string;
@@ -72,34 +87,53 @@ export interface DeleteRoleRequest {
 export const ROLE_SERVICE_PACKAGE_NAME = "ROLE_SERVICE";
 
 export interface RoleServiceClient {
-  getRoleById(request: GetRoleByIdRequest): Observable<RoleResponse>;
+  getRole(request: GetRoleRequest): Observable<RoleResponse>;
+
+  getRoleWithoutUserIds(request: GetRoleRequest): Observable<RoleWithoutUserIdsResponse>;
 
   getManyRoles(request: GetManyRolesRequest): Observable<GetManyRolesResponse>;
 
-  createRole(request: CreateRoleRequest): Observable<RoleResponse>;
+  createRole(request: CreateRoleRequest): Observable<RoleWithoutUserIdsResponse>;
 
-  updateRole(request: UpdateRoleRequest): Observable<RoleResponse>;
+  updateRole(request: UpdateRoleRequest): Observable<RoleWithoutUserIdsResponse>;
 
-  deleteRole(request: DeleteRoleRequest): Observable<RoleResponse>;
+  deleteRole(request: DeleteRoleRequest): Observable<RoleWithoutUserIdsResponse>;
 }
 
 export interface RoleServiceController {
-  getRoleById(request: GetRoleByIdRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
+  getRole(request: GetRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
+
+  getRoleWithoutUserIds(
+    request: GetRoleRequest,
+  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
 
   getManyRoles(
     request: GetManyRolesRequest,
   ): Promise<GetManyRolesResponse> | Observable<GetManyRolesResponse> | GetManyRolesResponse;
 
-  createRole(request: CreateRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
+  createRole(
+    request: CreateRoleRequest,
+  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
 
-  updateRole(request: UpdateRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
+  updateRole(
+    request: UpdateRoleRequest,
+  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
 
-  deleteRole(request: DeleteRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
+  deleteRole(
+    request: DeleteRoleRequest,
+  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
 }
 
 export function RoleServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getRoleById", "getManyRoles", "createRole", "updateRole", "deleteRole"];
+    const grpcMethods: string[] = [
+      "getRole",
+      "getRoleWithoutUserIds",
+      "getManyRoles",
+      "createRole",
+      "updateRole",
+      "deleteRole",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("RoleService", method)(constructor.prototype[method], method, descriptor);

@@ -43,10 +43,8 @@ export interface RegisterRequest {
   username: string;
   email: string;
   password: string;
-}
-
-export interface RegisterResponse {
-  userId: string;
+  phoneNumber: string;
+  gender: string;
 }
 
 export interface Empty {
@@ -97,7 +95,7 @@ export interface UserAccessServiceClient {
 
   logout(request: LogoutRequest): Observable<Empty>;
 
-  register(request: RegisterRequest): Observable<RegisterResponse>;
+  register(request: RegisterRequest): Observable<Empty>;
 
   createUser(request: CreateUserRequest): Observable<UserResponse>;
 }
@@ -109,7 +107,7 @@ export interface UserAccessServiceController {
 
   logout(request: LogoutRequest): Promise<Empty> | Observable<Empty> | Empty;
 
-  register(request: RegisterRequest): Promise<RegisterResponse> | Observable<RegisterResponse> | RegisterResponse;
+  register(request: RegisterRequest): Promise<Empty> | Observable<Empty> | Empty;
 
   createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 }

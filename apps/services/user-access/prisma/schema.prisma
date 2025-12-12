@@ -38,7 +38,7 @@ model User {
     avatar      String      @db.VarChar(1000)
     birthday    DateTime?
     gender      GENDER
-    status      USER_STATUS @default(INACTIVE)
+    status      USER_STATUS @default(ACTIVE)
 
     roleId   String
     roleName String

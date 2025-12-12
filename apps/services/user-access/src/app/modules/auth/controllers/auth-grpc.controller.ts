@@ -6,7 +6,6 @@ import {
   RefreshTokenRequest,
   RefreshTokenResponse,
   RegisterRequest,
-  RegisterResponse,
 } from '@common/interfaces/models/auth';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
@@ -18,7 +17,7 @@ export class AuthGrpcController {
   constructor(private readonly authService: AuthService) {}
 
   @GrpcMethod('UserAccessService', 'Register')
-  async register(data: RegisterRequest): Promise<RegisterResponse> {
+  async register(data: RegisterRequest): Promise<void> {
     return this.authService.register(data);
   }
 

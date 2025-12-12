@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "pnpm nx reset && pnpm nx run-many -t serve --projects=web,user-access",
+    "dev-lite": "pnpm nx reset && pnpm nx run-many -t serve --projects=web,user-access,role",
+    "dev": "pnpm nx reset && pnpm nx run-many -t serve --projects=web,user-access,role,media",
     "generate-ts-proto": "pnpm nx generate-ts-proto interfaces"
   },
   "private": true,

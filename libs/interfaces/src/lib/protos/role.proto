@@ -3,17 +3,19 @@ syntax = "proto3";
 package ROLE_SERVICE;
 
 service RoleService {
-  rpc GetRoleById(GetRoleByIdRequest) returns (RoleResponse);
+  rpc GetRole(GetRoleRequest) returns (RoleResponse);
+  rpc GetRoleWithoutUserIds(GetRoleRequest) returns (RoleWithoutUserIdsResponse);
   rpc GetManyRoles(GetManyRolesRequest) returns (GetManyRolesResponse);
-  rpc CreateRole(CreateRoleRequest) returns (RoleResponse);
-  rpc UpdateRole(UpdateRoleRequest) returns (RoleResponse);
-  rpc DeleteRole(DeleteRoleRequest) returns (RoleResponse);
+  rpc CreateRole(CreateRoleRequest) returns (RoleWithoutUserIdsResponse);
+  rpc UpdateRole(UpdateRoleRequest) returns (RoleWithoutUserIdsResponse);
+  rpc DeleteRole(DeleteRoleRequest) returns (RoleWithoutUserIdsResponse);
 }
 
-//==================== GetRoleById ====================//
-message GetRoleByIdRequest {
+//==================== GetRole ====================//
+message GetRoleRequest {
   optional string processId = 1;
-  string id = 2;
+  optional string id = 2;
+  optional string name = 3;
 }
 
 message RoleResponse {
@@ -28,6 +30,20 @@ message RoleResponse {
   string createdAt = 9;
   string updatedAt = 10;
   repeated string permissions = 11;
+}
+
+//==================== GetRoleWithoutUserIds ====================//
+message RoleWithoutUserIdsResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string createdById = 4;
+  string updatedById = 5;
+  string deletedById = 6;
+  string deletedAt = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+  repeated string permissions = 10;
 }
 
 //==================== GetManyRoles ====================//

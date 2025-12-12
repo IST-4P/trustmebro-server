@@ -8,13 +8,7 @@ import {
   GetRoleResponse,
   UpdateRoleRequest,
 } from '@common/interfaces/models/role/role';
-import {
-  Body,
-  Controller,
-  Param,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { RoleService } from '../services/role.service';
 
@@ -24,33 +18,32 @@ export class RoleGrpcController {
   constructor(private readonly roleService: RoleService) {}
 
   @GrpcMethod('RoleService', 'GetManyRoles')
-  getManyRoles(
-    @Query() queries: GetManyRolesRequest
-  ): Promise<GetManyRolesResponse> {
-    return this.roleService.list(queries);
+  getManyRoles(data: GetManyRolesRequest): Promise<GetManyRolesResponse> {
+    return this.roleService.list(data);
   }
 
-  @GrpcMethod('RoleService', 'GetRoleById')
-  getRoleById(
-    @Param() params: GetRoleRequest
-  ): Promise<GetRoleResponse | null> {
-    return this.roleService.findById(params);
+  @GrpcMethod('RoleService', 'GetRole')
+  getRole(data: GetRoleRequest): Promise<GetRoleResponse | null> {
+    return this.roleService.find(data, true);
+  }
+
+  @GrpcMethod('RoleService', 'GetRoleWithoutUserIds')
+  getRoleWithoutUserIds(data: GetRoleRequest): Promise<GetRoleResponse | null> {
+    return this.roleService.find(data, false);
   }
 
   @GrpcMethod('RoleService', 'CreateRole')
-  async createRole(@Body() body: CreateRoleRequest): Promise<GetRoleResponse> {
-    return this.roleService.create(body);
+  createRole(data: CreateRoleRequest): Promise<GetRoleResponse> {
+    return this.roleService.create(data);
   }
 
   @GrpcMethod('RoleService', 'UpdateRole')
-  async updateRole(@Body() body: UpdateRoleRequest): Promise<GetRoleResponse> {
-    return this.roleService.update(body);
+  updateRole(data: UpdateRoleRequest): Promise<GetRoleResponse> {
+    return this.roleService.update(data);
   }
 
   @GrpcMethod('RoleService', 'DeleteRole')
-  async deleteRole(
-    @Param() params: DeleteRoleRequest
-  ): Promise<GetRoleResponse> {
-    return this.roleService.delete(params);
+  deleteRole(data: DeleteRoleRequest): Promise<GetRoleResponse> {
+    return this.roleService.delete(data);
   }
 }

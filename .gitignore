@@ -48,4 +48,4 @@ Thumbs.db
 docker/**/docker_data
 /src/generated/prisma
 
-/generated/prisma
+**/generated/

@@ -20,8 +20,8 @@ export class RoleService {
     return roles;
   }
 
-  async findById(data: GetRoleRequest) {
-    const role = await this.roleRepository.find({ id: data.id });
+  async find(data: GetRoleRequest, withUserIds: boolean) {
+    const role = await this.roleRepository.find({ id: data.id }, withUserIds);
     if (!role) {
       throw new NotFoundException('Error.RoleNotFound');
     }
@@ -30,7 +30,7 @@ export class RoleService {
 
   async create(data: CreateRoleRequest) {
     console.log('first');
-    const role = await this.roleRepository.find({ name: data.name });
+    const role = await this.roleRepository.find({ name: data.name }, false);
     console.log('second');
     if (role) {
       throw new NotFoundException('Error.RoleAlreadyExists');
@@ -39,7 +39,7 @@ export class RoleService {
   }
 
   async update(data: UpdateRoleRequest) {
-    const role = await this.roleRepository.find({ id: data.id });
+    const role = await this.roleRepository.find({ id: data.id }, false);
     if (!role) {
       throw new NotFoundException('Error.RoleNotFound');
     }
@@ -47,7 +47,7 @@ export class RoleService {
   }
 
   async delete(data: DeleteRoleRequest) {
-    const role = await this.roleRepository.find({ id: data.id });
+    const role = await this.roleRepository.find({ id: data.id }, false);
     if (!role) {
       throw new NotFoundException('Error.RoleNotFound');
     }
