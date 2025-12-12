@@ -17,6 +17,12 @@ export interface GetRoleRequest {
   name?: string | undefined;
 }
 
+export interface Permissions {
+  id: string;
+  path: string;
+  method: string;
+}
+
 export interface RoleResponse {
   id: string;
   name: string;
@@ -28,7 +34,7 @@ export interface RoleResponse {
   deletedAt: string;
   createdAt: string;
   updatedAt: string;
-  permissions: string[];
+  permissions: Permissions[];
 }
 
 /** ==================== GetRoleWithoutUserIds ====================// */
@@ -42,7 +48,7 @@ export interface RoleWithoutUserIdsResponse {
   deletedAt: string;
   createdAt: string;
   updatedAt: string;
-  permissions: string[];
+  permissions: Permissions[];
 }
 
 /** ==================== GetManyRoles ====================// */
@@ -73,7 +79,7 @@ export interface UpdateRoleRequest {
   id: string;
   name?: string | undefined;
   description?: string | undefined;
-  updatedById: string;
+  updatedById?: string | undefined;
   permissionIds: string[];
 }
 
@@ -82,6 +88,40 @@ export interface DeleteRoleRequest {
   processId?: string | undefined;
   id: string;
   deletedById: string;
+}
+
+/** ==================== GetManyUniquePermissions ====================// */
+export interface GetManyUniquePermissionsRequest {
+  names: string[];
+}
+
+export interface GetManyUniquePermissionsResponse {
+  permissions: Permissions[];
+}
+
+/** ==================== CreatePermission ====================// */
+export interface CreatePermissionRequest {
+  processId?: string | undefined;
+  name: string;
+  description?: string | undefined;
+  module: string;
+  path: string;
+  method: string;
+  createdById?: string | undefined;
+}
+
+/** ==================== CreateManyPermissions ====================// */
+export interface CreateManyPermissionsRequest {
+  permissions: CreatePermissionRequest[];
+}
+
+/** ==================== DeleteManyPermissions ====================// */
+export interface DeleteManyPermissionsRequest {
+  ids: string[];
+}
+
+export interface CountResponse {
+  count: number;
 }
 
 export const ROLE_SERVICE_PACKAGE_NAME = "ROLE_SERVICE";
@@ -98,6 +138,14 @@ export interface RoleServiceClient {
   updateRole(request: UpdateRoleRequest): Observable<RoleWithoutUserIdsResponse>;
 
   deleteRole(request: DeleteRoleRequest): Observable<RoleWithoutUserIdsResponse>;
+
+  getManyUniquePermissions(request: GetManyUniquePermissionsRequest): Observable<GetManyUniquePermissionsResponse>;
+
+  createPermission(request: CreatePermissionRequest): Observable<Permissions>;
+
+  createManyPermissions(request: CreateManyPermissionsRequest): Observable<CountResponse>;
+
+  deleteManyPermissions(request: DeleteManyPermissionsRequest): Observable<CountResponse>;
 }
 
 export interface RoleServiceController {
@@ -122,6 +170,23 @@ export interface RoleServiceController {
   deleteRole(
     request: DeleteRoleRequest,
   ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
+
+  getManyUniquePermissions(
+    request: GetManyUniquePermissionsRequest,
+  ):
+    | Promise<GetManyUniquePermissionsResponse>
+    | Observable<GetManyUniquePermissionsResponse>
+    | GetManyUniquePermissionsResponse;
+
+  createPermission(request: CreatePermissionRequest): Promise<Permissions> | Observable<Permissions> | Permissions;
+
+  createManyPermissions(
+    request: CreateManyPermissionsRequest,
+  ): Promise<CountResponse> | Observable<CountResponse> | CountResponse;
+
+  deleteManyPermissions(
+    request: DeleteManyPermissionsRequest,
+  ): Promise<CountResponse> | Observable<CountResponse> | CountResponse;
 }
 
 export function RoleServiceControllerMethods() {
@@ -133,6 +198,10 @@ export function RoleServiceControllerMethods() {
       "createRole",
       "updateRole",
       "deleteRole",
+      "getManyUniquePermissions",
+      "createPermission",
+      "createManyPermissions",
+      "deleteManyPermissions",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -29,14 +29,15 @@ model Permission {
     module      String      @default("") @db.VarChar(500)
     roles       Role[]
 
-    createdById Int?
-    updatedById Int?
-    deletedById Int?
+    createdById String?
+    updatedById String?
+    deletedById String?
 
     deletedAt DateTime?
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
 
+    @@unique([name])
     @@index([deletedAt])
 }
 
@@ -47,13 +48,29 @@ model Role {
     permissions Permission[]
     userIds     String[]
 
-    createdById Int?
-    updatedById Int?
-    deletedById Int?
+    parents     RoleInheritance[] @relation("ChildRoles") // role cha của role này
+    children    RoleInheritance[] @relation("ParentRoles") // role con của role này
+    // nếu là customer , nó sẽ có children nơi nó làm parent
+    // nếu là seller , nó sẽ có parent nơi nó làm children ?
+    createdById String?
+    updatedById String?
+    deletedById String?
 
     deletedAt DateTime?
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
 
     @@index([deletedAt])
+}
+
+model RoleInheritance {
+    id String @id @default(uuid())
+
+    parentId String
+    childId  String
+
+    parent Role @relation("ParentRoles", fields: [parentId], references: [id])
+    child  Role @relation("ChildRoles", fields: [childId], references: [id])
+
+    createdAt DateTime @default(now())
 }

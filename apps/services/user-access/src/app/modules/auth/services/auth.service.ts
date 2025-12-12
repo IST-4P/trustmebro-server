@@ -1,5 +1,4 @@
 import { BaseConfiguration } from '@common/configurations/base.config';
-import { RoleNameValues } from '@common/constants/user.constant';
 import {
   LoginRequest,
   LogoutRequest,
@@ -49,7 +48,7 @@ export class AuthService implements OnModuleInit {
     const userId = await this.keycloakHttpService.createUser(data);
     const roleCustomer = await firstValueFrom(
       this.roleService.getRoleWithoutUserIds({
-        name: RoleNameValues.CUSTOMER,
+        name: 'CUSTOMER',
       })
     );
     await this.userService.createUser({

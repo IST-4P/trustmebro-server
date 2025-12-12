@@ -9,6 +9,11 @@ service RoleService {
   rpc CreateRole(CreateRoleRequest) returns (RoleWithoutUserIdsResponse);
   rpc UpdateRole(UpdateRoleRequest) returns (RoleWithoutUserIdsResponse);
   rpc DeleteRole(DeleteRoleRequest) returns (RoleWithoutUserIdsResponse);
+
+  rpc GetManyUniquePermissions(GetManyUniquePermissionsRequest) returns (GetManyUniquePermissionsResponse);
+  rpc CreatePermission(CreatePermissionRequest) returns (Permissions);
+  rpc CreateManyPermissions(CreateManyPermissionsRequest) returns (CountResponse);
+  rpc DeleteManyPermissions(DeleteManyPermissionsRequest) returns (CountResponse);
 }
 
 //==================== GetRole ====================//
@@ -16,6 +21,12 @@ message GetRoleRequest {
   optional string processId = 1;
   optional string id = 2;
   optional string name = 3;
+}
+
+message Permissions {
+  string id = 1;
+  string path = 2;
+  string method = 3;
 }
 
 message RoleResponse {
@@ -29,7 +40,7 @@ message RoleResponse {
   string deletedAt = 8;
   string createdAt = 9;
   string updatedAt = 10;
-  repeated string permissions = 11;
+  repeated Permissions permissions = 11;
 }
 
 //==================== GetRoleWithoutUserIds ====================//
@@ -43,7 +54,7 @@ message RoleWithoutUserIdsResponse {
   string deletedAt = 7;
   string createdAt = 8;
   string updatedAt = 9;
-  repeated string permissions = 10;
+  repeated Permissions permissions = 10;
 }
 
 //==================== GetManyRoles ====================//
@@ -74,7 +85,7 @@ message UpdateRoleRequest {
   string id = 2;
   optional string name = 3;
   optional string description = 4;
-  string updatedById = 5;
+  optional string updatedById = 5;
   repeated string permissionIds = 6;
 }
 
@@ -85,3 +96,38 @@ message DeleteRoleRequest {
   string deletedById = 3;
 }
 
+//============================================== Permission ==============================================//
+
+//==================== GetManyUniquePermissions ====================//
+message GetManyUniquePermissionsRequest {
+  repeated string names = 1;
+}
+
+message GetManyUniquePermissionsResponse {
+  repeated Permissions permissions = 1;
+}
+
+//==================== CreatePermission ====================//
+message CreatePermissionRequest {
+  optional string processId = 1;
+  string name = 2;
+  optional string description = 3;
+  string module = 4;
+  string path = 5;
+  string method = 6;
+  optional string createdById = 7;
+}
+
+//==================== CreateManyPermissions ====================//
+message CreateManyPermissionsRequest {
+  repeated CreatePermissionRequest permissions = 1;
+}
+
+//==================== DeleteManyPermissions ====================//
+message DeleteManyPermissionsRequest {
+  repeated string ids = 1;
+}
+
+message CountResponse {
+  int32 count = 1;
+}

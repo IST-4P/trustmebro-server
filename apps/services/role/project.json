@@ -79,6 +79,15 @@
       },
       "cache": true
     },
+    "push-prisma-acl": {
+      "dependsOn": ["generate-prisma"],
+      "command": "prisma db push --accept-data-loss",
+      "options": {
+        "cwd": "{projectRoot}",
+        "inputs": ["prisma/schema.prisma"]
+      },
+      "cache": true
+    },
     "migrate-prisma": {
       "executor": "nx:run-commands",
       "options": {

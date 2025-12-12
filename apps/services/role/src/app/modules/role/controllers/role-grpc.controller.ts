@@ -27,6 +27,11 @@ export class RoleGrpcController {
     return this.roleService.find(data, true);
   }
 
+  // @Get(':id')
+  // getRole(@Param() data: GetRoleRequest): Promise<GetRoleResponse | null> {
+  //   return this.roleService.find(data, true);
+  // }
+
   @GrpcMethod('RoleService', 'GetRoleWithoutUserIds')
   getRoleWithoutUserIds(data: GetRoleRequest): Promise<GetRoleResponse | null> {
     return this.roleService.find(data, false);

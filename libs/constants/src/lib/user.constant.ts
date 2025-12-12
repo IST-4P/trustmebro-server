@@ -23,17 +23,3 @@ export const UserStatusEnums = z.enum([
   UserStatusValues.INACTIVE,
   UserStatusValues.BLOCKED,
 ]);
-
-export const RoleNameValues = {
-  CUSTOMER: 'CUSTOMER',
-  SELLER: 'SELLER',
-  MANAGER: 'MANAGER',
-  ADMIN: 'ADMIN',
-} as const;
-
-export const RoleNameEnums = z.enum([
-  RoleNameValues.CUSTOMER,
-  RoleNameValues.SELLER,
-  RoleNameValues.MANAGER,
-  RoleNameValues.ADMIN,
-]);

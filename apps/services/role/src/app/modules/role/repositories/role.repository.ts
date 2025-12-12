@@ -47,7 +47,7 @@ export class RoleRepository {
     };
   }
 
-  find(
+  async find(
     data: Prisma.RoleWhereInput,
     withUserIds: boolean
   ): Promise<GetRoleResponse | null> {
@@ -60,7 +60,7 @@ export class RoleRepository {
     if (data.name) {
       where.name = data.name;
     }
-    return this.prismaService.role.findFirst({
+    const role = await this.prismaService.role.findFirst({
       where,
       omit: {
         userIds: !withUserIds,
@@ -71,12 +71,45 @@ export class RoleRepository {
             deletedAt: null,
           },
           select: {
+            id: true,
             path: true,
             method: true,
           },
         },
+        parents: {
+          include: {
+            parent: {
+              select: {
+                permissions: {
+                  where: { deletedAt: null },
+                  select: { path: true, method: true },
+                },
+              },
+            },
+          },
+        },
       },
     });
+
+    const directPermissions = role.permissions;
+    const inheritedPermissions = role.parents.flatMap(
+      (p) => p.parent.permissions
+    );
+
+    const merged = [...directPermissions, ...inheritedPermissions];
+
+    const unique = Array.from(
+      new Map(
+        merged.map((item) => [`${item.method}-${item.path}`, item])
+      ).values()
+    );
+
+    const { parents, ...rest } = role;
+
+    return {
+      ...rest,
+      permissions: unique,
+    };
   }
 
   create(data: CreateRoleRequest): Promise<GetRoleResponse> {
@@ -125,12 +158,12 @@ export class RoleRepository {
         deletedAt: null,
       },
       data: {
-        name: data.name,
-        description: data.description,
+        name: data?.name,
+        description: data?.description,
         permissions: {
           set: data.permissionIds.map((id) => ({ id })),
         },
-        updatedById: data.updatedById,
+        updatedById: data?.updatedById,
       },
       include: {
         permissions: {

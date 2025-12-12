@@ -21,7 +21,8 @@ export class RoleService {
   }
 
   async find(data: GetRoleRequest, withUserIds: boolean) {
-    const role = await this.roleRepository.find({ id: data.id }, withUserIds);
+    const role = await this.roleRepository.find(data, withUserIds);
+
     if (!role) {
       throw new NotFoundException('Error.RoleNotFound');
     }
@@ -29,9 +30,7 @@ export class RoleService {
   }
 
   async create(data: CreateRoleRequest) {
-    console.log('first');
     const role = await this.roleRepository.find({ name: data.name }, false);
-    console.log('second');
     if (role) {
       throw new NotFoundException('Error.RoleAlreadyExists');
     }
