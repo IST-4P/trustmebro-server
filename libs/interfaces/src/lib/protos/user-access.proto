@@ -7,6 +7,7 @@ service UserAccessService {
   rpc RefreshToken(RefreshTokenRequest) returns (LoginResponse);
   rpc Logout(LogoutRequest) returns (Empty);
   rpc Register(RegisterRequest) returns (Empty);
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
 
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
 }
@@ -51,6 +52,26 @@ message RegisterRequest {
 }
 
 message Empty {}
+
+// ==================== Verify Token ====================//
+message VerifyTokenRequest {
+  optional string processId = 1;
+  string token = 2;
+}
+
+message VerifyTokenResponse {
+  bool isValid = 1;
+  string id = 2;
+  string roleId = 3;
+  string roleName = 4;
+  repeated Permissions permissions = 5;
+}
+
+message Permissions {
+  string id = 1;
+  string path = 2;
+  string method = 3;
+}
 
 //==================== CreateUser ====================//
 message CreateUserRequest {

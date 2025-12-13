@@ -43,8 +43,8 @@ model User {
     roleId   String
     roleName String
 
-    updatedById Int?
-    deletedById Int?
+    updatedById String?
+    deletedById String?
 
     deletedAt DateTime?
     createdAt DateTime  @default(now())

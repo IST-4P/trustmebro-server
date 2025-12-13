@@ -24,7 +24,12 @@ export const RegisterRequestSchema = UserSchema.pick({
   password: z.string(),
 });
 
+export const VerifyTokenRequestSchema = z.object({
+  token: z.string(),
+});
+
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 export type RefreshTokenRequest = z.infer<typeof RefreshTokenRequestSchema>;
 export type LogoutRequest = z.infer<typeof LogoutRequestSchema>;
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
+export type VerifyTokenRequest = z.infer<typeof VerifyTokenRequestSchema>;

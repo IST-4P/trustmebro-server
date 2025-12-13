@@ -82,7 +82,7 @@ export class RoleRepository {
               select: {
                 permissions: {
                   where: { deletedAt: null },
-                  select: { path: true, method: true },
+                  select: { id: true, path: true, method: true },
                 },
               },
             },
@@ -121,6 +121,7 @@ export class RoleRepository {
       include: {
         permissions: {
           select: {
+            id: true,
             path: true,
             method: true,
           },
@@ -171,6 +172,7 @@ export class RoleRepository {
             deletedAt: null,
           },
           select: {
+            id: true,
             path: true,
             method: true,
           },
@@ -192,6 +194,7 @@ export class RoleRepository {
       include: {
         permissions: {
           select: {
+            id: true,
             path: true,
             method: true,
           },

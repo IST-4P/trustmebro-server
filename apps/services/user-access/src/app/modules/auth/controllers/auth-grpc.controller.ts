@@ -6,6 +6,8 @@ import {
   RefreshTokenRequest,
   RefreshTokenResponse,
   RegisterRequest,
+  VerifyTokenRequest,
+  VerifyTokenResponse,
 } from '@common/interfaces/models/auth';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
@@ -46,5 +48,10 @@ export class AuthGrpcController {
   @GrpcMethod('UserAccessService', 'Logout')
   async logout(data: LogoutRequest): Promise<void> {
     await this.authService.logout(data);
+  }
+
+  @GrpcMethod('UserAccessService', 'VerifyToken')
+  async verifyToken(data: VerifyTokenRequest): Promise<VerifyTokenResponse> {
+    return this.authService.verifyToken(data);
   }
 }

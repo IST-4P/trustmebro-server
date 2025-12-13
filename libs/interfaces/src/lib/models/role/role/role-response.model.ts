@@ -17,6 +17,7 @@ export const GetManyRolesResponseSchema = PaginationQueryResponseSchema.extend({
 export const GetRoleResponseSchema = RoleSchema.extend({
   permissions: z.array(
     PermissionSchema.pick({
+      id: true,
       path: true,
       method: true,
     })

@@ -1,17 +1,28 @@
 import { BaseConfiguration } from '@common/configurations/base.config';
+import { KeycloakConfiguration } from '@common/configurations/keycloak.config';
+import { DefaultRoleNameValues } from '@common/constants/user.constant';
 import {
   LoginRequest,
   LogoutRequest,
   RefreshTokenRequest,
   RegisterRequest,
+  VerifyTokenRequest,
 } from '@common/interfaces/models/auth';
 import {
   ROLE_SERVICE_NAME,
   ROLE_SERVICE_PACKAGE_NAME,
   RoleServiceClient,
 } from '@common/interfaces/proto-types/role';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleInit,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import jwt, { Jwt, JwtPayload } from 'jsonwebtoken';
+import jwksRsa, { JwksClient } from 'jwks-rsa';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../user/services/user.service';
 import { KeycloakHttpService } from './keycloak-htpp.service';
@@ -19,13 +30,21 @@ import { KeycloakHttpService } from './keycloak-htpp.service';
 @Injectable()
 export class AuthService implements OnModuleInit {
   private roleService!: RoleServiceClient;
+  private readonly logger = new Logger(AuthService.name);
+  private jwksClient: JwksClient;
 
   constructor(
     private readonly keycloakHttpService: KeycloakHttpService,
     private readonly userService: UserService,
     @Inject(ROLE_SERVICE_PACKAGE_NAME)
     private roleClient: ClientGrpc
-  ) {}
+  ) {
+    this.jwksClient = jwksRsa({
+      jwksUri: `${KeycloakConfiguration.KEYCLOAK_HOST}/realms/${KeycloakConfiguration.KEYCLOAK_REALM}/protocol/openid-connect/certs`,
+      cache: true,
+      rateLimit: true,
+    });
+  }
 
   onModuleInit() {
     this.roleService =
@@ -48,7 +67,7 @@ export class AuthService implements OnModuleInit {
     const userId = await this.keycloakHttpService.createUser(data);
     const roleCustomer = await firstValueFrom(
       this.roleService.getRoleWithoutUserIds({
-        name: 'CUSTOMER',
+        name: DefaultRoleNameValues.CUSTOMER,
       })
     );
     await this.userService.createUser({
@@ -63,5 +82,38 @@ export class AuthService implements OnModuleInit {
       roleId: roleCustomer.id,
       roleName: roleCustomer.name,
     });
+  }
+
+  async verifyToken(data: VerifyTokenRequest) {
+    const decoded = jwt.decode(data.token, { complete: true }) as Jwt;
+    if (!decoded || !decoded.header || !decoded.header.kid) {
+      throw new UnauthorizedException('Error.InvalidTokenStructure');
+    }
+
+    try {
+      const key = await this.jwksClient.getSigningKey(decoded.header.kid);
+      const publicKey = key.getPublicKey();
+      const payload = jwt.verify(data.token, publicKey, {
+        algorithms: ['RS256'],
+      }) as JwtPayload;
+      const user = await this.userService.findById(payload.sub);
+      if (!user) {
+        throw new UnauthorizedException('Error.UserNotFound');
+      }
+
+      const role = await firstValueFrom(
+        this.roleService.getRole({ id: user.roleId })
+      );
+      return {
+        isValid: true,
+        userId: user.id,
+        roleId: user.roleId,
+        roleName: user.roleName,
+        permissions: role.permissions,
+      };
+    } catch (error) {
+      this.logger.error({ error });
+      throw new UnauthorizedException('Error.InvalidToken');
+    }
   }
 }

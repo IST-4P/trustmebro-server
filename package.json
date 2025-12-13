@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "lite": "pnpm nx reset && pnpm nx run-many -t serve --projects=web",
+    "lite": "pnpm nx reset && pnpm nx run-many -t serve --projects=web,media",
     "dev": "pnpm nx reset && pnpm nx run-many -t serve --projects=web,user-access,role,media",
     "generate-ts-proto": "pnpm nx generate-ts-proto interfaces"
   },
@@ -24,6 +24,9 @@
     "axios": "^1.6.0",
     "cookie": "^1.1.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "jwks-rsa": "^3.2.0",
+    "lodash": "^4.17.21",
     "mime-types": "^3.0.2",
     "nestjs-zod": "^5.0.1",
     "pg": "^8.16.3",
@@ -49,6 +52,8 @@
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.21",
     "@types/mime-types": "^3.0.1",
     "@types/node": "20.19.9",
     "eslint": "^9.8.0",

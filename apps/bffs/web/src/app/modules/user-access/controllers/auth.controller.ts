@@ -1,3 +1,4 @@
+import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import {
   LoginRequestDto,
@@ -28,6 +29,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login-postman')
+  @IsPublic()
   async loginDirectAccessGrants(
     @Body() body: LoginRequestDto,
     @Res({ passthrough: true }) res: Response,
@@ -52,6 +54,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
+  @IsPublic()
   async refreshToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -83,6 +86,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @IsPublic()
   logout(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -98,6 +102,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @IsPublic()
   async register(
     @Body() body: RegisterRequestDto,
     @ProcessId() processId: string

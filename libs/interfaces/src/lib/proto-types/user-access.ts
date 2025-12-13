@@ -50,6 +50,26 @@ export interface RegisterRequest {
 export interface Empty {
 }
 
+/** ==================== Verify Token ====================// */
+export interface VerifyTokenRequest {
+  processId?: string | undefined;
+  token: string;
+}
+
+export interface VerifyTokenResponse {
+  isValid: boolean;
+  id: string;
+  roleId: string;
+  roleName: string;
+  permissions: Permissions[];
+}
+
+export interface Permissions {
+  id: string;
+  path: string;
+  method: string;
+}
+
 /** ==================== CreateUser ====================// */
 export interface CreateUserRequest {
   processId?: string | undefined;
@@ -97,6 +117,8 @@ export interface UserAccessServiceClient {
 
   register(request: RegisterRequest): Observable<Empty>;
 
+  verifyToken(request: VerifyTokenRequest): Observable<VerifyTokenResponse>;
+
   createUser(request: CreateUserRequest): Observable<UserResponse>;
 }
 
@@ -109,12 +131,23 @@ export interface UserAccessServiceController {
 
   register(request: RegisterRequest): Promise<Empty> | Observable<Empty> | Empty;
 
+  verifyToken(
+    request: VerifyTokenRequest,
+  ): Promise<VerifyTokenResponse> | Observable<VerifyTokenResponse> | VerifyTokenResponse;
+
   createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 }
 
 export function UserAccessServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["loginDirectAccessGrants", "refreshToken", "logout", "register", "createUser"];
+    const grpcMethods: string[] = [
+      "loginDirectAccessGrants",
+      "refreshToken",
+      "logout",
+      "register",
+      "verifyToken",
+      "createUser",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UserAccessService", method)(constructor.prototype[method], method, descriptor);
