@@ -96,6 +96,7 @@ export class PermissionRepository {
       where: {
         id: data.id as string,
         deletedAt: null,
+        updatedById: data?.updatedById as string,
       },
       data,
     });

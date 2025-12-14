@@ -1,5 +1,5 @@
 import { PaginationQueryRequestSchema } from '@common/interfaces/models/common/pagination.model';
-import { PermissionSchema } from '@common/interfaces/schemas/permission.schema';
+import { PermissionSchema } from '@common/schemas/role';
 import z from 'zod';
 
 export const GetManyPermissionsRequestSchema =
@@ -40,6 +40,7 @@ export const UpdatePermissionRequestSchema = PermissionSchema.pick({
   .extend({
     permissionIds: z.array(z.uuid()),
   })
+  .partial()
   .strict();
 
 export const DeletePermissionRequestSchema = PermissionSchema.pick({

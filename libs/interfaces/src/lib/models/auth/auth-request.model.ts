@@ -1,4 +1,4 @@
-import { UserSchema } from '@common/interfaces/schemas/user.schema';
+import { UserSchema } from '@common/schemas/user';
 import z from 'zod';
 
 export const LoginRequestSchema = UserSchema.pick({

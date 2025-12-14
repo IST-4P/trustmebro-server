@@ -1,5 +1,5 @@
 import { PaginationQueryRequestSchema } from '@common/interfaces/models/common/pagination.model';
-import { RoleSchema } from '@common/interfaces/schemas/role.schema';
+import { RoleSchema } from '@common/schemas/role';
 import z from 'zod';
 
 export const GetManyRolesRequestSchema = PaginationQueryRequestSchema;
@@ -9,6 +9,9 @@ export const GetRoleRequestSchema = RoleSchema.pick({
   name: true,
 })
   .partial()
+  .extend({
+    withInheritance: z.boolean(),
+  })
   .strict();
 
 export const CreateRoleRequestSchema = RoleSchema.pick({
@@ -26,6 +29,7 @@ export const UpdateRoleRequestSchema = RoleSchema.pick({
   .extend({
     permissionIds: z.array(z.uuid()),
   })
+  .partial()
   .strict();
 
 export const DeleteRoleRequestSchema = RoleSchema.pick({

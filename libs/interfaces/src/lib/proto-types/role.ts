@@ -15,6 +15,7 @@ export interface GetRoleRequest {
   processId?: string | undefined;
   id?: string | undefined;
   name?: string | undefined;
+  withInheritance: boolean;
 }
 
 export interface Permissions {
@@ -28,20 +29,6 @@ export interface RoleResponse {
   name: string;
   description: string;
   userIds: string[];
-  createdById: string;
-  updatedById: string;
-  deletedById: string;
-  deletedAt: string;
-  createdAt: string;
-  updatedAt: string;
-  permissions: Permissions[];
-}
-
-/** ==================== GetRoleWithoutUserIds ====================// */
-export interface RoleWithoutUserIdsResponse {
-  id: string;
-  name: string;
-  description: string;
   createdById: string;
   updatedById: string;
   deletedById: string;
@@ -129,15 +116,13 @@ export const ROLE_SERVICE_PACKAGE_NAME = "ROLE_SERVICE";
 export interface RoleServiceClient {
   getRole(request: GetRoleRequest): Observable<RoleResponse>;
 
-  getRoleWithoutUserIds(request: GetRoleRequest): Observable<RoleWithoutUserIdsResponse>;
-
   getManyRoles(request: GetManyRolesRequest): Observable<GetManyRolesResponse>;
 
-  createRole(request: CreateRoleRequest): Observable<RoleWithoutUserIdsResponse>;
+  createRole(request: CreateRoleRequest): Observable<RoleResponse>;
 
-  updateRole(request: UpdateRoleRequest): Observable<RoleWithoutUserIdsResponse>;
+  updateRole(request: UpdateRoleRequest): Observable<RoleResponse>;
 
-  deleteRole(request: DeleteRoleRequest): Observable<RoleWithoutUserIdsResponse>;
+  deleteRole(request: DeleteRoleRequest): Observable<RoleResponse>;
 
   getManyUniquePermissions(request: GetManyUniquePermissionsRequest): Observable<GetManyUniquePermissionsResponse>;
 
@@ -151,25 +136,15 @@ export interface RoleServiceClient {
 export interface RoleServiceController {
   getRole(request: GetRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
 
-  getRoleWithoutUserIds(
-    request: GetRoleRequest,
-  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
-
   getManyRoles(
     request: GetManyRolesRequest,
   ): Promise<GetManyRolesResponse> | Observable<GetManyRolesResponse> | GetManyRolesResponse;
 
-  createRole(
-    request: CreateRoleRequest,
-  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
+  createRole(request: CreateRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
 
-  updateRole(
-    request: UpdateRoleRequest,
-  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
+  updateRole(request: UpdateRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
 
-  deleteRole(
-    request: DeleteRoleRequest,
-  ): Promise<RoleWithoutUserIdsResponse> | Observable<RoleWithoutUserIdsResponse> | RoleWithoutUserIdsResponse;
+  deleteRole(request: DeleteRoleRequest): Promise<RoleResponse> | Observable<RoleResponse> | RoleResponse;
 
   getManyUniquePermissions(
     request: GetManyUniquePermissionsRequest,
@@ -193,7 +168,6 @@ export function RoleServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
       "getRole",
-      "getRoleWithoutUserIds",
       "getManyRoles",
       "createRole",
       "updateRole",

@@ -11,12 +11,16 @@ export const GrpcConfigurationSchema = z.object({
 
   ROLE_SERVICE_GRPC_URL: z.string(),
   ROLE_SERVICE_PROTO_PATH: z.string(),
+
+  PRODUCT_SERVICE_GRPC_URL: z.string(),
+  PRODUCT_SERVICE_PROTO_PATH: z.string(),
 });
 
 export enum GrpcService {
   USER_ACCESS_SERVICE = 'USER_ACCESS_SERVICE',
   MEDIA_SERVICE = 'MEDIA_SERVICE',
   ROLE_SERVICE = 'ROLE_SERVICE',
+  PRODUCT_SERVICE = 'PRODUCT_SERVICE',
 }
 
 const configServer = GrpcConfigurationSchema.safeParse(process.env);

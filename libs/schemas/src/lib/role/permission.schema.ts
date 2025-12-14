@@ -1,6 +1,6 @@
 import { HttpMethodEnums } from '@common/constants/http-method.constant';
 import { z } from 'zod';
-import { BaseSchema } from './base.schema';
+import { BaseSchema } from '../common/base.schema';
 
 export const PermissionSchema = BaseSchema.extend({
   name: z.string().max(500),

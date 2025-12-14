@@ -1,6 +1,6 @@
 import { GenderEnums, UserStatusEnums } from '@common/constants/user.constant';
 import { z } from 'zod';
-import { BaseSchema } from './base.schema';
+import { BaseSchema } from '../common/base.schema';
 
 export const UserSchema = BaseSchema.extend({
   firstName: z.string(),

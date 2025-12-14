@@ -1,5 +1,5 @@
 import { PaginationQueryResponseSchema } from '@common/interfaces/models/common/pagination.model';
-import { PermissionSchema } from '@common/interfaces/schemas/permission.schema';
+import { PermissionSchema } from '@common/schemas/role';
 import z from 'zod';
 
 export const GetManyPermissionsResponseSchema =

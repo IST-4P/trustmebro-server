@@ -1,0 +1,44 @@
+import { CategorySchema } from '@common/schemas/product';
+import z from 'zod';
+import { PaginationQueryRequestSchema } from '../../common/pagination.model';
+
+export const GetManyCategoriesRequestSchema =
+  PaginationQueryRequestSchema.extend({
+    name: CategorySchema.shape.name.optional(),
+  });
+
+export const GetCategoryRequestSchema = CategorySchema.pick({
+  id: true,
+});
+
+export const CreateCategoryRequestSchema = CategorySchema.pick({
+  name: true,
+  logo: true,
+  createdById: true,
+  parentCategoryId: true,
+}).strict();
+
+export const UpdateCategoryRequestSchema = CategorySchema.pick({
+  name: true,
+  logo: true,
+  updatedById: true,
+  parentCategoryId: true,
+})
+  .partial()
+  .extend({
+    id: z.uuid(),
+  })
+  .strict();
+
+export const DeleteCategoryRequestSchema = CategorySchema.pick({
+  id: true,
+  deletedById: true,
+}).strict();
+
+export type GetManyCategoriesRequest = z.infer<
+  typeof GetManyCategoriesRequestSchema
+>;
+export type GetCategoryRequest = z.infer<typeof GetCategoryRequestSchema>;
+export type CreateCategoryRequest = z.infer<typeof CreateCategoryRequestSchema>;
+export type UpdateCategoryRequest = z.infer<typeof UpdateCategoryRequestSchema>;
+export type DeleteCategoryRequest = z.infer<typeof DeleteCategoryRequestSchema>;

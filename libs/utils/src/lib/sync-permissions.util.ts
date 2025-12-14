@@ -34,7 +34,12 @@ export const syncPermissions = async (
   const roleService =
     grpcClient.getService<RoleServiceClient>(ROLE_SERVICE_NAME);
 
-  const role = await firstValueFrom(roleService.getRole({ name: roleName }));
+  const role = await firstValueFrom(
+    roleService.getRole({
+      name: roleName,
+      withInheritance: false,
+    })
+  );
   const server = app.getHttpAdapter().getInstance();
   const router = server.router;
   const globalPrefix = BaseConfiguration.GLOBAL_PREFIX || 'api/v1';

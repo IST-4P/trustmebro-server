@@ -1,4 +1,4 @@
-import { UserSchema } from '@common/interfaces/schemas/user.schema';
+import { UserSchema } from '@common/schemas/user/user.schema';
 import z from 'zod';
 
 export const CreateUserRequestSchema = UserSchema.pick({

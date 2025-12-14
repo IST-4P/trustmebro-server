@@ -24,18 +24,13 @@ export class RoleGrpcController {
 
   @GrpcMethod('RoleService', 'GetRole')
   getRole(data: GetRoleRequest): Promise<GetRoleResponse | null> {
-    return this.roleService.find(data, true);
+    return this.roleService.find(data);
   }
 
   // @Get(':id')
   // getRole(@Param() data: GetRoleRequest): Promise<GetRoleResponse | null> {
   //   return this.roleService.find(data, true);
   // }
-
-  @GrpcMethod('RoleService', 'GetRoleWithoutUserIds')
-  getRoleWithoutUserIds(data: GetRoleRequest): Promise<GetRoleResponse | null> {
-    return this.roleService.find(data, false);
-  }
 
   @GrpcMethod('RoleService', 'CreateRole')
   createRole(data: CreateRoleRequest): Promise<GetRoleResponse> {

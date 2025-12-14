@@ -47,10 +47,13 @@ export class RoleRepository {
     };
   }
 
-  async find(
-    data: Prisma.RoleWhereInput,
-    withUserIds: boolean
-  ): Promise<GetRoleResponse | null> {
+  async find({
+    data,
+    withInheritance,
+  }: {
+    data: Prisma.RoleWhereInput;
+    withInheritance: boolean;
+  }): Promise<GetRoleResponse | null> {
     const where: Prisma.RoleWhereInput = {
       deletedAt: null,
     };
@@ -62,9 +65,6 @@ export class RoleRepository {
     }
     const role = await this.prismaService.role.findFirst({
       where,
-      omit: {
-        userIds: !withUserIds,
-      },
       include: {
         permissions: {
           where: {
@@ -76,25 +76,27 @@ export class RoleRepository {
             method: true,
           },
         },
-        parents: {
-          include: {
-            parent: {
-              select: {
-                permissions: {
-                  where: { deletedAt: null },
-                  select: { id: true, path: true, method: true },
+        ...(withInheritance && {
+          parents: {
+            include: {
+              parent: {
+                select: {
+                  permissions: {
+                    where: { deletedAt: null },
+                    select: { id: true, path: true, method: true },
+                  },
                 },
               },
             },
           },
-        },
+        }),
       },
     });
 
     const directPermissions = role.permissions;
-    const inheritedPermissions = role.parents.flatMap(
-      (p) => p.parent.permissions
-    );
+    const inheritedPermissions = withInheritance
+      ? role.parents?.flatMap((p) => p.parent.permissions) || []
+      : [];
 
     const merged = [...directPermissions, ...inheritedPermissions];
 

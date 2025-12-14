@@ -18,7 +18,7 @@ async function bootstrap() {
 
   const globalPrefix = BaseConfiguration.GLOBAL_PREFIX || 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = AppConfiguration.USER_ACCESS_SERVICE_PORT || 3000;
+  const port = AppConfiguration.USER_ACCESS_SERVICE_PORT || 3002;
 
   app.connectMicroservice(GrpcServerOptions(GrpcService.USER_ACCESS_SERVICE));
   await app.startAllMicroservices();

@@ -66,8 +66,9 @@ export class AuthService implements OnModuleInit {
   async register(data: RegisterRequest) {
     const userId = await this.keycloakHttpService.createUser(data);
     const roleCustomer = await firstValueFrom(
-      this.roleService.getRoleWithoutUserIds({
+      this.roleService.getRole({
         name: DefaultRoleNameValues.CUSTOMER,
+        withInheritance: false,
       })
     );
     await this.userService.createUser({
@@ -102,7 +103,10 @@ export class AuthService implements OnModuleInit {
       }
 
       const role = await firstValueFrom(
-        this.roleService.getRole({ id: user.roleId })
+        this.roleService.getRole({
+          id: user.roleId,
+          withInheritance: true,
+        })
       );
       return {
         isValid: true,
