@@ -1,3 +1,4 @@
+import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateCategoryAttributeRequest,
   DeleteCategoryAttributeRequest,
@@ -7,12 +8,12 @@ import {
   GetManyCategoryAttributesResponse,
   UpdateCategoryAttributeRequest,
 } from '@common/interfaces/models/product';
-import { Controller } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { CategoryAttributeService } from '../services/category-attribute.service';
 
 @Controller()
-// @UseInterceptors(GrpcLoggingInterceptor)
+@UseInterceptors(GrpcLoggingInterceptor)
 export class CategoryAttributeGrpcController {
   constructor(
     private readonly categoryAttributeService: CategoryAttributeService

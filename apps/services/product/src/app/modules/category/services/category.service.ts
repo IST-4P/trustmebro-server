@@ -28,7 +28,7 @@ export class CategoryService {
     return brand;
   }
 
-  async create(data: CreateCategoryRequest) {
+  async create({ processId, ...data }: CreateCategoryRequest) {
     return this.categoryRepository.create(data);
   }
 

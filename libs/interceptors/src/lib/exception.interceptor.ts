@@ -83,6 +83,7 @@ export class ExceptionInterceptor implements NestInterceptor {
           error?.response?.statusCode ||
           error.status ||
           HttpStatus.INTERNAL_SERVER_ERROR;
+        // Logger.error(error);
         Logger.error(
           `HTTP >> Error process '${processId}' >> message: '${message}' >> code: '${code}'`
         );

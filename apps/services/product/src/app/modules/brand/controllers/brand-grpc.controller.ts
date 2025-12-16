@@ -1,3 +1,4 @@
+import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateBrandRequest,
   DeleteBrandRequest,
@@ -7,12 +8,12 @@ import {
   GetManyBrandsResponse,
   UpdateBrandRequest,
 } from '@common/interfaces/models/product';
-import { Controller } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { BrandService } from '../services/brand.service';
 
 @Controller()
-// @UseInterceptors(GrpcLoggingInterceptor)
+@UseInterceptors(GrpcLoggingInterceptor)
 export class BrandGrpcController {
   constructor(private readonly brandService: BrandService) {}
 

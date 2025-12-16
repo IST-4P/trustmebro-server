@@ -28,7 +28,7 @@ export class BrandService {
     return brand;
   }
 
-  async create(data: CreateBrandRequest) {
+  async create({ processId, ...data }: CreateBrandRequest) {
     return this.brandRepository.create(data);
   }
 

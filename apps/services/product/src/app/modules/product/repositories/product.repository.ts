@@ -17,8 +17,8 @@ export class ProductRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async list(data: GetManyProductsRequest): Promise<GetManyProductsResponse> {
-    const skip = (data.page - 1) * data.limit;
-    const take = data.limit;
+    const skip = Number((data.page - 1) * data.limit);
+    const take = Number(data.limit);
     let where: Prisma.ProductWhereInput = {
       deletedAt: null,
       status: data.status ? data.status : ProductStatusValues.ACTIVE,
@@ -132,14 +132,6 @@ export class ProductRepository {
             name: true,
             parentCategory: true,
           },
-          include: {
-            parentCategory: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
         },
       },
     });
@@ -186,14 +178,6 @@ export class ProductRepository {
             id: true,
             name: true,
             parentCategory: true,
-          },
-          include: {
-            parentCategory: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
           },
         },
       },

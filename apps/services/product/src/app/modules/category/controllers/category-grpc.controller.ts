@@ -1,3 +1,4 @@
+import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateCategoryRequest,
   DeleteCategoryRequest,
@@ -7,12 +8,13 @@ import {
   GetManyCategoriesResponse,
   UpdateCategoryRequest,
 } from '@common/interfaces/models/product';
-import { Controller } from '@nestjs/common';
+import { toPlain } from '@common/utils/to-plain.util';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { CategoryService } from '../services/category.service';
 
 @Controller()
-// @UseInterceptors(GrpcLoggingInterceptor)
+@UseInterceptors(GrpcLoggingInterceptor)
 export class CategoryGrpcController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -29,8 +31,10 @@ export class CategoryGrpcController {
   }
 
   @GrpcMethod('ProductService', 'CreateCategory')
-  createCategory(data: CreateCategoryRequest): Promise<GetCategoryResponse> {
-    return this.categoryService.create(data);
+  async createCategory(
+    data: CreateCategoryRequest
+  ): Promise<GetCategoryResponse> {
+    return toPlain(await this.categoryService.create(data));
   }
 
   @GrpcMethod('ProductService', 'UpdateCategory')

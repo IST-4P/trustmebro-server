@@ -14,7 +14,11 @@ export const CreateBrandRequestSchema = BrandSchema.pick({
   name: true,
   logo: true,
   createdById: true,
-}).strict();
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const UpdateBrandRequestSchema = BrandSchema.pick({
   name: true,

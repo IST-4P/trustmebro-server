@@ -16,7 +16,11 @@ export const CreateCategoryRequestSchema = CategorySchema.pick({
   logo: true,
   createdById: true,
   parentCategoryId: true,
-}).strict();
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const UpdateCategoryRequestSchema = CategorySchema.pick({
   name: true,

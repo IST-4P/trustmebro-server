@@ -10,7 +10,6 @@ import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
-import { MediaModule } from './modules/media/media.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
@@ -21,7 +20,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
       GrpcClientProvider(GrpcService.ROLE_SERVICE),
     ]),
     UserAccessModule,
-    MediaModule,
+
     ProductModule,
   ],
   providers: [

@@ -8,9 +8,15 @@ service ProductService {
   rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse);
   rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse);
   rpc DeleteCategory(DeleteCategoryRequest) returns (CategoryResponse);
+
+  rpc GetBrand(GetBrandRequest) returns (BrandResponse);
+  rpc GetManyBrands(GetManyBrandsRequest) returns (GetManyBrandsResponse);
+  rpc CreateBrand(CreateBrandRequest) returns (BrandResponse);
+  rpc UpdateBrand(UpdateBrandRequest) returns (BrandResponse);
+  rpc DeleteBrand(DeleteBrandRequest) returns (BrandResponse);
 }
 
-//======================================// Category ======================================//
+//====================================== Category ======================================//
 //==================== GetCategoryRequest ====================//
 message GetCategoryRequest {
   optional string processId = 1;
@@ -67,6 +73,65 @@ message UpdateCategoryRequest {
 
 //==================== DeleteCategoryRequest ====================//
 message DeleteCategoryRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string deletedById = 3;
+}
+
+//====================================== Brand ======================================//
+//==================== GetBrandRequest ====================//
+message GetBrandRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message BrandResponse {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  string createdById = 4;
+  string updatedById = 5;
+  string deletedById = 6;
+  string deletedAt = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+}
+
+//==================== GetManyBrandsRequest ====================//
+message GetManyBrandsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string name = 4;
+}
+
+message GetManyBrandsResponse {
+  repeated BrandResponse brands = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//==================== CreateBrandRequest ====================//
+message CreateBrandRequest {
+  optional string processId = 1;
+  string name = 2;
+  string logo = 3;
+  optional string createdById = 4;
+}
+
+//==================== UpdateBrandRequest ====================//
+message UpdateBrandRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string name = 3;
+  optional string logo = 4;
+  optional string updatedById = 5;
+}
+
+//==================== DeleteBrandRequest ====================//
+message DeleteBrandRequest {
   optional string processId = 1;
   string id = 2;
   optional string deletedById = 3;
