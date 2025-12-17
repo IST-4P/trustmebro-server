@@ -31,13 +31,18 @@ export const UpdateCategoryRequestSchema = CategorySchema.pick({
   .partial()
   .extend({
     id: z.uuid(),
+    processId: z.uuid().optional(),
   })
   .strict();
 
 export const DeleteCategoryRequestSchema = CategorySchema.pick({
   id: true,
   deletedById: true,
-}).strict();
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export type GetManyCategoriesRequest = z.infer<
   typeof GetManyCategoriesRequestSchema

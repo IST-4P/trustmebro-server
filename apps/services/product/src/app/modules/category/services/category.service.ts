@@ -1,50 +1,55 @@
+import { QueueTopics } from '@common/constants/queue.constant';
 import {
   CreateCategoryRequest,
   DeleteCategoryRequest,
-  GetCategoryRequest,
-  GetManyCategoriesRequest,
   UpdateCategoryRequest,
 } from '@common/interfaces/models/product';
+import { KafkaService } from '@common/kafka/kafka.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoryRepository } from '../repositories/category.repository';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
-
-  async list(data: GetManyCategoriesRequest) {
-    const brands = await this.categoryRepository.list(data);
-    if (brands.totalItems === 0) {
-      throw new NotFoundException('Error.CategoryNotFound');
-    }
-    return brands;
-  }
-
-  async findById(data: GetCategoryRequest) {
-    const brand = await this.categoryRepository.findById(data.id);
-    if (!brand) {
-      throw new NotFoundException('Error.CategoryNotFound');
-    }
-    return brand;
-  }
+  constructor(
+    private readonly categoryRepository: CategoryRepository,
+    private readonly kafkaService: KafkaService
+  ) {}
 
   async create({ processId, ...data }: CreateCategoryRequest) {
-    return this.categoryRepository.create(data);
+    const category = await this.categoryRepository.create(data);
+    this.kafkaService.emit(QueueTopics.CATEGORY.CREATE_CATEGORY, category);
+    return category;
   }
 
-  async update(data: UpdateCategoryRequest) {
-    const brand = await this.categoryRepository.findById(data.id);
-    if (!brand) {
-      throw new NotFoundException('Error.CategoryNotFound');
+  async update({ processId, ...data }: UpdateCategoryRequest) {
+    try {
+      const updatedCategory = await this.categoryRepository.update(data);
+      this.kafkaService.emit(
+        QueueTopics.CATEGORY.UPDATE_CATEGORY,
+        updatedCategory
+      );
+      return updatedCategory;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('Error.CategoryNotFound');
+      }
+      throw error;
     }
-    return this.categoryRepository.update(data);
   }
 
-  async delete(data: DeleteCategoryRequest) {
-    const brand = await this.categoryRepository.findById(data.id);
-    if (!brand) {
-      throw new NotFoundException('Error.CategoryNotFound');
+  async delete({ processId, ...data }: DeleteCategoryRequest) {
+    try {
+      const deletedCategory = await this.categoryRepository.delete(data, false);
+      this.kafkaService.emit(
+        QueueTopics.CATEGORY.DELETE_CATEGORY,
+        deletedCategory
+      );
+      return deletedCategory;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('Error.CategoryNotFound');
+      }
+      throw error;
     }
-    return this.categoryRepository.delete(data, false);
   }
 }

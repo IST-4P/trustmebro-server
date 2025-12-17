@@ -5,10 +5,8 @@
 
 import { AppConfiguration } from '@common/configurations/app.config';
 import { BaseConfiguration } from '@common/configurations/base.config';
-import {
-  GrpcServerOptions,
-  GrpcService,
-} from '@common/configurations/grpc.config';
+import { GrpcServerOptions } from '@common/configurations/grpc.config';
+import { GrpcService } from '@common/constants/grpc.constant';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';

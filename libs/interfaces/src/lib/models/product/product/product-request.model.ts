@@ -64,6 +64,7 @@ export const CreateProductRequestSchema = ProductSchema.pick({
   shopId: true,
   description: true,
   sizeGuide: true,
+  productAddressId: true,
 })
   .extend({
     categories: z.array(z.uuid()),

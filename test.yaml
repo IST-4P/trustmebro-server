@@ -1,0 +1,48 @@
+name: hacmieu-trustmebro
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.0
+    container_name: keycloak-trustmebro
+    ports:
+      - "8180:8080"
+    networks:
+      - trustmebro-nw
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    command: start-dev
+    restart: unless-stopped
+    volumes:
+      - ./docker/docker_data/keycloak_data:/opt/keycloak/data
+
+  redis:
+    image: redis
+    container_name: redis-trustmebro
+    ports:
+      - "6379:6379"
+    networks:
+      - trustmebro-nw
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ./docker/docker_data/redis_data:/data
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis-insight-trustmebro
+    ports:
+      - "5540:5540"
+    networks:
+      - trustmebro-nw
+    depends_on:
+      - redis
+    volumes:
+      - ./docker/docker_data/redisinsight_data:/data
+
+networks:
+  trustmebro-nw:
+    driver: bridge
+    name: trustmebro-nw

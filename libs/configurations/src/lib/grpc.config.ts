@@ -1,3 +1,4 @@
+import { GrpcService } from '@common/constants/grpc.constant';
 import { ClientProviderOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import z from 'zod';
@@ -14,14 +15,10 @@ export const GrpcConfigurationSchema = z.object({
 
   PRODUCT_SERVICE_GRPC_URL: z.string(),
   PRODUCT_SERVICE_PROTO_PATH: z.string(),
-});
 
-export enum GrpcService {
-  USER_ACCESS_SERVICE = 'USER_ACCESS_SERVICE',
-  MEDIA_SERVICE = 'MEDIA_SERVICE',
-  ROLE_SERVICE = 'ROLE_SERVICE',
-  PRODUCT_SERVICE = 'PRODUCT_SERVICE',
-}
+  QUERY_SERVICE_GRPC_URL: z.string(),
+  QUERY_SERVICE_PROTO_PATH: z.string(),
+});
 
 const configServer = GrpcConfigurationSchema.safeParse(process.env);
 

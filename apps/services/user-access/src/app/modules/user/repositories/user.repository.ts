@@ -6,9 +6,12 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findById(id: Prisma.UserWhereUniqueInput['id']): Promise<User | null> {
+  async find(data: { id?: string; email?: string }): Promise<User | null> {
+    const where: Prisma.UserWhereUniqueInput = data.id
+      ? { id: data.id }
+      : { email: data.email! };
     return this.prismaService.user.findUnique({
-      where: { id },
+      where,
     });
   }
 

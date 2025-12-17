@@ -7,6 +7,7 @@ import { VariantsProductSchema } from './other.schema';
 export const ProductSchema = BaseSchema.extend({
   name: z.string(),
   description: z.string(),
+  productAddressId: z.uuid(),
   sizeGuide: z.string().optional(),
   basePrice: z.number().default(0),
   virtualPrice: z.number().default(0),

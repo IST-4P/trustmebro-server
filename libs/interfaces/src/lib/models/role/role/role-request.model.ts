@@ -21,15 +21,12 @@ export const CreateRoleRequestSchema = RoleSchema.pick({
 }).strict();
 
 export const UpdateRoleRequestSchema = RoleSchema.pick({
-  id: true,
   name: true,
   description: true,
   updatedById: true,
 })
-  .extend({
-    permissionIds: z.array(z.uuid()),
-  })
   .partial()
+  .extend({ id: z.uuid(), permissionIds: z.array(z.uuid()) })
   .strict();
 
 export const DeleteRoleRequestSchema = RoleSchema.pick({

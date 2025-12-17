@@ -1,11 +1,8 @@
+import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateBrandRequest,
   DeleteBrandRequest,
-  GetBrandRequest,
-  GetBrandResponse,
-  GetManyBrandsRequest,
-  GetManyBrandsResponse,
   UpdateBrandRequest,
 } from '@common/interfaces/models/product';
 import { Controller, UseInterceptors } from '@nestjs/common';
@@ -17,28 +14,18 @@ import { BrandService } from '../services/brand.service';
 export class BrandGrpcController {
   constructor(private readonly brandService: BrandService) {}
 
-  @GrpcMethod('ProductService', 'GetManyBrands')
-  getManyBrands(data: GetManyBrandsRequest): Promise<GetManyBrandsResponse> {
-    return this.brandService.list(data);
-  }
-
-  @GrpcMethod('ProductService', 'GetBrand')
-  getBrand(data: GetBrandRequest): Promise<GetBrandResponse | null> {
-    return this.brandService.findById(data);
-  }
-
-  @GrpcMethod('ProductService', 'CreateBrand')
-  createBrand(data: CreateBrandRequest): Promise<GetBrandResponse> {
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'CreateBrand')
+  createBrand(data: CreateBrandRequest) {
     return this.brandService.create(data);
   }
 
-  @GrpcMethod('ProductService', 'UpdateBrand')
-  updateBrand(data: UpdateBrandRequest): Promise<GetBrandResponse> {
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'UpdateBrand')
+  updateBrand(data: UpdateBrandRequest) {
     return this.brandService.update(data);
   }
 
-  @GrpcMethod('ProductService', 'DeleteBrand')
-  deleteBrand(data: DeleteBrandRequest): Promise<GetBrandResponse> {
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'DeleteBrand')
+  deleteBrand(data: DeleteBrandRequest) {
     return this.brandService.delete(data);
   }
 }

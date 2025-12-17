@@ -2,9 +2,6 @@ import {
   CategoryResponse,
   CreateCategoryRequest,
   DeleteCategoryRequest,
-  GetCategoryRequest,
-  GetManyCategoriesRequest,
-  GetManyCategoriesResponse,
   PRODUCT_SERVICE_NAME,
   PRODUCT_SERVICE_PACKAGE_NAME,
   ProductServiceClient,
@@ -15,7 +12,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class CategoryService implements OnModuleInit {
+export class CategoryWriteService implements OnModuleInit {
   private productService!: ProductServiceClient;
 
   constructor(
@@ -26,16 +23,6 @@ export class CategoryService implements OnModuleInit {
   onModuleInit() {
     this.productService =
       this.productClient.getService<ProductServiceClient>(PRODUCT_SERVICE_NAME);
-  }
-
-  async getManyCategories(
-    data: GetManyCategoriesRequest
-  ): Promise<GetManyCategoriesResponse> {
-    return firstValueFrom(this.productService.getManyCategories(data));
-  }
-
-  async getCategory(data: GetCategoryRequest): Promise<CategoryResponse> {
-    return firstValueFrom(this.productService.getCategory(data));
   }
 
   async createCategory(data: CreateCategoryRequest): Promise<CategoryResponse> {

@@ -1,6 +1,13 @@
 import { UserSchema } from '@common/schemas/user/user.schema';
 import z from 'zod';
 
+export const GetUserRequestSchema = z
+  .object({
+    id: z.uuid(),
+    email: z.email(),
+  })
+  .partial();
+
 export const CreateUserRequestSchema = UserSchema.pick({
   id: true,
   firstName: true,
@@ -14,4 +21,5 @@ export const CreateUserRequestSchema = UserSchema.pick({
   roleName: true,
 });
 
+export type GetUserRequest = z.infer<typeof GetUserRequestSchema>;
 export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;

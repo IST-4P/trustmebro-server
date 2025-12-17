@@ -38,4 +38,15 @@ export const DefaultRoleNameEnums = z.enum([
   DefaultRoleNameValues.ADMIN,
 ]);
 
+export const VerificationCodeValues = {
+  REGISTER: 'REGISTER',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+} as const;
+
+export const VerificationCodeEnums = z.enum([
+  VerificationCodeValues.REGISTER,
+  VerificationCodeValues.FORGOT_PASSWORD,
+]);
+
+export type VerificationCode = z.infer<typeof VerificationCodeEnums>;
 export type DefaultRoleName = z.infer<typeof DefaultRoleNameEnums>;

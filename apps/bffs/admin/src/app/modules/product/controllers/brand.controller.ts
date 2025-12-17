@@ -17,18 +17,22 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { BrandService } from '../services/brand.service';
+import { BrandReadService } from '../services/brand-read.service';
+import { BrandWriteService } from '../services/brand-write.service';
 
 @Controller('brand-admin')
 export class BrandController {
-  constructor(private readonly brandService: BrandService) {}
+  constructor(
+    private readonly brandWriteService: BrandWriteService,
+    private readonly brandReadService: BrandReadService
+  ) {}
 
   @Get()
   async getManyBrands(
     @Query() query: GetManyBrandsRequestDto,
     @ProcessId() processId: string
   ) {
-    return this.brandService.getManyBrands({ ...query, processId });
+    return this.brandReadService.getManyBrands({ ...query, processId });
   }
 
   @Get(':id')
@@ -36,7 +40,7 @@ export class BrandController {
     @Param() params: GetBrandRequestDto,
     @ProcessId() processId: string
   ) {
-    return this.brandService.getBrand({ ...params, processId });
+    return this.brandReadService.getBrand({ ...params, processId });
   }
 
   @Post()
@@ -45,7 +49,7 @@ export class BrandController {
     @ProcessId() processId: string,
     @UserData('id') userId: string
   ) {
-    return this.brandService.createBrand({
+    return this.brandWriteService.createBrand({
       ...body,
       processId,
       createdById: userId,
@@ -58,7 +62,7 @@ export class BrandController {
     @ProcessId() processId: string,
     @UserData('id') userId: string
   ) {
-    return this.brandService.updateBrand({
+    return this.brandWriteService.updateBrand({
       ...body,
       processId,
       updatedById: userId,
@@ -71,7 +75,7 @@ export class BrandController {
     @ProcessId() processId: string,
     @UserData('id') userId: string
   ) {
-    return this.brandService.deleteBrand({
+    return this.brandWriteService.deleteBrand({
       ...params,
       processId,
       deletedById: userId,

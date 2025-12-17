@@ -63,6 +63,7 @@ message CreateRoleRequest {
   optional string processId = 1;
   string name = 2;
   string description = 3;
+  optional string createdById = 4;
 }
 
 //==================== UpdateRole ====================//

@@ -1,3 +1,4 @@
+import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   LoginRequest,
@@ -18,12 +19,12 @@ import { AuthService } from '../services/auth.service';
 export class AuthGrpcController {
   constructor(private readonly authService: AuthService) {}
 
-  @GrpcMethod('UserAccessService', 'Register')
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'Register')
   async register(data: RegisterRequest): Promise<void> {
     return this.authService.register(data);
   }
 
-  @GrpcMethod('UserAccessService', 'LoginDirectAccessGrants')
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'LoginDirectAccessGrants')
   async loginDirectAccessGrants(data: LoginRequest): Promise<LoginResponse> {
     const result = await this.authService.loginDirectAccessGrants(data);
     return {
@@ -34,7 +35,7 @@ export class AuthGrpcController {
     };
   }
 
-  @GrpcMethod('UserAccessService', 'RefreshToken')
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'RefreshToken')
   async refreshToken(data: RefreshTokenRequest): Promise<RefreshTokenResponse> {
     const result = await this.authService.refreshToken(data);
     return {
@@ -45,12 +46,12 @@ export class AuthGrpcController {
     };
   }
 
-  @GrpcMethod('UserAccessService', 'Logout')
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'Logout')
   async logout(data: LogoutRequest): Promise<void> {
     await this.authService.logout(data);
   }
 
-  @GrpcMethod('UserAccessService', 'VerifyToken')
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'VerifyToken')
   async verifyToken(data: VerifyTokenRequest): Promise<VerifyTokenResponse> {
     return this.authService.verifyToken(data);
   }

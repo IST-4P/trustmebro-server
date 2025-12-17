@@ -3,6 +3,7 @@ import { ProcessId } from '@common/decorators/process-id.decorator';
 import {
   LoginRequestDto,
   RegisterRequestDto,
+  SendOtpRequestDto,
 } from '@common/interfaces/dtos/auth';
 import {
   Body,
@@ -110,6 +111,15 @@ export class AuthController {
     await this.authService.register({ ...body, processId });
     return {
       message: 'Message.RegisterSuccessfully',
+    };
+  }
+
+  @Post('send-otp')
+  @IsPublic()
+  sendOtp(@Body() body: SendOtpRequestDto) {
+    this.authService.sendOtp(body);
+    return {
+      message: 'Message.SendOtpSuccessfully',
     };
   }
 }

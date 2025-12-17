@@ -17,18 +17,22 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { CategoryService } from '../services/category.service';
+import { CategoryReadService } from '../services/category-read.service';
+import { CategoryWriteService } from '../services/category-write.service';
 
 @Controller('category-admin')
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(
+    private readonly categoryReadService: CategoryReadService,
+    private readonly categoryWriteService: CategoryWriteService
+  ) {}
 
   @Get()
   async getManyCategories(
     @Query() query: GetManyCategoriesRequestDto,
     @ProcessId() processId: string
   ) {
-    return this.categoryService.getManyCategories({ ...query, processId });
+    return this.categoryReadService.getManyCategories({ ...query, processId });
   }
 
   @Get(':id')
@@ -36,7 +40,7 @@ export class CategoryController {
     @Param() params: GetCategoryRequestDto,
     @ProcessId() processId: string
   ) {
-    return this.categoryService.getCategory({ ...params, processId });
+    return this.categoryReadService.getCategory({ ...params, processId });
   }
 
   @Post()
@@ -45,7 +49,7 @@ export class CategoryController {
     @ProcessId() processId: string,
     @UserData('id') userId: string
   ) {
-    return this.categoryService.createCategory({
+    return this.categoryWriteService.createCategory({
       ...body,
       processId,
       createdById: userId,
@@ -58,7 +62,7 @@ export class CategoryController {
     @ProcessId() processId: string,
     @UserData('id') userId: string
   ) {
-    return this.categoryService.updateCategory({
+    return this.categoryWriteService.updateCategory({
       ...body,
       processId,
       updatedById: userId,
@@ -71,7 +75,7 @@ export class CategoryController {
     @ProcessId() processId: string,
     @UserData('id') userId: string
   ) {
-    return this.categoryService.deleteCategory({
+    return this.categoryWriteService.deleteCategory({
       ...params,
       processId,
       deletedById: userId,

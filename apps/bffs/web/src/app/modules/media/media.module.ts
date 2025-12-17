@@ -1,7 +1,5 @@
-import {
-  GrpcClientProvider,
-  GrpcService,
-} from '@common/configurations/grpc.config';
+import { GrpcClientProvider } from '@common/configurations/grpc.config';
+import { GrpcService } from '@common/constants/grpc.constant';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { ImageController } from './controllers/image.controller';

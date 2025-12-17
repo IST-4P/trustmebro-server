@@ -1,3 +1,4 @@
+import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateUserRequest,
@@ -12,7 +13,7 @@ import { UserService } from '../services/user.service';
 export class UserGrpcController {
   constructor(private readonly userService: UserService) {}
 
-  @GrpcMethod('UserAccessService', 'CreateUser')
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'CreateUser')
   createUser(@Body() body: CreateUserRequest): Promise<UserResponse> {
     return this.userService.createUser(body);
   }

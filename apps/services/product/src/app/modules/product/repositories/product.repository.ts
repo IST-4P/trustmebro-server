@@ -138,13 +138,17 @@ export class ProductRepository {
   }
 
   create(data: CreateProductRequest) {
-    const { skus, categories, brandId, ...productData } = data;
+    const { skus, categories, brandId, productAddressId, ...productData } =
+      data;
     return this.prismaService.product.create({
       data: {
         ...productData,
         createdById: data.createdById,
         brand: {
           connect: { id: brandId },
+        },
+        productAddress: {
+          connect: { id: productAddressId },
         },
         categories: {
           connect: categories.map((category) => ({ id: category })),

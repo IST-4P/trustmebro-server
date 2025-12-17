@@ -10,13 +10,10 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "PRODUCT_SERVICE";
 
-/**
- * ====================================== Category ======================================//
- * ==================== GetCategoryRequest ====================//
- */
-export interface GetCategoryRequest {
-  processId?: string | undefined;
+/** ====================================== Category ======================================// */
+export interface ParentCategoryResponse {
   id: string;
+  name: string;
 }
 
 export interface CategoryResponse {
@@ -30,22 +27,7 @@ export interface CategoryResponse {
   deletedAt: string;
   createdAt: string;
   updatedAt: string;
-}
-
-/** ==================== GetManyCategoriesRequest ====================// */
-export interface GetManyCategoriesRequest {
-  processId?: string | undefined;
-  page: number;
-  limit: number;
-  name?: string | undefined;
-}
-
-export interface GetManyCategoriesResponse {
-  categories: CategoryResponse[];
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
+  parentCategory?: ParentCategoryResponse | undefined;
 }
 
 /** ==================== CreateCategoryRequest ====================// */
@@ -74,15 +56,7 @@ export interface DeleteCategoryRequest {
   deletedById?: string | undefined;
 }
 
-/**
- * ====================================== Brand ======================================//
- * ==================== GetBrandRequest ====================//
- */
-export interface GetBrandRequest {
-  processId?: string | undefined;
-  id: string;
-}
-
+/** ========================================== Brand ==========================================// */
 export interface BrandResponse {
   id: string;
   name: string;
@@ -93,22 +67,6 @@ export interface BrandResponse {
   deletedAt: string;
   createdAt: string;
   updatedAt: string;
-}
-
-/** ==================== GetManyBrandsRequest ====================// */
-export interface GetManyBrandsRequest {
-  processId?: string | undefined;
-  page: number;
-  limit: number;
-  name?: string | undefined;
-}
-
-export interface GetManyBrandsResponse {
-  brands: BrandResponse[];
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
 }
 
 /** ==================== CreateBrandRequest ====================// */
@@ -135,37 +93,63 @@ export interface DeleteBrandRequest {
   deletedById?: string | undefined;
 }
 
+/** ======================================== Attribute =========================================// */
+export interface AttributeResponse {
+  id: string;
+  key: string;
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** ==================== CreateAttributeRequest ====================// */
+export interface CreateAttributeRequest {
+  processId?: string | undefined;
+  key: string;
+  createdById?: string | undefined;
+}
+
+/** ==================== UpdateAttributeRequest ====================// */
+export interface UpdateAttributeRequest {
+  processId?: string | undefined;
+  id: string;
+  key: string;
+  updatedById?: string | undefined;
+}
+
+/** ==================== DeleteAttributeRequest ====================// */
+export interface DeleteAttributeRequest {
+  processId?: string | undefined;
+  id: string;
+  deletedById?: string | undefined;
+}
+
 export const PRODUCT_SERVICE_PACKAGE_NAME = "PRODUCT_SERVICE";
 
 export interface ProductServiceClient {
-  getCategory(request: GetCategoryRequest): Observable<CategoryResponse>;
-
-  getManyCategories(request: GetManyCategoriesRequest): Observable<GetManyCategoriesResponse>;
-
   createCategory(request: CreateCategoryRequest): Observable<CategoryResponse>;
 
   updateCategory(request: UpdateCategoryRequest): Observable<CategoryResponse>;
 
   deleteCategory(request: DeleteCategoryRequest): Observable<CategoryResponse>;
 
-  getBrand(request: GetBrandRequest): Observable<BrandResponse>;
-
-  getManyBrands(request: GetManyBrandsRequest): Observable<GetManyBrandsResponse>;
-
   createBrand(request: CreateBrandRequest): Observable<BrandResponse>;
 
   updateBrand(request: UpdateBrandRequest): Observable<BrandResponse>;
 
   deleteBrand(request: DeleteBrandRequest): Observable<BrandResponse>;
+
+  createAttribute(request: CreateAttributeRequest): Observable<AttributeResponse>;
+
+  updateAttribute(request: UpdateAttributeRequest): Observable<AttributeResponse>;
+
+  deleteAttribute(request: DeleteAttributeRequest): Observable<AttributeResponse>;
 }
 
 export interface ProductServiceController {
-  getCategory(request: GetCategoryRequest): Promise<CategoryResponse> | Observable<CategoryResponse> | CategoryResponse;
-
-  getManyCategories(
-    request: GetManyCategoriesRequest,
-  ): Promise<GetManyCategoriesResponse> | Observable<GetManyCategoriesResponse> | GetManyCategoriesResponse;
-
   createCategory(
     request: CreateCategoryRequest,
   ): Promise<CategoryResponse> | Observable<CategoryResponse> | CategoryResponse;
@@ -178,32 +162,37 @@ export interface ProductServiceController {
     request: DeleteCategoryRequest,
   ): Promise<CategoryResponse> | Observable<CategoryResponse> | CategoryResponse;
 
-  getBrand(request: GetBrandRequest): Promise<BrandResponse> | Observable<BrandResponse> | BrandResponse;
-
-  getManyBrands(
-    request: GetManyBrandsRequest,
-  ): Promise<GetManyBrandsResponse> | Observable<GetManyBrandsResponse> | GetManyBrandsResponse;
-
   createBrand(request: CreateBrandRequest): Promise<BrandResponse> | Observable<BrandResponse> | BrandResponse;
 
   updateBrand(request: UpdateBrandRequest): Promise<BrandResponse> | Observable<BrandResponse> | BrandResponse;
 
   deleteBrand(request: DeleteBrandRequest): Promise<BrandResponse> | Observable<BrandResponse> | BrandResponse;
+
+  createAttribute(
+    request: CreateAttributeRequest,
+  ): Promise<AttributeResponse> | Observable<AttributeResponse> | AttributeResponse;
+
+  updateAttribute(
+    request: UpdateAttributeRequest,
+  ): Promise<AttributeResponse> | Observable<AttributeResponse> | AttributeResponse;
+
+  deleteAttribute(
+    request: DeleteAttributeRequest,
+  ): Promise<AttributeResponse> | Observable<AttributeResponse> | AttributeResponse;
 }
 
 export function ProductServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      "getCategory",
-      "getManyCategories",
       "createCategory",
       "updateCategory",
       "deleteCategory",
-      "getBrand",
-      "getManyBrands",
       "createBrand",
       "updateBrand",
       "deleteBrand",
+      "createAttribute",
+      "updateAttribute",
+      "deleteAttribute",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

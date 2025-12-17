@@ -1,4 +1,4 @@
-import { UserSchema } from '@common/schemas/user';
+import { UserSchema, VerificationCodeSchema } from '@common/schemas/user';
 import z from 'zod';
 
 export const LoginRequestSchema = UserSchema.pick({
@@ -28,8 +28,14 @@ export const VerifyTokenRequestSchema = z.object({
   token: z.string(),
 });
 
+export const SendOtpRequestSchema = VerificationCodeSchema.pick({
+  email: true,
+  type: true,
+});
+
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 export type RefreshTokenRequest = z.infer<typeof RefreshTokenRequestSchema>;
 export type LogoutRequest = z.infer<typeof LogoutRequestSchema>;
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
 export type VerifyTokenRequest = z.infer<typeof VerifyTokenRequestSchema>;
+export type SendOtpRequest = z.infer<typeof SendOtpRequestSchema>;

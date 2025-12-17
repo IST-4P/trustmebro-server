@@ -1,65 +1,31 @@
+import { GrpcServiceName } from '@common/constants/grpc.constant';
+import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateAttributeRequest,
-  GetAttributeRequest,
-  GetAttributeResponse,
-  GetManyAttributesRequest,
-  GetManyAttributesResponse,
+  DeleteAttributeRequest,
+  UpdateAttributeRequest,
 } from '@common/interfaces/models/product';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
 import { AttributeService } from '../services/attribute.service';
 
-@Controller('attribute')
-// @UseInterceptors(GrpcLoggingInterceptor)
+@Controller()
+@UseInterceptors(GrpcLoggingInterceptor)
 export class AttributeGrpcController {
   constructor(private readonly attributeService: AttributeService) {}
 
-  // @GrpcMethod('ProductService', 'GetManyAttributes')
-  // getManyAttributes(
-  //   data: GetManyAttributesRequest
-  // ): Promise<GetManyAttributesResponse> {
-  //   return this.attributeService.list(data);
-  // }
-
-  // @GrpcMethod('ProductService', 'GetAttribute')
-  // getAttribute(
-  //   data: GetAttributeRequest
-  // ): Promise<GetAttributeResponse | null> {
-  //   return this.attributeService.findById(data);
-  // }
-
-  // @GrpcMethod('ProductService', 'CreateAttribute')
-  // createAttribute(data: CreateAttributeRequest): Promise<GetAttributeResponse> {
-  //   return this.attributeService.create(data);
-  // }
-
-  @Get()
-  getManyAttributes(
-    @Query() queries: GetManyAttributesRequest
-  ): Promise<GetManyAttributesResponse> {
-    return this.attributeService.list(queries);
-  }
-
-  @Get(':id')
-  getAttribute(
-    @Param() params: GetAttributeRequest
-  ): Promise<GetAttributeResponse | null> {
-    return this.attributeService.findById(params);
-  }
-
-  @Post()
-  createAttribute(
-    @Body() data: CreateAttributeRequest
-  ): Promise<GetAttributeResponse> {
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'CreateAttribute')
+  createAttribute(data: CreateAttributeRequest) {
     return this.attributeService.create(data);
   }
 
-  // @GrpcMethod('ProductService', 'UpdateAttribute')
-  // updateAttribute(data: UpdateAttributeRequest): Promise<GetAttributeResponse> {
-  //   return this.attributeService.update(data);
-  // }
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'UpdateAttribute')
+  updateAttribute(data: UpdateAttributeRequest) {
+    return this.attributeService.update(data);
+  }
 
-  // @GrpcMethod('ProductService', 'DeleteAttribute')
-  // deleteAttribute(data: DeleteAttributeRequest): Promise<GetAttributeResponse> {
-  //   return this.attributeService.delete(data);
-  // }
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'DeleteAttribute')
+  deleteAttribute(data: DeleteAttributeRequest) {
+    return this.attributeService.delete(data);
+  }
 }

@@ -58,6 +58,7 @@ export interface CreateRoleRequest {
   processId?: string | undefined;
   name: string;
   description: string;
+  createdById?: string | undefined;
 }
 
 /** ==================== UpdateRole ====================// */

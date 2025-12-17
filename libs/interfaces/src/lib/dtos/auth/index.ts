@@ -5,6 +5,7 @@ import {
   RefreshTokenRequestSchema,
   RefreshTokenResponseSchema,
   RegisterRequestSchema,
+  SendOtpRequestSchema,
 } from '@common/interfaces/models/auth';
 import { createZodDto } from 'nestjs-zod';
 
@@ -19,6 +20,8 @@ export class RefreshTokenRequestDto extends createZodDto(
 export class RefreshTokenResponseDto extends createZodDto(
   RefreshTokenResponseSchema
 ) {}
+
+export class SendOtpRequestDto extends createZodDto(SendOtpRequestSchema) {}
 
 export class LogoutRequestDto extends createZodDto(LogoutRequestSchema) {}
 

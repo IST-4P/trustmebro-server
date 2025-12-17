@@ -3,24 +3,23 @@ syntax = "proto3";
 package PRODUCT_SERVICE;
 
 service ProductService {
-  rpc GetCategory(GetCategoryRequest) returns (CategoryResponse);
-  rpc GetManyCategories(GetManyCategoriesRequest) returns (GetManyCategoriesResponse);
   rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse);
   rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse);
   rpc DeleteCategory(DeleteCategoryRequest) returns (CategoryResponse);
 
-  rpc GetBrand(GetBrandRequest) returns (BrandResponse);
-  rpc GetManyBrands(GetManyBrandsRequest) returns (GetManyBrandsResponse);
   rpc CreateBrand(CreateBrandRequest) returns (BrandResponse);
   rpc UpdateBrand(UpdateBrandRequest) returns (BrandResponse);
   rpc DeleteBrand(DeleteBrandRequest) returns (BrandResponse);
+
+  rpc CreateAttribute(CreateAttributeRequest) returns (AttributeResponse);
+  rpc UpdateAttribute(UpdateAttributeRequest) returns (AttributeResponse);
+  rpc DeleteAttribute(DeleteAttributeRequest) returns (AttributeResponse);
 }
 
 //====================================== Category ======================================//
-//==================== GetCategoryRequest ====================//
-message GetCategoryRequest {
-  optional string processId = 1;
-  string id = 2;
+message ParentCategoryResponse {
+  string id = 1;
+  string name = 2;
 }
 
 message CategoryResponse {
@@ -34,22 +33,7 @@ message CategoryResponse {
   string deletedAt = 8;
   string createdAt = 9;
   string updatedAt = 10;
-}
-
-//==================== GetManyCategoriesRequest ====================//
-message GetManyCategoriesRequest {
-  optional string processId = 1;
-  int32 page = 2;
-  int32 limit = 3;
-  optional string name = 4;
-}
-
-message GetManyCategoriesResponse {
-  repeated CategoryResponse categories = 1;
-  int32 page = 2;
-  int32 limit = 3;
-  int32 totalItems = 4;
-  int32 totalPages = 5;
+  optional ParentCategoryResponse parentCategory = 11;
 }
 
 //==================== CreateCategoryRequest ====================//
@@ -78,13 +62,7 @@ message DeleteCategoryRequest {
   optional string deletedById = 3;
 }
 
-//====================================== Brand ======================================//
-//==================== GetBrandRequest ====================//
-message GetBrandRequest {
-  optional string processId = 1;
-  string id = 2;
-}
-
+//========================================== Brand ==========================================//
 message BrandResponse {
   string id = 1;
   string name = 2;
@@ -95,22 +73,6 @@ message BrandResponse {
   string deletedAt = 7;
   string createdAt = 8;
   string updatedAt = 9;
-}
-
-//==================== GetManyBrandsRequest ====================//
-message GetManyBrandsRequest {
-  optional string processId = 1;
-  int32 page = 2;
-  int32 limit = 3;
-  optional string name = 4;
-}
-
-message GetManyBrandsResponse {
-  repeated BrandResponse brands = 1;
-  int32 page = 2;
-  int32 limit = 3;
-  int32 totalItems = 4;
-  int32 totalPages = 5;
 }
 
 //==================== CreateBrandRequest ====================//
@@ -137,3 +99,36 @@ message DeleteBrandRequest {
   optional string deletedById = 3;
 }
 
+//======================================== Attribute =========================================//
+message AttributeResponse {
+  string id = 1;
+  string key = 2;
+  string createdById = 3;
+  string updatedById = 4;
+  string deletedById = 5;
+  string deletedAt = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+//==================== CreateAttributeRequest ====================//
+message CreateAttributeRequest {
+  optional string processId = 1;
+  string key = 2;
+  optional string createdById = 3;
+}
+
+//==================== UpdateAttributeRequest ====================//
+message UpdateAttributeRequest {
+  optional string processId = 1;
+  string id = 2;
+  string key = 3;
+  optional string updatedById = 4;
+}
+
+//==================== DeleteAttributeRequest ====================//
+message DeleteAttributeRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string deletedById = 3;
+}

@@ -1,4 +1,5 @@
 import { HTTP_MESSAGE } from '@common/constants/http-message.constant';
+import { toPlain } from '@common/utils/to-plain.util';
 import {
   CallHandler,
   ExecutionContext,
@@ -8,7 +9,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { catchError, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, tap } from 'rxjs';
 
 @Injectable()
 export class GrpcLoggingInterceptor implements NestInterceptor {
@@ -32,6 +33,7 @@ export class GrpcLoggingInterceptor implements NestInterceptor {
     );
 
     return next.handle().pipe(
+      map((data) => toPlain(data)),
       tap(() =>
         Logger.log(
           `gRPC >> End process: '${processId}' >> method: '${handlerName}' >> duration: '${

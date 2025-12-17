@@ -1,14 +1,11 @@
+import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
+  CategoryResponse,
   CreateCategoryRequest,
   DeleteCategoryRequest,
-  GetCategoryRequest,
-  GetCategoryResponse,
-  GetManyCategoriesRequest,
-  GetManyCategoriesResponse,
   UpdateCategoryRequest,
 } from '@common/interfaces/models/product';
-import { toPlain } from '@common/utils/to-plain.util';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { CategoryService } from '../services/category.service';
@@ -18,32 +15,18 @@ import { CategoryService } from '../services/category.service';
 export class CategoryGrpcController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @GrpcMethod('ProductService', 'GetManyCategories')
-  getManyCategories(
-    data: GetManyCategoriesRequest
-  ): Promise<GetManyCategoriesResponse> {
-    return this.categoryService.list(data);
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'CreateCategory')
+  createCategory(data: CreateCategoryRequest): Promise<CategoryResponse> {
+    return this.categoryService.create(data);
   }
 
-  @GrpcMethod('ProductService', 'GetCategory')
-  getCategory(data: GetCategoryRequest): Promise<GetCategoryResponse | null> {
-    return this.categoryService.findById(data);
-  }
-
-  @GrpcMethod('ProductService', 'CreateCategory')
-  async createCategory(
-    data: CreateCategoryRequest
-  ): Promise<GetCategoryResponse> {
-    return toPlain(await this.categoryService.create(data));
-  }
-
-  @GrpcMethod('ProductService', 'UpdateCategory')
-  updateCategory(data: UpdateCategoryRequest): Promise<GetCategoryResponse> {
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'UpdateCategory')
+  updateCategory(data: UpdateCategoryRequest): Promise<CategoryResponse> {
     return this.categoryService.update(data);
   }
 
-  @GrpcMethod('ProductService', 'DeleteCategory')
-  deleteCategory(data: DeleteCategoryRequest): Promise<GetCategoryResponse> {
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'DeleteCategory')
+  deleteCategory(data: DeleteCategoryRequest): Promise<CategoryResponse> {
     return this.categoryService.delete(data);
   }
 }

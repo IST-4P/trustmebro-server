@@ -2,6 +2,7 @@ import z from 'zod';
 
 export const KeyConfigurationSchema = z.object({
   PAYMENT_API_KEY: z.string(),
+  RESEND_API_KEY: z.string(),
 });
 
 const configServer = KeyConfigurationSchema.safeParse(process.env);

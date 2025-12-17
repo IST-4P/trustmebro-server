@@ -1,3 +1,5 @@
+import { QueueTopics } from '@common/constants/queue.constant';
+import { SendOtpRequest } from '@common/interfaces/models/auth';
 import {
   LoginRequest,
   LogoutRequest,
@@ -7,6 +9,7 @@ import {
   USER_ACCESS_SERVICE_PACKAGE_NAME,
   UserAccessServiceClient,
 } from '@common/interfaces/proto-types/user-access';
+import { KafkaService } from '@common/kafka/kafka.service';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -17,7 +20,8 @@ export class AuthService implements OnModuleInit {
 
   constructor(
     @Inject(USER_ACCESS_SERVICE_PACKAGE_NAME)
-    private userAccessClient: ClientGrpc
+    private userAccessClient: ClientGrpc,
+    private readonly kafkaService: KafkaService
   ) {}
 
   onModuleInit() {
@@ -41,5 +45,9 @@ export class AuthService implements OnModuleInit {
 
   async register(data: RegisterRequest) {
     return firstValueFrom(this.userAccessService.register(data));
+  }
+
+  sendOtp(data: SendOtpRequest) {
+    this.kafkaService.emit(QueueTopics.USER_ACCESS.SEND_OTP, data);
   }
 }

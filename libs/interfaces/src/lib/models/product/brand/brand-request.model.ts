@@ -28,6 +28,7 @@ export const UpdateBrandRequestSchema = BrandSchema.pick({
   .partial()
   .extend({
     id: z.uuid(),
+    processId: z.uuid().optional(),
   })
   .strict();
 

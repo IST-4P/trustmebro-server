@@ -60,21 +60,38 @@ model Brand {
     @@index([deletedAt])
 }
 
+model ProductAddress {
+    id          String    @id @default(uuid())
+    products    Product[]
+    address     String
+    createdById String?
+    updatedById String?
+    deletedById String?
+
+    deletedAt DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    @@index([deletedAt])
+}
+
 model Product {
-    id           String     @id @default(uuid())
-    name         String
-    description  String     @db.Text
-    sizeGuide    String?    @db.Text
-    basePrice    Float      @default(0)
-    virtualPrice Float      @default(0)
-    brandId      String
-    brand        Brand      @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-    images       String[]
-    categories   Category[] @relation("ProductCategories")
+    id               String         @id @default(uuid())
+    name             String
+    description      String         @db.Text
+    productAddressId String
+    productAddress   ProductAddress @relation(fields: [productAddressId], references: [id])
+    sizeGuide        String?        @db.Text
+    basePrice        Float          @default(0)
+    virtualPrice     Float          @default(0)
+    brandId          String
+    brand            Brand          @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    images           String[]
+    categories       Category[]     @relation("ProductCategories")
     /// [Variants]
-    variants     Json // Thuộc tính như màu sắc kích thước
-    skus         SKU[]
-    reviewIds    String[]
+    variants         Json // Thuộc tính như màu sắc kích thước
+    skus             SKU[]
+    reviewIds        String[]
 
     shopId String
 

@@ -1,0 +1,15 @@
+export enum GrpcService {
+  USER_ACCESS_SERVICE = 'USER_ACCESS_SERVICE',
+  MEDIA_SERVICE = 'MEDIA_SERVICE',
+  ROLE_SERVICE = 'ROLE_SERVICE',
+  PRODUCT_SERVICE = 'PRODUCT_SERVICE',
+  QUERY_SERVICE = 'QUERY_SERVICE',
+}
+
+export enum GrpcServiceName {
+  USER_ACCESS_SERVICE = 'UserAccessService',
+  MEDIA_SERVICE = 'MediaService',
+  ROLE_SERVICE = 'RoleService',
+  PRODUCT_SERVICE = 'ProductService',
+  QUERY_SERVICE = 'QueryService',
+}

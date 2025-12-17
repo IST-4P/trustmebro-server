@@ -5,12 +5,16 @@ import {
   GetRoleRequest,
   UpdateRoleRequest,
 } from '@common/interfaces/models/role/role';
+import { KafkaService } from '@common/kafka/kafka.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { RoleRepository } from '../repositories/role.repository';
 
 @Injectable()
 export class RoleService {
-  constructor(private readonly roleRepository: RoleRepository) {}
+  constructor(
+    private readonly roleRepository: RoleRepository,
+    private readonly kafkaClient: KafkaService
+  ) {}
 
   async list(data: GetManyRolesRequest) {
     const roles = await this.roleRepository.list(data);

@@ -19,7 +19,7 @@ export class GetManyRolesResponseDto extends createZodDto(
 
 export class GetRoleResponseDto extends createZodDto(GetRoleResponseSchema) {}
 
-export class GetRoleByIdRequestDto extends createZodDto(GetRoleRequestSchema) {}
+export class GetRoleRequestDto extends createZodDto(GetRoleRequestSchema) {}
 
 export class CreateRoleRequestDto extends createZodDto(
   CreateRoleRequestSchema
