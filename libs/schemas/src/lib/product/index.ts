@@ -5,4 +5,5 @@ export * from './category.schema';
 export * from './other.schema';
 export * from './product-address.schema';
 export * from './product.schema';
+export * from './ships-from.schema';
 export * from './sku.schema';

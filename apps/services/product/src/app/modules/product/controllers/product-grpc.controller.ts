@@ -1,43 +1,17 @@
-import {
-  CreateProductRequest,
-  GetManyProductsRequest,
-  GetProductRequest,
-} from '@common/interfaces/models/product';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { GrpcServiceName } from '@common/constants/grpc.constant';
+import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
+import { CreateProductRequest } from '@common/interfaces/models/product';
+import { Controller, UseInterceptors } from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
 import { ProductService } from '../services/product.service';
 
 @Controller('product')
-// @UseInterceptors(GrpcLoggingInterceptor)
+@UseInterceptors(GrpcLoggingInterceptor)
 export class ProductGrpcController {
   constructor(private readonly productService: ProductService) {}
 
-  // @GrpcMethod('ProductService', 'GetManyProducts')
-  // getManyProducts(data: GetManyProductsRequest) {
-  //   return this.productService.list(data);
-  // }
-
-  // @GrpcMethod('ProductService', 'GetProduct')
-  // getProduct(data: GetProductRequest) {
-  //   return this.productService.findById(data);
-  // }
-
-  // @GrpcMethod('ProductService', 'CreateProduct')
-  // createProduct(data: CreateProductRequest) {
-  //   return this.productService.create(data);
-  // }
-
-  @Get()
-  getManyProducts(@Query() queries: GetManyProductsRequest) {
-    return this.productService.list(queries);
-  }
-
-  @Get(':id')
-  getProduct(@Param() params: GetProductRequest) {
-    return this.productService.findById(params);
-  }
-
-  @Post()
-  createProduct(@Body() data: CreateProductRequest) {
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'CreateProduct')
+  createProduct(data: CreateProductRequest) {
     return this.productService.create(data);
   }
 }

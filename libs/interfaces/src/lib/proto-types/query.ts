@@ -99,7 +99,7 @@ export interface GetAttributeRequest {
 
 export interface GetAttributeResponse {
   id: string;
-  key: string;
+  name: string;
   categoryIds: string[];
   categories: CategoryProduct[];
   createdAt: string;
@@ -109,12 +109,38 @@ export interface GetAttributeResponse {
 /** ==================== GetManyAttributesRequest ====================// */
 export interface GetManyAttributesRequest {
   processId?: string | undefined;
-  key?: string | undefined;
+  name?: string | undefined;
   categoryId?: string | undefined;
 }
 
 export interface GetManyAttributesResponse {
   attributes: GetAttributeResponse[];
+}
+
+/**
+ * ====================================== ShipsFrom ======================================//
+ * ==================== GetShipsFromRequest ====================//
+ */
+export interface GetShipsFromRequest {
+  processId?: string | undefined;
+  id: string;
+}
+
+export interface GetShipsFromResponse {
+  id: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** ==================== GetManyShipsFromRequest ====================// */
+export interface GetManyShipsFromRequest {
+  processId?: string | undefined;
+  address?: string | undefined;
+}
+
+export interface GetManyShipsFromResponse {
+  shipsFromList: GetShipsFromResponse[];
 }
 
 export const QUERY_SERVICE_PACKAGE_NAME = "QUERY_SERVICE";
@@ -131,6 +157,10 @@ export interface QueryServiceClient {
   getAttribute(request: GetAttributeRequest): Observable<GetAttributeResponse>;
 
   getManyAttributes(request: GetManyAttributesRequest): Observable<GetManyAttributesResponse>;
+
+  getShipsFrom(request: GetShipsFromRequest): Observable<GetShipsFromResponse>;
+
+  getManyShipsFrom(request: GetManyShipsFromRequest): Observable<GetManyShipsFromResponse>;
 }
 
 export interface QueryServiceController {
@@ -155,6 +185,14 @@ export interface QueryServiceController {
   getManyAttributes(
     request: GetManyAttributesRequest,
   ): Promise<GetManyAttributesResponse> | Observable<GetManyAttributesResponse> | GetManyAttributesResponse;
+
+  getShipsFrom(
+    request: GetShipsFromRequest,
+  ): Promise<GetShipsFromResponse> | Observable<GetShipsFromResponse> | GetShipsFromResponse;
+
+  getManyShipsFrom(
+    request: GetManyShipsFromRequest,
+  ): Promise<GetManyShipsFromResponse> | Observable<GetManyShipsFromResponse> | GetManyShipsFromResponse;
 }
 
 export function QueryServiceControllerMethods() {
@@ -166,6 +204,8 @@ export function QueryServiceControllerMethods() {
       "getManyBrands",
       "getAttribute",
       "getManyAttributes",
+      "getShipsFrom",
+      "getManyShipsFrom",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

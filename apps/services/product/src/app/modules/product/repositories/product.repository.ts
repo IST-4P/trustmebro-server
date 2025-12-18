@@ -8,13 +8,53 @@ import {
   GetManyProductsResponse,
   GetProductRequest,
 } from '@common/interfaces/models/product';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/product';
 import { PrismaService } from '../../../prisma/prisma.service';
+
+interface AttributeInputItem {
+  name: string;
+  value: string;
+}
 
 @Injectable()
 export class ProductRepository {
   constructor(private readonly prismaService: PrismaService) {}
+
+  private async validateAttributes(attributes: AttributeInputItem[]) {
+    if (!attributes || attributes.length === 0) {
+      return;
+    }
+
+    const inputNames = attributes.map((attr) => attr.name);
+
+    const uniqueInputNames = [...new Set(inputNames)];
+
+    if (uniqueInputNames.length !== inputNames.length) {
+      throw new BadRequestException('Danh sách thuộc tính bị trùng lặp tên.');
+    }
+
+    const existingAttributes = await this.prismaService.attribute.findMany({
+      where: {
+        name: { in: uniqueInputNames },
+        deletedAt: null,
+      },
+      select: { name: true },
+    });
+
+    if (existingAttributes.length !== uniqueInputNames.length) {
+      const foundNamesSet = new Set(existingAttributes.map((a) => a.name));
+      const missingAttributes = uniqueInputNames.filter(
+        (name) => !foundNamesSet.has(name)
+      );
+
+      throw new BadRequestException(
+        `Các thuộc tính sau không tồn tại trong hệ thống: ${missingAttributes.join(
+          ', '
+        )}`
+      );
+    }
+  }
 
   async list(data: GetManyProductsRequest): Promise<GetManyProductsResponse> {
     const skip = Number((data.page - 1) * data.limit);
@@ -137,9 +177,9 @@ export class ProductRepository {
     });
   }
 
-  create(data: CreateProductRequest) {
-    const { skus, categories, brandId, productAddressId, ...productData } =
-      data;
+  async create(data: CreateProductRequest) {
+    await this.validateAttributes(data.attributes);
+    const { skus, categories, brandId, shipsFromId, ...productData } = data;
     return this.prismaService.product.create({
       data: {
         ...productData,
@@ -147,8 +187,8 @@ export class ProductRepository {
         brand: {
           connect: { id: brandId },
         },
-        productAddress: {
-          connect: { id: productAddressId },
+        shipsFrom: {
+          connect: { id: shipsFromId },
         },
         categories: {
           connect: categories.map((category) => ({ id: category })),
@@ -167,11 +207,19 @@ export class ProductRepository {
           where: {
             deletedAt: null,
           },
+          select: {
+            id: true,
+            value: true,
+            price: true,
+            stock: true,
+            image: true,
+          },
         },
         brand: {
           select: {
             id: true,
             name: true,
+            logo: true,
           },
         },
         categories: {
@@ -181,7 +229,14 @@ export class ProductRepository {
           select: {
             id: true,
             name: true,
+            logo: true,
             parentCategory: true,
+          },
+        },
+        shipsFrom: {
+          select: {
+            id: true,
+            address: true,
           },
         },
       },

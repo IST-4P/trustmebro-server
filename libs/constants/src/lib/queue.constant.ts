@@ -33,6 +33,12 @@ enum AttributeQueueTopics {
   DELETE_ATTRIBUTE = 'delete_attribute',
 }
 
+enum ShipsFromQueueTopics {
+  CREATE_SHIPS_FROM = 'create_ships_from',
+  UPDATE_SHIPS_FROM = 'update_ships_from',
+  DELETE_SHIPS_FROM = 'delete_ships_from',
+}
+
 enum UserAccessQueueTopics {
   SEND_OTP = 'send_otp',
 }
@@ -43,4 +49,5 @@ export const QueueTopics = {
   BRAND: BrandQueueTopics,
   USER_ACCESS: UserAccessQueueTopics,
   ATTRIBUTE: AttributeQueueTopics,
+  SHIPS_FROM: ShipsFromQueueTopics,
 } as const;

@@ -94,9 +94,22 @@ export interface DeleteBrandRequest {
 }
 
 /** ======================================== Attribute =========================================// */
+export interface AttributeCategory {
+  isRequired: boolean;
+  category: Category | undefined;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  logo: string;
+  parentCategoryId: string;
+}
+
 export interface AttributeResponse {
   id: string;
-  key: string;
+  name: string;
+  categories: AttributeCategory[];
   createdById: string;
   updatedById: string;
   deletedById: string;
@@ -108,15 +121,17 @@ export interface AttributeResponse {
 /** ==================== CreateAttributeRequest ====================// */
 export interface CreateAttributeRequest {
   processId?: string | undefined;
-  key: string;
+  name: string;
   createdById?: string | undefined;
+  categoryId?: string | undefined;
+  isRequired?: boolean | undefined;
 }
 
 /** ==================== UpdateAttributeRequest ====================// */
 export interface UpdateAttributeRequest {
   processId?: string | undefined;
   id: string;
-  key: string;
+  name: string;
   updatedById?: string | undefined;
 }
 
@@ -125,6 +140,141 @@ export interface DeleteAttributeRequest {
   processId?: string | undefined;
   id: string;
   deletedById?: string | undefined;
+}
+
+/** ======================================== ShipsFrom =========================================// */
+export interface ShipsFromResponse {
+  id: string;
+  address: string;
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** ==================== CreateShipsFromRequest ====================// */
+export interface CreateShipsFromRequest {
+  processId?: string | undefined;
+  address: string;
+  createdById?: string | undefined;
+}
+
+/** ==================== UpdateShipsFromRequest ====================// */
+export interface UpdateShipsFromRequest {
+  processId?: string | undefined;
+  id: string;
+  address: string;
+  updatedById?: string | undefined;
+}
+
+/** ==================== DeleteShipsFromRequest ====================// */
+export interface DeleteShipsFromRequest {
+  processId?: string | undefined;
+  id: string;
+  deletedById?: string | undefined;
+}
+
+/** ======================================== Product =========================================// */
+export interface Variant {
+  value: string;
+  options: string[];
+}
+
+export interface AttributeProduct {
+  name: string;
+  value: string;
+}
+
+export interface SKU {
+  id: string;
+  value: string;
+  price: number;
+  stock: number;
+  image: string;
+}
+
+export interface SKUInput {
+  value: string;
+  price: number;
+  stock: number;
+  image?: string | undefined;
+}
+
+/** ==================== CreateProductRequest ====================// */
+export interface CreateProductRequest {
+  processId?: string | undefined;
+  name: string;
+  basePrice: number;
+  virtualPrice: number;
+  brandId: string;
+  images: string[];
+  variants: Variant[];
+  createdById?: string | undefined;
+  shopId: string;
+  description: string;
+  sizeGuide?: string | undefined;
+  shipsFromId: string;
+  status: string;
+  categories: string[];
+  skus: SKUInput[];
+  attributes: AttributeProduct[];
+}
+
+/** ==================== ProductResponse ====================// */
+export interface ProductResponse {
+  id: string;
+  name: string;
+  description: string;
+  shipsFromId: string;
+  sizeGuide?: string | undefined;
+  basePrice: number;
+  virtualPrice: number;
+  status: string;
+  brandId: string;
+  images: string[];
+  variants: Variant[];
+  reviewIds: string[];
+  shopId: string;
+  likeCount: number;
+  ratingCount: number;
+  ratingSum: number;
+  averageRate: number;
+  attributes: AttributeProduct[];
+  soldCount: number;
+  viewCount: number;
+  isApproved: boolean;
+  isHidden: boolean;
+  totalStock: number;
+  skus: SKU[];
+  brand: BrandInfo | undefined;
+  categories: CategoryInfo[];
+  shipsFrom: ShipsFromInfo | undefined;
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BrandInfo {
+  id: string;
+  name: string;
+  logo: string;
+}
+
+export interface CategoryInfo {
+  id: string;
+  name: string;
+  logo: string;
+  parentCategoryId: string;
+}
+
+export interface ShipsFromInfo {
+  id: string;
+  address: string;
 }
 
 export const PRODUCT_SERVICE_PACKAGE_NAME = "PRODUCT_SERVICE";
@@ -147,6 +297,14 @@ export interface ProductServiceClient {
   updateAttribute(request: UpdateAttributeRequest): Observable<AttributeResponse>;
 
   deleteAttribute(request: DeleteAttributeRequest): Observable<AttributeResponse>;
+
+  createShipsFrom(request: CreateShipsFromRequest): Observable<ShipsFromResponse>;
+
+  updateShipsFrom(request: UpdateShipsFromRequest): Observable<ShipsFromResponse>;
+
+  deleteShipsFrom(request: DeleteShipsFromRequest): Observable<ShipsFromResponse>;
+
+  createProduct(request: CreateProductRequest): Observable<ProductResponse>;
 }
 
 export interface ProductServiceController {
@@ -179,6 +337,22 @@ export interface ProductServiceController {
   deleteAttribute(
     request: DeleteAttributeRequest,
   ): Promise<AttributeResponse> | Observable<AttributeResponse> | AttributeResponse;
+
+  createShipsFrom(
+    request: CreateShipsFromRequest,
+  ): Promise<ShipsFromResponse> | Observable<ShipsFromResponse> | ShipsFromResponse;
+
+  updateShipsFrom(
+    request: UpdateShipsFromRequest,
+  ): Promise<ShipsFromResponse> | Observable<ShipsFromResponse> | ShipsFromResponse;
+
+  deleteShipsFrom(
+    request: DeleteShipsFromRequest,
+  ): Promise<ShipsFromResponse> | Observable<ShipsFromResponse> | ShipsFromResponse;
+
+  createProduct(
+    request: CreateProductRequest,
+  ): Promise<ProductResponse> | Observable<ProductResponse> | ProductResponse;
 }
 
 export function ProductServiceControllerMethods() {
@@ -193,6 +367,10 @@ export function ProductServiceControllerMethods() {
       "createAttribute",
       "updateAttribute",
       "deleteAttribute",
+      "createShipsFrom",
+      "updateShipsFrom",
+      "deleteShipsFrom",
+      "createProduct",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

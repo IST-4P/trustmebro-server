@@ -13,7 +13,9 @@ export class AttributeRepository {
   async list(data: GetManyAttributesRequest) {
     const attributes = await this.prismaService.attributeView.findMany({
       where: {
-        key: data.key ? { contains: data.key, mode: 'insensitive' } : undefined,
+        name: data.name
+          ? { contains: data.name, mode: 'insensitive' }
+          : undefined,
         categoryIds: data.categoryId ? { has: data.categoryId } : undefined,
       },
     });

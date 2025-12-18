@@ -81,7 +81,7 @@ export class ExceptionInterceptor implements NestInterceptor {
           HTTP_MESSAGE.INTERNAL_SERVER_ERROR;
         const code =
           error?.response?.statusCode ||
-          error.status ||
+          error.code ||
           HttpStatus.INTERNAL_SERVER_ERROR;
         // Logger.error(error);
         Logger.error(

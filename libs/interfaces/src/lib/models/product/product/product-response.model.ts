@@ -1,4 +1,10 @@
-import { ProductSchema } from '@common/schemas/product';
+import {
+  BrandSchema,
+  CategorySchema,
+  ProductSchema,
+  ShipsFromSchema,
+  SkuSchema,
+} from '@common/schemas/product';
 import z from 'zod';
 import { PaginationQueryResponseSchema } from '../../common/pagination.model';
 
@@ -17,9 +23,36 @@ export const GetManyProductsResponseSchema =
     ),
   });
 
-export const GetProductResponseSchema = ProductSchema;
+export const ProductResponseSchema = ProductSchema.extend({
+  skus: z.array(
+    SkuSchema.pick({
+      id: true,
+      value: true,
+      price: true,
+      stock: true,
+      image: true,
+    })
+  ),
+  brand: BrandSchema.pick({
+    id: true,
+    name: true,
+    logo: true,
+  }),
+  categories: z.array(
+    CategorySchema.pick({
+      id: true,
+      name: true,
+      logo: true,
+      parentCategoryId: true,
+    })
+  ),
+  shipsFrom: ShipsFromSchema.pick({
+    id: true,
+    address: true,
+  }),
+});
 
 export type GetManyProductsResponse = z.infer<
   typeof GetManyProductsResponseSchema
 >;
-export type GetProductResponse = z.infer<typeof GetProductResponseSchema>;
+export type ProductResponse = z.infer<typeof ProductResponseSchema>;

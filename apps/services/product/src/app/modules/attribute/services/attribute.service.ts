@@ -6,7 +6,11 @@ import {
   UpdateAttributeRequest,
 } from '@common/interfaces/models/product';
 import { KafkaService } from '@common/kafka/kafka.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AttributeRepository } from '../repositories/attribute.repository';
 
 @Injectable()
@@ -20,12 +24,19 @@ export class AttributeService {
     processId,
     ...data
   }: CreateAttributeRequest): Promise<AttributeResponse> {
-    const createdAttribute = await this.attributeRepository.create(data);
-    this.kafkaService.emit(
-      QueueTopics.ATTRIBUTE.CREATE_ATTRIBUTE,
-      createdAttribute
-    );
-    return createdAttribute;
+    try {
+      const createdAttribute = await this.attributeRepository.create(data);
+      this.kafkaService.emit(
+        QueueTopics.ATTRIBUTE.CREATE_ATTRIBUTE,
+        createdAttribute
+      );
+      return createdAttribute;
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('Error.AttributeAlreadyExists');
+      }
+      throw error;
+    }
   }
 
   async update({

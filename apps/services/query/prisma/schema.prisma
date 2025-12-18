@@ -21,10 +21,11 @@ enum ProductStatus {
 }
 
 model ProductView {
-    id          String  @id
-    name        String
-    description String? @db.Text
-    address     String
+    id               String  @id
+    name             String
+    description      String? @db.Text
+    shipsFromId      String
+    shipsFromAddress String
 
     brandId   String
     brandName String
@@ -36,9 +37,10 @@ model ProductView {
     categories  Json // Lưu chi tiết: [{id, name, slug}, ...] để hiển thị breadcrumb
 
     // Tính toán từ bảng SKU lúc sync dữ liệu sang đây
-    basePrice Float @default(0) // Giá gốc hiển thị
-    minPrice  Float @default(0) // Giá thấp nhất trong các SKU (để hiển thị "Từ 50k...")
-    maxPrice  Float @default(0) // Giá cao nhất
+    basePrice    Float @default(0) // Giá gốc hiển thị
+    virtualPrice Float @default(0) // Giá ảo hiển thị
+    minPrice     Float @default(0) // Giá thấp nhất trong các SKU (để hiển thị "Từ 50k...")
+    maxPrice     Float @default(0) // Giá cao nhất
 
     totalStock  Int     @default(0)
     isAvailable Boolean @default(true) // Tính toán: totalStock > 0 && status == ACTIVE
@@ -60,17 +62,15 @@ model ProductView {
     averageRate Float    @default(0)
     soldCount   Int      @default(0)
     viewCount   Int      @default(0)
+    likeCount   Int      @default(0)
 
     shopId     String
     status     ProductStatus
     isApproved Boolean       @default(false)
     isHidden   Boolean       @default(false)
 
-    createdById String?
-    updatedById String?
-    createdAt   DateTime
-    updatedAt   DateTime
-    syncedAt    DateTime @default(now()) // Thời điểm data được sync từ Write DB
+    createdAt DateTime
+    updatedAt DateTime
 
     @@index([shopId])
     @@index([brandId])
@@ -123,7 +123,7 @@ model BrandView {
 
 model AttributeView {
     id          String   @id
-    key         String   @unique
+    name        String   @unique
     categoryIds String[]
     /// [Categories]
     categories  Json
@@ -131,5 +131,12 @@ model AttributeView {
     createdAt DateTime
     updatedAt DateTime
 
-    @@index([key])
+    @@index([name])
+}
+
+model ShipsFromView {
+    id        String   @id
+    address   String   @unique
+    createdAt DateTime
+    updatedAt DateTime
 }

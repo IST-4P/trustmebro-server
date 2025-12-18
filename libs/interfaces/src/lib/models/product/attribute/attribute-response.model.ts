@@ -1,11 +1,23 @@
-import { AttributeSchema } from '@common/schemas/product';
+import { AttributeSchema, CategorySchema } from '@common/schemas/product';
 import z from 'zod';
 
-export const AttributeResponseSchema = AttributeSchema;
+export const AttributeResponseSchema = AttributeSchema.extend({
+  categories: z.array(
+    z.object({
+      category: CategorySchema.pick({
+        id: true,
+        name: true,
+        logo: true,
+        parentCategoryId: true,
+      }),
+      isRequired: z.boolean(),
+    })
+  ),
+});
 
 export const GetAttributeResponseSchema = z.object({
   id: z.uuid(),
-  key: z.string(),
+  name: z.string(),
   categoryIds: z.array(z.uuid()),
   categories: z.any(),
   createdAt: z.date(),

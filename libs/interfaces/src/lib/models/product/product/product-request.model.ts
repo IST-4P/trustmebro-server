@@ -64,12 +64,14 @@ export const CreateProductRequestSchema = ProductSchema.pick({
   shopId: true,
   description: true,
   sizeGuide: true,
-  productAddressId: true,
+  shipsFromId: true,
+  status: true,
 })
   .extend({
     categories: z.array(z.uuid()),
     skus: z.array(UpsertSKUBodySchema),
     attributes: AttributesProductSchema,
+    processId: z.uuid().optional(),
   })
   .strict()
   .superRefine(({ variants, skus }, ctx) => {

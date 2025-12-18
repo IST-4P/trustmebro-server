@@ -39,7 +39,7 @@ export const VariantsProductSchema = z
   });
 
 export const AttributeProductSchema = z.object({
-  key: z.string(),
+  name: z.string(),
   value: z.string(),
 });
 
@@ -48,23 +48,23 @@ export const AttributesProductSchema = z
   .superRefine((attrs, ctx) => {
     const seenKeys = new Set<string>();
     for (const attr of attrs) {
-      const key = attr.key.trim().toLowerCase();
+      const name = attr.name.trim().toLowerCase();
 
-      // Check trùng key
-      if (seenKeys.has(key)) {
+      // Check trùng name
+      if (seenKeys.has(name)) {
         ctx.addIssue({
           code: 'custom',
-          message: `Thuộc tính "${attr.key}" bị trùng.`,
+          message: `Thuộc tính "${attr.name}" bị trùng.`,
         });
       } else {
-        seenKeys.add(key);
+        seenKeys.add(name);
       }
 
-      // Key rỗng
-      if (!attr.key.trim()) {
+      // Name rỗng
+      if (!attr.name.trim()) {
         ctx.addIssue({
           code: 'custom',
-          message: `Key không được để trống.`,
+          message: `Name không được để trống.`,
         });
       }
 
@@ -72,7 +72,7 @@ export const AttributesProductSchema = z
       if (!attr.value.trim()) {
         ctx.addIssue({
           code: 'custom',
-          message: `Giá trị của thuộc tính "${attr.key}" không được để trống.`,
+          message: `Giá trị của thuộc tính "${attr.name}" không được để trống.`,
         });
       }
     }

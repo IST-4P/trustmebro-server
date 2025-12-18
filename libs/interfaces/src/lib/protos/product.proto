@@ -14,6 +14,12 @@ service ProductService {
   rpc CreateAttribute(CreateAttributeRequest) returns (AttributeResponse);
   rpc UpdateAttribute(UpdateAttributeRequest) returns (AttributeResponse);
   rpc DeleteAttribute(DeleteAttributeRequest) returns (AttributeResponse);
+
+  rpc CreateShipsFrom(CreateShipsFromRequest) returns (ShipsFromResponse);
+  rpc UpdateShipsFrom(UpdateShipsFromRequest) returns (ShipsFromResponse);
+  rpc DeleteShipsFrom(DeleteShipsFromRequest) returns (ShipsFromResponse);
+
+  rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
 }
 
 //====================================== Category ======================================//
@@ -100,29 +106,44 @@ message DeleteBrandRequest {
 }
 
 //======================================== Attribute =========================================//
+message AttributeCategory {
+  bool isRequired = 1;
+  Category category = 2;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  string parentCategoryId = 4;
+}
+
 message AttributeResponse {
   string id = 1;
-  string key = 2;
-  string createdById = 3;
-  string updatedById = 4;
-  string deletedById = 5;
-  string deletedAt = 6;
-  string createdAt = 7;
-  string updatedAt = 8;
+  string name = 2;
+  repeated AttributeCategory categories = 3;
+  string createdById = 4;
+  string updatedById = 5;
+  string deletedById = 6;
+  string deletedAt = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
 }
 
 //==================== CreateAttributeRequest ====================//
 message CreateAttributeRequest {
   optional string processId = 1;
-  string key = 2;
+  string name = 2;
   optional string createdById = 3;
+  optional string categoryId = 4;
+  optional bool isRequired = 5;
 }
 
 //==================== UpdateAttributeRequest ====================//
 message UpdateAttributeRequest {
   optional string processId = 1;
   string id = 2;
-  string key = 3;
+  string name = 3;
   optional string updatedById = 4;
 }
 
@@ -131,4 +152,138 @@ message DeleteAttributeRequest {
   optional string processId = 1;
   string id = 2;
   optional string deletedById = 3;
+}
+
+//======================================== ShipsFrom =========================================//
+message ShipsFromResponse {
+  string id = 1;
+  string address = 2;
+  string createdById = 3;
+  string updatedById = 4;
+  string deletedById = 5;
+  string deletedAt = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+//==================== CreateShipsFromRequest ====================//
+message CreateShipsFromRequest {
+  optional string processId = 1;
+  string address = 2;
+  optional string createdById = 3;
+}
+
+//==================== UpdateShipsFromRequest ====================//
+message UpdateShipsFromRequest {
+  optional string processId = 1;
+  string id = 2;
+  string address = 3;
+  optional string updatedById = 4;
+}
+
+//==================== DeleteShipsFromRequest ====================//
+message DeleteShipsFromRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string deletedById = 3;
+}
+
+//======================================== Product =========================================//
+message Variant {
+  string value = 1;
+  repeated string options = 2;
+}
+
+message AttributeProduct {
+  string name = 1;
+  string value = 2;
+}
+
+message SKU {
+  string id = 1;
+  string value = 2;
+  double price = 3;
+  int32 stock = 4;
+  string image = 5;
+}
+
+message SKUInput {
+  string value = 1;
+  double price = 2;
+  int32 stock = 3;
+  optional string image = 4;
+}
+
+//==================== CreateProductRequest ====================//
+message CreateProductRequest {
+  optional string processId = 1;
+  string name = 2;
+  double basePrice = 3;
+  double virtualPrice = 4;
+  string brandId = 5;
+  repeated string images = 6;
+  repeated Variant variants = 7;
+  optional string createdById = 8;
+  string shopId = 9;
+  string description = 10;
+  optional string sizeGuide = 11;
+  string shipsFromId = 12;
+  string status = 13;
+  repeated string categories = 14;
+  repeated SKUInput skus = 15;
+  repeated AttributeProduct attributes = 16;
+}
+
+//==================== ProductResponse ====================//
+message ProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string shipsFromId = 4;
+  optional string sizeGuide = 5;
+  double basePrice = 6;
+  double virtualPrice = 7;
+  string status = 8;
+  string brandId = 9;
+  repeated string images = 10;
+  repeated Variant variants = 11;
+  repeated string reviewIds = 12;
+  string shopId = 13;
+  int32 likeCount = 14;
+  int32 ratingCount = 15;
+  int32 ratingSum = 16;
+  double averageRate = 17;
+  repeated AttributeProduct attributes = 18;
+  int32 soldCount = 19;
+  int32 viewCount = 20;
+  bool isApproved = 21;
+  bool isHidden = 22;
+  int32 totalStock = 23;
+  repeated SKU skus = 24;
+  BrandInfo brand = 25;
+  repeated CategoryInfo categories = 26;
+  ShipsFromInfo shipsFrom = 27;
+  string createdById = 28;
+  string updatedById = 29;
+  string deletedById = 30;
+  string deletedAt = 31;
+  string createdAt = 32;
+  string updatedAt = 33;
+}
+
+message BrandInfo {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+}
+
+message CategoryInfo {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  string parentCategoryId = 4;
+}
+
+message ShipsFromInfo {
+  string id = 1;
+  string address = 2;
 }

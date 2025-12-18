@@ -3,7 +3,7 @@ import z from 'zod';
 
 export const GetManyAttributesRequestSchema = z
   .object({
-    key: z.string(),
+    name: z.string(),
     categoryId: z.string(),
   })
   .partial();
@@ -13,15 +13,17 @@ export const GetAttributeRequestSchema = AttributeSchema.pick({
 });
 
 export const CreateAttributeRequestSchema = AttributeSchema.pick({
-  key: true,
+  name: true,
   createdById: true,
 }).extend({
+  categoryId: z.uuid().optional(),
+  isRequired: z.boolean().optional(),
   processId: z.string().optional(),
 });
 
 export const UpdateAttributeRequestSchema = AttributeSchema.pick({
   id: true,
-  key: true,
+  name: true,
   updatedById: true,
 }).extend({
   processId: z.string().optional(),

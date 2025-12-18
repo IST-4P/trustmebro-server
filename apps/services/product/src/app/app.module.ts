@@ -5,6 +5,7 @@ import { AttributeModule } from './modules/attribute/attribute.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { CategoryModule } from './modules/category/category.module';
 import { ProductModule } from './modules/product/product.module';
+import { ShipsFromModule } from './modules/ships-from/ships-from.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -15,6 +16,7 @@ import { PrismaModule } from './prisma/prisma.module';
     CategoryModule,
     AttributeModule,
     ProductModule,
+    ShipsFromModule,
   ],
 })
 export class AppModule {}

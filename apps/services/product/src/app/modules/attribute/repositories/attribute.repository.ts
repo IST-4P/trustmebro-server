@@ -6,9 +6,43 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class AttributeRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(data: Prisma.AttributeCreateInput) {
+  create(
+    data: Prisma.AttributeCreateInput & {
+      categoryId?: string;
+      isRequired?: boolean;
+    }
+  ) {
     return this.prismaService.attribute.create({
-      data,
+      data: {
+        id: data.id,
+        name: data.name,
+        createdById: data.createdById,
+        ...(data.categoryId && {
+          categories: {
+            create: [
+              {
+                categoryId: data.categoryId,
+                isRequired: data.isRequired,
+              },
+            ],
+          },
+        }),
+      },
+      include: {
+        categories: {
+          select: {
+            isRequired: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                logo: true,
+                parentCategoryId: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -19,6 +53,21 @@ export class AttributeRepository {
         updatedById: data?.updatedById as string,
       },
       data,
+      include: {
+        categories: {
+          select: {
+            isRequired: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                logo: true,
+                parentCategoryId: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -27,6 +76,21 @@ export class AttributeRepository {
       ? this.prismaService.attribute.delete({
           where: {
             id: data.id as string,
+          },
+          include: {
+            categories: {
+              select: {
+                isRequired: true,
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                    logo: true,
+                    parentCategoryId: true,
+                  },
+                },
+              },
+            },
           },
         })
       : this.prismaService.attribute.update({
@@ -37,6 +101,21 @@ export class AttributeRepository {
           data: {
             deletedAt: new Date(),
             deletedById: data.deletedById as string,
+          },
+          include: {
+            categories: {
+              select: {
+                isRequired: true,
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                    logo: true,
+                    parentCategoryId: true,
+                  },
+                },
+              },
+            },
           },
         });
   }

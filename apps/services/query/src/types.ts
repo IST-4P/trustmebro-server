@@ -7,10 +7,12 @@ import {
 
 declare global {
   namespace PrismaJson {
-    type Categories = Pick<
+    type Categories = (Pick<
       CategoryType,
       'id' | 'name' | 'logo' | 'parentCategoryId'
-    >;
+    > & {
+      isRequired?: boolean;
+    })[];
     type Variants = VariantsProductType;
     type Attributes = AttributesProductType;
     type Skus = Pick<SkuType, 'id' | 'value' | 'price' | 'stock' | 'image'>[];

@@ -11,6 +11,9 @@ service QueryService {
 
   rpc GetAttribute(GetAttributeRequest) returns (GetAttributeResponse);
   rpc GetManyAttributes(GetManyAttributesRequest) returns (GetManyAttributesResponse);
+
+  rpc GetShipsFrom(GetShipsFromRequest) returns (GetShipsFromResponse);
+  rpc GetManyShipsFrom(GetManyShipsFromRequest) returns (GetManyShipsFromResponse);
 }
 
 //====================================== Category ======================================//
@@ -97,7 +100,7 @@ message GetAttributeRequest {
 
 message GetAttributeResponse {
   string id = 1;
-  string key = 2;
+  string name = 2;
   repeated string categoryIds = 3;
   repeated CategoryProduct categories = 4;
   string createdAt = 5;
@@ -107,10 +110,34 @@ message GetAttributeResponse {
 //==================== GetManyAttributesRequest ====================//
 message GetManyAttributesRequest {
   optional string processId = 1;
-  optional string key = 2;
+  optional string name = 2;
   optional string categoryId = 3;
 }
 
 message GetManyAttributesResponse {
   repeated GetAttributeResponse attributes = 1;
+}
+
+//====================================== ShipsFrom ======================================//
+//==================== GetShipsFromRequest ====================//
+message GetShipsFromRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetShipsFromResponse {
+  string id = 1;
+  string address = 2;
+  string createdAt = 3;
+  string updatedAt = 4;
+}
+
+//==================== GetManyShipsFromRequest ====================//
+message GetManyShipsFromRequest {
+  optional string processId = 1;
+  optional string address = 2;
+}
+
+message GetManyShipsFromResponse {
+  repeated GetShipsFromResponse shipsFromList = 1;
 }

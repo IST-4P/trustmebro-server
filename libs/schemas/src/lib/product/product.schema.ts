@@ -1,13 +1,12 @@
 import { ProductStatusEnums } from '@common/constants/product.constant';
 import { z } from 'zod';
 import { BaseSchema } from '../common/base.schema';
-import { AttributeSchema } from './attribute.schema';
 import { VariantsProductSchema } from './other.schema';
 
 export const ProductSchema = BaseSchema.extend({
   name: z.string(),
   description: z.string(),
-  productAddressId: z.uuid(),
+  shipsFromId: z.uuid(),
   sizeGuide: z.string().optional(),
   basePrice: z.number().default(0),
   virtualPrice: z.number().default(0),
@@ -21,7 +20,12 @@ export const ProductSchema = BaseSchema.extend({
   ratingCount: z.number().int().default(0),
   ratingSum: z.number().int().default(0),
   averageRate: z.number().default(0),
-  attributes: z.array(AttributeSchema),
+  attributes: z.array(
+    z.object({
+      name: z.string(),
+      value: z.string(),
+    })
+  ),
   soldCount: z.number().int().default(0),
   viewCount: z.number().int().default(0),
   isApproved: z.boolean().default(false),
