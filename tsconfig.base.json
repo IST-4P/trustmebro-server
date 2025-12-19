@@ -29,7 +29,7 @@
       "@common/guards/*": ["libs/guards/src/lib/*"],
       "@common/schemas/*": ["libs/schemas/src/lib/*"],
       "@common/kafka/*": ["libs/kafka/src/lib/*"],
-      "@common/websocket/*": ["libs/websocket/src/lib/*"]
+      "@common/redis/*": ["libs/redis/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

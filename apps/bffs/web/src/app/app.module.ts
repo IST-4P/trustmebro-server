@@ -7,7 +7,7 @@ import { PaymentAPIKeyGuard } from '@common/guards/payment-api-key.guard';
 import { ExceptionInterceptor } from '@common/interceptors/exception.interceptor';
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
-import { WebSocketService } from '@common/websocket/websocket.service';
+import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';

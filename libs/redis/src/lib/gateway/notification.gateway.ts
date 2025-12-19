@@ -1,4 +1,4 @@
-import { WebSocketNameSpace } from '@common/constants/websocket.constant';
+import { RedisNamespace } from '@common/constants/redis.constant';
 import { NotificationResponse } from '@common/interfaces/models/notification';
 import { generateRoomUserId } from '@common/utils/room-id.util';
 import {
@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ namespace: WebSocketNameSpace.NOTIFICATION })
+@WebSocketGateway({ namespace: RedisNamespace.NOTIFICATION })
 export class NotificationGateway implements OnGatewayConnection {
   @WebSocketServer()
   server!: Server;

@@ -6,9 +6,9 @@
 import { AppConfiguration } from '@common/configurations/app.config';
 import { BaseConfiguration } from '@common/configurations/base.config';
 import { DefaultRoleNameValues } from '@common/constants/user.constant';
+import { WebSocketAdapter } from '@common/redis/websocket/websocket.adapter';
+import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { syncPermissions } from '@common/utils/sync-permissions.util';
-import { WebSocketAdapter } from '@common/websocket/websocket.adapter';
-import { WebSocketService } from '@common/websocket/websocket.service';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';

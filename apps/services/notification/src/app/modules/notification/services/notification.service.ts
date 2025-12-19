@@ -1,4 +1,5 @@
 import { QueueTopics } from '@common/constants/queue.constant';
+import { RedisChannel } from '@common/constants/redis.constant';
 import {
   CreateNotificationRequest,
   DeleteNotificationRequest,
@@ -6,7 +7,7 @@ import {
   ReadNotificationRequest,
 } from '@common/interfaces/models/notification';
 import { KafkaService } from '@common/kafka/kafka.service';
-import { NotificationGateway } from '@common/websocket/gateway/notification.gateway';
+import { RedisService } from '@common/redis/redis/redis.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { NotificationRepository } from '../repositories/notification.repository';
 
@@ -14,8 +15,8 @@ import { NotificationRepository } from '../repositories/notification.repository'
 export class NotificationService {
   constructor(
     private readonly notificationRepository: NotificationRepository,
-    private readonly notificationGateway: NotificationGateway,
-    private readonly kafkaService: KafkaService
+    private readonly kafkaService: KafkaService,
+    private readonly redisService: RedisService
   ) {}
 
   async create({
@@ -27,7 +28,10 @@ export class NotificationService {
       QueueTopics.NOTIFICATION.CREATE_NOTIFICATION,
       createdNotification
     );
-    this.notificationGateway.create(createdNotification);
+    await this.redisService.publish(
+      RedisChannel.NOTIFICATION_CHANNEL,
+      JSON.stringify(createdNotification)
+    );
     return createdNotification;
   }
 
