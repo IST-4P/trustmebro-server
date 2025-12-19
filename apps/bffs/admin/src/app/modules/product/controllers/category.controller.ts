@@ -47,7 +47,7 @@ export class CategoryController {
   async createCategory(
     @Body() body: CreateCategoryRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.categoryWriteService.createCategory({
       ...body,
@@ -60,7 +60,7 @@ export class CategoryController {
   async updateCategory(
     @Body() body: UpdateCategoryRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.categoryWriteService.updateCategory({
       ...body,
@@ -73,7 +73,7 @@ export class CategoryController {
   async deleteCategory(
     @Param() params: DeleteCategoryRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.categoryWriteService.deleteCategory({
       ...params,

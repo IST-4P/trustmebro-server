@@ -8,6 +8,7 @@ export const AppConfigurationSchema = z.object({
   ROLE_SERVICE_PORT: z.coerce.number(),
   PRODUCT_SERVICE_PORT: z.coerce.number(),
   QUERY_SERVICE_PORT: z.coerce.number(),
+  NOTIFICATION_SERVICE_PORT: z.coerce.number(),
 });
 
 const configServer = AppConfigurationSchema.safeParse(process.env);

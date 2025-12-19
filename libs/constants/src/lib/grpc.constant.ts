@@ -4,6 +4,7 @@ export enum GrpcService {
   ROLE_SERVICE = 'ROLE_SERVICE',
   PRODUCT_SERVICE = 'PRODUCT_SERVICE',
   QUERY_SERVICE = 'QUERY_SERVICE',
+  NOTIFICATION_SERVICE = 'NOTIFICATION_SERVICE',
 }
 
 export enum GrpcServiceName {
@@ -12,4 +13,5 @@ export enum GrpcServiceName {
   ROLE_SERVICE = 'RoleService',
   PRODUCT_SERVICE = 'ProductService',
   QUERY_SERVICE = 'QueryService',
+  NOTIFICATION_SERVICE = 'NotificationService',
 }

@@ -47,7 +47,7 @@ export class AttributeController {
   async createAttribute(
     @Body() body: CreateAttributeRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.attributeWriteService.createAttribute({
       ...body,
@@ -60,7 +60,7 @@ export class AttributeController {
   async updateAttribute(
     @Body() body: UpdateAttributeRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.attributeWriteService.updateAttribute({
       ...body,
@@ -73,7 +73,7 @@ export class AttributeController {
   async deleteAttribute(
     @Param() params: DeleteAttributeRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.attributeWriteService.deleteAttribute({
       ...params,

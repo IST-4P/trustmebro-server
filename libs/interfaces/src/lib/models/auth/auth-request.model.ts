@@ -26,6 +26,8 @@ export const RegisterRequestSchema = UserSchema.pick({
 
 export const VerifyTokenRequestSchema = z.object({
   token: z.string(),
+  processId: z.uuid().optional(),
+  withPermissions: z.boolean().optional(),
 });
 
 export const SendOtpRequestSchema = VerificationCodeSchema.pick({

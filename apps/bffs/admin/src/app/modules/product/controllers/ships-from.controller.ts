@@ -47,7 +47,7 @@ export class ShipsFromController {
   async createShipsFrom(
     @Body() body: CreateShipsFromRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.shipsFromWriteService.createShipsFrom({
       ...body,
@@ -60,7 +60,7 @@ export class ShipsFromController {
   async updateShipsFrom(
     @Body() body: UpdateShipsFromRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.shipsFromWriteService.updateShipsFrom({
       ...body,
@@ -73,7 +73,7 @@ export class ShipsFromController {
   async deleteShipsFrom(
     @Param() params: DeleteShipsFromRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.shipsFromWriteService.deleteShipsFrom({
       ...params,

@@ -7,6 +7,8 @@ import { AppConfiguration } from '@common/configurations/app.config';
 import { BaseConfiguration } from '@common/configurations/base.config';
 import { DefaultRoleNameValues } from '@common/constants/user.constant';
 import { syncPermissions } from '@common/utils/sync-permissions.util';
+import { WebSocketAdapter } from '@common/websocket/websocket.adapter';
+import { WebSocketService } from '@common/websocket/websocket.service';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
@@ -37,6 +39,12 @@ async function bootstrap() {
   SwaggerModule.setup(`${globalPrefix}/docs`, app, documentFactory);
 
   const port = AppConfiguration.BFF_WEB_SERVICE_PORT || 3100;
+
+  const webSocketService = app.get(WebSocketService);
+  const websocketAdapter = new WebSocketAdapter(app, webSocketService);
+  await websocketAdapter.connectToRedis();
+  app.useWebSocketAdapter(websocketAdapter);
+
   await app.listen(port);
 
   // Sync permissions with database

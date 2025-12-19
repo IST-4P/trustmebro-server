@@ -39,6 +39,7 @@ export class AuthService implements OnModuleInit {
       this.userAccessService.verifyToken({
         token: result.accessToken,
         processId: data.processId,
+        withPermissions: false,
       })
     );
     if (verifyToken.roleName !== 'ADMIN') {

@@ -1,3 +1,4 @@
+import { Metadata as MetadataType } from '@common/schemas/notification';
 import {
   AttributesProduct as AttributesProductType,
   Category as CategoryType,
@@ -16,5 +17,6 @@ declare global {
     type Variants = VariantsProductType;
     type Attributes = AttributesProductType;
     type Skus = Pick<SkuType, 'id' | 'value' | 'price' | 'stock' | 'image'>[];
+    type Metadata = MetadataType;
   }
 }

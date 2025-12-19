@@ -2,6 +2,7 @@ export enum QueueService {
   QUERY_SERVICE = 'query',
   BFF_WEB_SERVICE = 'bff-web',
   PRODUCT_SERVICE = 'product',
+  NOTIFICATION_SERVICE = 'notification',
 }
 
 export enum QueueGroups {
@@ -43,6 +44,12 @@ enum UserAccessQueueTopics {
   SEND_OTP = 'send_otp',
 }
 
+enum NotificationQueueTopics {
+  CREATE_NOTIFICATION = 'create_notification',
+  READ_NOTIFICATION = 'read_notification',
+  DELETE_NOTIFICATION = 'delete_notification',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -50,4 +57,5 @@ export const QueueTopics = {
   USER_ACCESS: UserAccessQueueTopics,
   ATTRIBUTE: AttributeQueueTopics,
   SHIPS_FROM: ShipsFromQueueTopics,
+  NOTIFICATION: NotificationQueueTopics,
 } as const;

@@ -14,6 +14,8 @@ service QueryService {
 
   rpc GetShipsFrom(GetShipsFromRequest) returns (GetShipsFromResponse);
   rpc GetManyShipsFrom(GetManyShipsFromRequest) returns (GetManyShipsFromResponse);
+
+  rpc GetManyNotifications(GetManyNotificationsRequest) returns (GetManyNotificationsResponse);
 }
 
 //====================================== Category ======================================//
@@ -140,4 +142,41 @@ message GetManyShipsFromRequest {
 
 message GetManyShipsFromResponse {
   repeated GetShipsFromResponse shipsFromList = 1;
+}
+
+
+//====================================== Notifications ======================================//
+//==================== GetManyNotificationsRequest ====================//
+message GetManyNotificationsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  string userId = 4;
+}
+
+message GetManyNotificationsResponse {
+  repeated NotificationResponse notifications = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+message Metadata {
+  optional string orderId = 1;
+  optional string articleId = 2;
+}
+
+message NotificationResponse {
+  string id = 1;
+  string userId = 2;
+  string type = 3;
+  string title = 4;
+  string description = 5;
+  optional string link = 6;
+  optional string image = 7;
+  bool isRead = 8;
+  optional Metadata metadata = 9;
+  string createdAt = 10;
+  string updatedAt = 11;
 }

@@ -43,7 +43,7 @@ export class RoleController {
   async createRole(
     @Body() body: CreateRoleRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.roleService.createRole({
       ...body,
@@ -56,7 +56,7 @@ export class RoleController {
   async updateRole(
     @Body() body: UpdateRoleRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.roleService.updateRole({
       ...body,
@@ -69,7 +69,7 @@ export class RoleController {
   async deleteRole(
     @Param() params: DeleteRoleRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.roleService.deleteRole({
       ...params,

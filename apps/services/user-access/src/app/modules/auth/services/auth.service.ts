@@ -11,10 +11,12 @@ import {
   RegisterRequest,
   SendOtpRequest,
   VerifyTokenRequest,
+  VerifyTokenResponse,
 } from '@common/interfaces/models/auth';
 import {
   ROLE_SERVICE_NAME,
   ROLE_SERVICE_PACKAGE_NAME,
+  RoleResponse,
   RoleServiceClient,
 } from '@common/interfaces/proto-types/role';
 import { generateOTP } from '@common/utils/generate-otp.util';
@@ -98,7 +100,7 @@ export class AuthService implements OnModuleInit {
     });
   }
 
-  async verifyToken(data: VerifyTokenRequest) {
+  async verifyToken(data: VerifyTokenRequest): Promise<VerifyTokenResponse> {
     const decoded = jwt.decode(data.token, { complete: true }) as Jwt;
     if (!decoded || !decoded.header || !decoded.header.kid) {
       throw new UnauthorizedException('Error.InvalidTokenStructure');
@@ -115,18 +117,25 @@ export class AuthService implements OnModuleInit {
         throw new UnauthorizedException('Error.UserNotFound');
       }
 
-      const role = await firstValueFrom(
-        this.roleService.getRole({
-          id: user.roleId,
-          withInheritance: true,
-        })
-      );
+      let role: RoleResponse;
+      if (data.withPermissions && data.withPermissions === true) {
+        role = await firstValueFrom(
+          this.roleService.getRole({
+            id: user.roleId,
+            withInheritance: true,
+          })
+        );
+      }
+
       return {
         isValid: true,
         userId: user.id,
         roleId: user.roleId,
         roleName: user.roleName,
-        permissions: role.permissions,
+        permissions:
+          data.withPermissions && data.withPermissions === true
+            ? role.permissions
+            : [],
       };
     } catch (error) {
       this.logger.error({ error });

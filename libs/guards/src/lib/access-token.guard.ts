@@ -49,6 +49,7 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
         this.userAccessService.verifyToken({
           token: accessToken,
           processId,
+          withPermissions: true,
         })
       );
       request[MetadataKeys.USER_DATA] = decodedAccessToken;

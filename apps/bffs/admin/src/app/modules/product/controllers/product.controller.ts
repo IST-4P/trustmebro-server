@@ -28,7 +28,7 @@ export class ProductController {
   async createProduct(
     @Body() body: CreateProductRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.productWriteService.createProduct({
       ...body,
@@ -41,7 +41,7 @@ export class ProductController {
   // async updateProduct(
   //   @Body() body: UpdateProductRequestDto,
   //   @ProcessId() processId: string,
-  //   @UserData('id') userId: string
+  //   @UserData('userId') userId: string
   // ) {
   //   return this.productWriteService.updateProduct({
   //     ...body,
@@ -54,7 +54,7 @@ export class ProductController {
   // async deleteProduct(
   //   @Param() params: DeleteProductRequestDto,
   //   @ProcessId() processId: string,
-  //   @UserData('id') userId: string
+  //   @UserData('userId') userId: string
   // ) {
   //   return this.productWriteService.deleteProduct({
   //     ...params,

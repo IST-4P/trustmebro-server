@@ -57,11 +57,12 @@ message Empty {}
 message VerifyTokenRequest {
   optional string processId = 1;
   string token = 2;
+  optional bool withPermissions = 3;
 }
 
 message VerifyTokenResponse {
   bool isValid = 1;
-  string id = 2;
+  string userId = 2;
   string roleId = 3;
   string roleName = 4;
   repeated Permissions permissions = 5;

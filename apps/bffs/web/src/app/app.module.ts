@@ -7,10 +7,12 @@ import { PaymentAPIKeyGuard } from '@common/guards/payment-api-key.guard';
 import { ExceptionInterceptor } from '@common/interceptors/exception.interceptor';
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
+import { WebSocketService } from '@common/websocket/websocket.service';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
 import { MediaModule } from './modules/media/media.module';
+import { NotificationModule } from './modules/notification/notification.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
 @Module({
@@ -22,8 +24,10 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     KafkaModule.register(QueueService.BFF_WEB_SERVICE),
     UserAccessModule,
     MediaModule,
+    NotificationModule,
   ],
   providers: [
+    WebSocketService,
     AccessTokenGuard,
     PaymentAPIKeyGuard,
     {
@@ -35,6 +39,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
       useClass: AuthenticationGuard,
     },
   ],
+  exports: [WebSocketService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

@@ -54,11 +54,12 @@ export interface Empty {
 export interface VerifyTokenRequest {
   processId?: string | undefined;
   token: string;
+  withPermissions?: boolean | undefined;
 }
 
 export interface VerifyTokenResponse {
   isValid: boolean;
-  id: string;
+  userId: string;
   roleId: string;
   roleName: string;
   permissions: Permissions[];

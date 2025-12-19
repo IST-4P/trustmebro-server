@@ -18,6 +18,9 @@ export const GrpcConfigurationSchema = z.object({
 
   QUERY_SERVICE_GRPC_URL: z.string(),
   QUERY_SERVICE_PROTO_PATH: z.string(),
+
+  NOTIFICATION_SERVICE_GRPC_URL: z.string(),
+  NOTIFICATION_SERVICE_PROTO_PATH: z.string(),
 });
 
 const configServer = GrpcConfigurationSchema.safeParse(process.env);

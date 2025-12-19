@@ -143,6 +143,44 @@ export interface GetManyShipsFromResponse {
   shipsFromList: GetShipsFromResponse[];
 }
 
+/**
+ * ====================================== Notifications ======================================//
+ * ==================== GetManyNotificationsRequest ====================//
+ */
+export interface GetManyNotificationsRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  userId: string;
+}
+
+export interface GetManyNotificationsResponse {
+  notifications: NotificationResponse[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface Metadata {
+  orderId?: string | undefined;
+  articleId?: string | undefined;
+}
+
+export interface NotificationResponse {
+  id: string;
+  userId: string;
+  type: string;
+  title: string;
+  description: string;
+  link?: string | undefined;
+  image?: string | undefined;
+  isRead: boolean;
+  metadata?: Metadata | undefined;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const QUERY_SERVICE_PACKAGE_NAME = "QUERY_SERVICE";
 
 export interface QueryServiceClient {
@@ -161,6 +199,8 @@ export interface QueryServiceClient {
   getShipsFrom(request: GetShipsFromRequest): Observable<GetShipsFromResponse>;
 
   getManyShipsFrom(request: GetManyShipsFromRequest): Observable<GetManyShipsFromResponse>;
+
+  getManyNotifications(request: GetManyNotificationsRequest): Observable<GetManyNotificationsResponse>;
 }
 
 export interface QueryServiceController {
@@ -193,6 +233,10 @@ export interface QueryServiceController {
   getManyShipsFrom(
     request: GetManyShipsFromRequest,
   ): Promise<GetManyShipsFromResponse> | Observable<GetManyShipsFromResponse> | GetManyShipsFromResponse;
+
+  getManyNotifications(
+    request: GetManyNotificationsRequest,
+  ): Promise<GetManyNotificationsResponse> | Observable<GetManyNotificationsResponse> | GetManyNotificationsResponse;
 }
 
 export function QueryServiceControllerMethods() {
@@ -206,6 +250,7 @@ export function QueryServiceControllerMethods() {
       "getManyAttributes",
       "getShipsFrom",
       "getManyShipsFrom",
+      "getManyNotifications",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

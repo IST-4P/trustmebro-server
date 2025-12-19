@@ -140,3 +140,36 @@ model ShipsFromView {
     createdAt DateTime
     updatedAt DateTime
 }
+
+enum NotificationType {
+    ORDER_UPDATE
+    PROMOTION
+    WALLET_UPDATE
+    TRUST_ME_BRO_UPDATE
+}
+
+model NotificationView {
+    id     String @id
+    userId String
+
+    type        NotificationType
+    title       String
+    description String?          @db.Text
+    link        String?
+    image       String?
+
+    /// [Metadata]
+    metadata Json?
+
+    isRead Boolean @default(false)
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    // Index Composite [userId + createdAt DESC] giúp query này cực nhanh, không cần sort lại
+    @@index([userId, createdAt(sort: Desc)])
+    // Query đếm badge: "User A có bao nhiêu noti chưa đọc?"
+    @@index([userId, isRead])
+    //(Optional) Nếu có tính năng lọc theo loại (Tab Khuyến mãi, Tab Đơn hàng...)
+    @@index([userId, type, createdAt(sort: Desc)])
+}

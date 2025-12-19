@@ -47,7 +47,7 @@ export class BrandController {
   async createBrand(
     @Body() body: CreateBrandRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.brandWriteService.createBrand({
       ...body,
@@ -60,7 +60,7 @@ export class BrandController {
   async updateBrand(
     @Body() body: UpdateBrandRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.brandWriteService.updateBrand({
       ...body,
@@ -73,7 +73,7 @@ export class BrandController {
   async deleteBrand(
     @Param() params: DeleteBrandRequestDto,
     @ProcessId() processId: string,
-    @UserData('id') userId: string
+    @UserData('userId') userId: string
   ) {
     return this.brandWriteService.deleteBrand({
       ...params,
