@@ -5,7 +5,7 @@ import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { ProductService } from '../services/product.service';
 
-@Controller('product')
+@Controller()
 @UseInterceptors(GrpcLoggingInterceptor)
 export class ProductGrpcController {
   constructor(private readonly productService: ProductService) {}

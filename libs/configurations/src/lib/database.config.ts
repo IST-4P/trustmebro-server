@@ -6,6 +6,9 @@ export const DatabaseConfigurationSchema = z.object({
   PRODUCT_SERVICE_DATABASE_URL: z.string(),
   QUERY_SERVICE_DATABASE_URL: z.string(),
   NOTIFICATION_SERVICE_DATABASE_URL: z.string(),
+  CHAT_SERVICE_DATABASE_URL: z.string(),
+  CART_SERVICE_DATABASE_URL: z.string(),
+  ORDER_SERVICE_DATABASE_URL: z.string(),
 });
 
 const configServer = DatabaseConfigurationSchema.safeParse(process.env);

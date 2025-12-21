@@ -3,6 +3,8 @@ export enum QueueService {
   BFF_WEB_SERVICE = 'bff-web',
   PRODUCT_SERVICE = 'product',
   NOTIFICATION_SERVICE = 'notification',
+  CART_SERVICE = 'cart',
+  ORDER_SERVICE = 'order',
 }
 
 export enum QueueGroups {
@@ -50,6 +52,12 @@ enum NotificationQueueTopics {
   DELETE_NOTIFICATION = 'delete_notification',
 }
 
+enum CartQueueTopics {
+  ADD_CART = 'add_cart',
+  UPDATE_CART = 'update_cart',
+  DELETE_CART = 'delete_cart',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -58,4 +66,5 @@ export const QueueTopics = {
   ATTRIBUTE: AttributeQueueTopics,
   SHIPS_FROM: ShipsFromQueueTopics,
   NOTIFICATION: NotificationQueueTopics,
+  CART: CartQueueTopics,
 } as const;

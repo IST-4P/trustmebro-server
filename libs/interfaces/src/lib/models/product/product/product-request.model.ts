@@ -6,7 +6,7 @@ import {
 import {
   AttributesProductSchema,
   ProductSchema,
-  SkuSchema,
+  SKUSchema,
 } from '@common/schemas/product';
 import { generateSKUs } from '@common/utils/generate-skus.util';
 import z from 'zod';
@@ -46,7 +46,7 @@ export const GetProductRequestSchema = z.object({
   isHidden: z.boolean().optional(),
 });
 
-export const UpsertSKUBodySchema = SkuSchema.pick({
+export const UpsertSKUBodySchema = SKUSchema.pick({
   value: true,
   price: true,
   stock: true,

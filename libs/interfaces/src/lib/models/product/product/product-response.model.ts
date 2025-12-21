@@ -3,7 +3,7 @@ import {
   CategorySchema,
   ProductSchema,
   ShipsFromSchema,
-  SkuSchema,
+  SKUSchema,
 } from '@common/schemas/product';
 import z from 'zod';
 import { PaginationQueryResponseSchema } from '../../common/pagination.model';
@@ -25,7 +25,7 @@ export const GetManyProductsResponseSchema =
 
 export const ProductResponseSchema = ProductSchema.extend({
   skus: z.array(
-    SkuSchema.pick({
+    SKUSchema.pick({
       id: true,
       value: true,
       price: true,

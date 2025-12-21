@@ -277,6 +277,32 @@ export interface ShipsFromInfo {
   address: string;
 }
 
+/**
+ * ====================================================== SKU ======================================//
+ * ==================== GetSKURequest ====================//
+ */
+export interface GetSKURequest {
+  processId?: string | undefined;
+  id: string;
+}
+
+/** ==================== SKUResponse ====================// */
+export interface SKUResponse {
+  id: string;
+  value: string;
+  price: number;
+  stock: number;
+  productId: string;
+  image: string;
+  product: ProductResponse | undefined;
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const PRODUCT_SERVICE_PACKAGE_NAME = "PRODUCT_SERVICE";
 
 export interface ProductServiceClient {
@@ -305,6 +331,8 @@ export interface ProductServiceClient {
   deleteShipsFrom(request: DeleteShipsFromRequest): Observable<ShipsFromResponse>;
 
   createProduct(request: CreateProductRequest): Observable<ProductResponse>;
+
+  getSku(request: GetSKURequest): Observable<SKUResponse>;
 }
 
 export interface ProductServiceController {
@@ -353,6 +381,8 @@ export interface ProductServiceController {
   createProduct(
     request: CreateProductRequest,
   ): Promise<ProductResponse> | Observable<ProductResponse> | ProductResponse;
+
+  getSku(request: GetSKURequest): Promise<SKUResponse> | Observable<SKUResponse> | SKUResponse;
 }
 
 export function ProductServiceControllerMethods() {
@@ -371,6 +401,7 @@ export function ProductServiceControllerMethods() {
       "updateShipsFrom",
       "deleteShipsFrom",
       "createProduct",
+      "getSku",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

@@ -1,6 +1,6 @@
-import { RedisNamespace } from '@common/constants/redis.constant';
+import { RedisEvent, RedisNamespace } from '@common/constants/redis.constant';
 import { NotificationResponse } from '@common/interfaces/models/notification';
-import { generateRoomUserId } from '@common/utils/room-id.util';
+import { generateRoomUser } from '@common/utils/room-id.util';
 import {
   OnGatewayConnection,
   WebSocketGateway,
@@ -16,13 +16,13 @@ export class NotificationGateway implements OnGatewayConnection {
   handleConnection(client: Socket) {
     const userId = client.data['userId'];
     if (userId) {
-      const room = generateRoomUserId(userId);
+      const room = generateRoomUser(userId);
       client.join(room);
     }
   }
 
   create(notification: NotificationResponse) {
-    const room = generateRoomUserId(notification.userId);
-    this.server.to(room).emit('newNotification', notification);
+    const room = generateRoomUser(notification.userId);
+    this.server.to(room).emit(RedisEvent.NEW_NOTIFICATION, notification);
   }
 }

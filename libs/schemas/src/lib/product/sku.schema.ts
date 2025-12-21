@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { BaseSchema } from '../common/base.schema';
 
-export const SkuSchema = BaseSchema.extend({
+export const SKUSchema = BaseSchema.extend({
   value: z.string(),
   price: z.number(),
   stock: z.number(),
@@ -9,4 +9,4 @@ export const SkuSchema = BaseSchema.extend({
   productId: z.string(),
 });
 
-export type Sku = z.infer<typeof SkuSchema>;
+export type SKU = z.infer<typeof SKUSchema>;

@@ -11,6 +11,7 @@ import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
+import { ChatModule } from './modules/chat/chat.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
@@ -25,6 +26,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     UserAccessModule,
     MediaModule,
     NotificationModule,
+    ChatModule,
   ],
   providers: [
     WebSocketService,
