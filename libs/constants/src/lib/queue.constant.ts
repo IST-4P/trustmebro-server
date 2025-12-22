@@ -10,6 +10,9 @@ export enum QueueService {
 export enum QueueGroups {
   QUERY_GROUP = 'query-group',
   USER_ACCESS_GROUP = 'user-access-group',
+  PRODUCT_GROUP = 'product-group',
+  CART_GROUP = 'cart-group',
+  ORDER_GROUP = 'order-group',
 }
 
 enum CategoryQueueTopics {
@@ -22,6 +25,7 @@ enum ProductQueueTopics {
   CREATE_PRODUCT = 'create_product',
   UPDATE_PRODUCT = 'update_product',
   DELETE_PRODUCT = 'delete_product',
+  STOCK_RESERVED = 'stock_reserved',
 }
 
 enum BrandQueueTopics {
@@ -58,6 +62,12 @@ enum CartQueueTopics {
   DELETE_CART = 'delete_cart',
 }
 
+enum OrderQueueTopics {
+  CREATE_ORDER = 'create_order',
+  UPDATE_ORDER = 'update_order',
+  DELETE_ORDER = 'delete_order',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -67,4 +77,5 @@ export const QueueTopics = {
   SHIPS_FROM: ShipsFromQueueTopics,
   NOTIFICATION: NotificationQueueTopics,
   CART: CartQueueTopics,
+  ORDER: OrderQueueTopics,
 } as const;

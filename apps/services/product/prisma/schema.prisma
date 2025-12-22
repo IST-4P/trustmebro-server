@@ -107,7 +107,6 @@ model Product {
     viewCount   Int     @default(0)
     isApproved  Boolean @default(false)
     isHidden    Boolean @default(false)
-    totalStock  Int     @default(0)
 
     createdById String?
     updatedById String?

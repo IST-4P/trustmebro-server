@@ -303,6 +303,39 @@ export interface SKUResponse {
   updatedAt: string;
 }
 
+/** ==================== ValidateProductsRequest ====================// */
+export interface ValidateItems {
+  productId: string;
+  skuId: string;
+  quantity: number;
+  cartItemId: string;
+}
+
+export interface ValidateProductsRequest {
+  processId?: string | undefined;
+  productIds: ValidateItems[];
+}
+
+/** ==================== ValidateProductsResponse ====================// */
+export interface ValidateItemsResponse {
+  productId: string;
+  skuId: string;
+  cartItemId: string;
+  quantity: number;
+  isValid: boolean;
+  price: number;
+  productName: string;
+  productImage: string;
+  skuValue: string;
+  shopId: string;
+  error: string;
+}
+
+export interface ValidateProductsResponse {
+  isValid: boolean;
+  items: ValidateItemsResponse[];
+}
+
 export const PRODUCT_SERVICE_PACKAGE_NAME = "PRODUCT_SERVICE";
 
 export interface ProductServiceClient {
@@ -333,6 +366,8 @@ export interface ProductServiceClient {
   createProduct(request: CreateProductRequest): Observable<ProductResponse>;
 
   getSku(request: GetSKURequest): Observable<SKUResponse>;
+
+  validateProducts(request: ValidateProductsRequest): Observable<ValidateProductsResponse>;
 }
 
 export interface ProductServiceController {
@@ -383,6 +418,10 @@ export interface ProductServiceController {
   ): Promise<ProductResponse> | Observable<ProductResponse> | ProductResponse;
 
   getSku(request: GetSKURequest): Promise<SKUResponse> | Observable<SKUResponse> | SKUResponse;
+
+  validateProducts(
+    request: ValidateProductsRequest,
+  ): Promise<ValidateProductsResponse> | Observable<ValidateProductsResponse> | ValidateProductsResponse;
 }
 
 export function ProductServiceControllerMethods() {
@@ -402,6 +441,7 @@ export function ProductServiceControllerMethods() {
       "deleteShipsFrom",
       "createProduct",
       "getSku",
+      "validateProducts",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

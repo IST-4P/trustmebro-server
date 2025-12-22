@@ -4,6 +4,8 @@ import {
   GetManyProductsRequest,
   GetProductRequest,
   ProductResponse,
+  ValidateProductsRequest,
+  ValidateProductsResponse,
 } from '@common/interfaces/models/product';
 import { KafkaService } from '@common/kafka/kafka.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -39,5 +41,11 @@ export class ProductService {
     const createdProduct = await this.productRepository.create(data);
     this.kafkaService.emit(QueueTopics.PRODUCT.CREATE_PRODUCT, createdProduct);
     return createdProduct;
+  }
+
+  async validateProducts(
+    data: ValidateProductsRequest
+  ): Promise<ValidateProductsResponse> {
+    return this.productRepository.validateProducts(data);
   }
 }

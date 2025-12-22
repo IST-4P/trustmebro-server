@@ -22,6 +22,8 @@ service ProductService {
   rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
 
   rpc GetSKU(GetSKURequest) returns (SKUResponse);
+
+  rpc ValidateProducts(ValidateProductsRequest) returns (ValidateProductsResponse);
 }
 
 //====================================== Category ======================================//
@@ -312,4 +314,39 @@ message SKUResponse {
   string deletedAt = 11;
   string createdAt = 12;
   string updatedAt = 13;
+}
+
+
+//==================== ValidateProductsRequest ====================//
+message ValidateItems {
+  string productId = 1;
+  string skuId = 2;
+  int32 quantity = 3;
+  string cartItemId = 4;
+}
+
+message ValidateProductsRequest {
+  optional string processId = 1;
+  repeated ValidateItems productIds = 2;
+}
+
+//==================== ValidateProductsResponse ====================//
+message ValidateItemsResponse {
+  string productId = 1;
+  string skuId = 2;
+  string cartItemId = 3;
+  int32 quantity = 4;
+  bool isValid = 5;
+  int32 price = 6;
+  string productName = 7;
+  string productImage = 8;
+  string skuValue = 9;
+  string shopId = 10;
+  string error = 11;
+}
+
+
+message ValidateProductsResponse {
+  bool isValid = 1;
+  repeated ValidateItemsResponse items = 2;
 }

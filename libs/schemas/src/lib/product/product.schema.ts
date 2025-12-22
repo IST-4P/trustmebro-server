@@ -30,7 +30,6 @@ export const ProductSchema = BaseSchema.extend({
   viewCount: z.number().int().default(0),
   isApproved: z.boolean().default(false),
   isHidden: z.boolean().default(false),
-  totalStock: z.number().int().default(0),
 });
 
 export type Product = z.infer<typeof ProductSchema>;

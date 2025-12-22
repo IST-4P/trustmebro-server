@@ -4,6 +4,7 @@ package CART_SERVICE;
 
 service CartService {
   rpc AddCartItem(AddCartItemRequest) returns (AddCartItemResponse);
+  rpc validateCartItems(ValidateCartItemsRequest) returns (ValidateCartItemsResponse);
 }
 
 //==================== AddCartItem ====================//
@@ -38,3 +39,13 @@ message AddCartItemResponse {
   int32 cartCount = 2;
 }
 
+//==================== ValidateCartItems ====================//
+message ValidateCartItemsRequest {
+  optional string processId = 1;
+  repeated string cartItemIds = 2;
+  string userId = 3;
+}
+
+message ValidateCartItemsResponse {
+  repeated CartItemResponse cartItems = 1;
+}

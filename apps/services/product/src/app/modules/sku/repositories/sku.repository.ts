@@ -17,4 +17,20 @@ export class SKURepository {
       },
     });
   }
+
+  decreaseStock(data: { productId: string; value: string; quantity: number }) {
+    return this.prismaService.sKU.update({
+      where: {
+        productId_value: {
+          productId: data.productId,
+          value: data.value,
+        },
+      },
+      data: {
+        stock: {
+          decrement: data.quantity,
+        },
+      },
+    });
+  }
 }

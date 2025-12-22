@@ -15,6 +15,7 @@ export const GrpcConfigurationSchema = z.object({
   CHAT_SERVICE_GRPC_URL: z.string(),
   CART_SERVICE_GRPC_URL: z.string(),
   ORDER_SERVICE_GRPC_URL: z.string(),
+  PAYMENT_SERVICE_GRPC_URL: z.string(),
 });
 
 const configServer = GrpcConfigurationSchema.safeParse(process.env);

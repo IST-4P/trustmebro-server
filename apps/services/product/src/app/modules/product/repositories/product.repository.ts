@@ -7,6 +7,8 @@ import {
   GetManyProductsRequest,
   GetManyProductsResponse,
   GetProductRequest,
+  ValidateItemResult,
+  ValidateProductsRequest,
 } from '@common/interfaces/models/product';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/product';
@@ -241,5 +243,144 @@ export class ProductRepository {
         },
       },
     });
+  }
+
+  async validateProducts(data: ValidateProductsRequest) {
+    const results: ValidateItemResult[] = [];
+
+    const skuIds = data.productIds.map((item) => item.skuId);
+    const skus = await this.prismaService.sKU.findMany({
+      where: {
+        id: { in: skuIds },
+      },
+      include: {
+        product: true,
+      },
+    });
+
+    const skuMap = new Map(skus.map((s) => [s.id, s]));
+    const cartItemMap = new Map(
+      data.productIds.map((item) => [item.skuId, item.cartItemId])
+    );
+
+    for (const req of data.productIds) {
+      const sku = skuMap.get(req.skuId);
+      const cartItemId = cartItemMap.get(req.skuId);
+
+      // Check 1: SKU không tồn tại
+      if (!sku) {
+        results.push({
+          productId: req.productId,
+          skuId: req.skuId,
+          cartItemId,
+          isValid: false,
+          quantity: req.quantity,
+          price: 0,
+          productName: '',
+          productImage: '',
+          skuValue: '',
+          shopId: '',
+          error: 'SKU_NOT_FOUND',
+        });
+        continue;
+      }
+
+      // Check 2: Product ID không khớp
+      if (sku.productId !== req.productId) {
+        results.push({
+          productId: req.productId,
+          skuId: req.skuId,
+          cartItemId,
+          isValid: false,
+          quantity: req.quantity,
+          price: 0,
+          productName: '',
+          productImage: '',
+          skuValue: '',
+          shopId: '',
+          error: 'PRODUCT_ID_MISMATCH',
+        });
+        continue;
+      }
+
+      const product = sku.product;
+
+      // Check 3: Trạng thái Product (Active/Inactive/Draft)
+      if (product.status !== ProductStatusValues.ACTIVE) {
+        results.push({
+          productId: product.id,
+          skuId: sku.id,
+          cartItemId,
+          isValid: false,
+          quantity: req.quantity,
+          price: sku.price,
+          productName: product.name,
+          productImage: sku.image,
+          skuValue: sku.value,
+          shopId: product.shopId,
+          error: `PRODUCT_STATUS_${product.status}`,
+        });
+        continue;
+      }
+
+      // Check 4: Product bị xóa
+
+      if (product.deletedAt !== null) {
+        results.push({
+          productId: product.id,
+          skuId: sku.id,
+          cartItemId,
+          isValid: false,
+          quantity: req.quantity,
+          price: sku.price,
+          productName: product.name,
+          productImage: sku.image,
+          skuValue: sku.value,
+          shopId: product.shopId,
+          error: 'PRODUCT_UNAVAILABLE',
+        });
+        continue;
+      }
+
+      // Check 5: Tồn kho (Stock)
+      if (sku.stock < req.quantity) {
+        results.push({
+          productId: product.id,
+          skuId: sku.id,
+          cartItemId,
+          isValid: false,
+          quantity: req.quantity,
+          price: sku.price,
+          productName: product.name,
+          productImage: sku.image,
+          skuValue: sku.value,
+          shopId: product.shopId,
+          error: 'OUT_OF_STOCK',
+        });
+        continue;
+      }
+
+      // Validated OK
+      results.push({
+        productId: product.id,
+        skuId: sku.id,
+        cartItemId,
+        isValid: true,
+        quantity: req.quantity,
+        price: sku.price, // Order Service sẽ dùng giá này để tính total
+        productName: product.name,
+        productImage: sku.image,
+        skuValue: sku.value,
+        shopId: product.shopId, // Order Service sẽ dùng cái này để group đơn
+      });
+    }
+
+    // Kết quả chung cuộc: Valid khi và chỉ khi TẤT CẢ items đều valid
+    const isAllValid = results.every((r) => r.isValid);
+
+    return {
+      isValid: isAllValid,
+      items: results,
+    };
   }
 }

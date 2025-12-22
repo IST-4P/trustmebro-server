@@ -103,8 +103,23 @@ export const CreateProductRequestSchema = ProductSchema.pick({
     }
   });
 
+export const ValidateProductsRequestSchema = z.object({
+  productIds: z.array(
+    z.object({
+      productId: z.uuid(),
+      skuId: z.uuid(),
+      quantity: z.number(),
+      cartItemId: z.uuid(),
+    })
+  ),
+  processId: z.uuid().optional(),
+});
+
 export type GetManyProductsRequest = z.infer<
   typeof GetManyProductsRequestSchema
 >;
 export type GetProductRequest = z.infer<typeof GetProductRequestSchema>;
 export type CreateProductRequest = z.infer<typeof CreateProductRequestSchema>;
+export type ValidateProductsRequest = z.infer<
+  typeof ValidateProductsRequestSchema
+>;

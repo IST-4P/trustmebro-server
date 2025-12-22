@@ -2,6 +2,10 @@ import { QueueTopics } from '@common/constants/queue.constant';
 import {
   AddCartItemRequest,
   AddCartResponse,
+  DeleteCartItemRequest,
+  DeleteCartResponse,
+  UpdateCartItemRequest,
+  ValidateCartItemsRequest,
 } from '@common/interfaces/models/cart';
 import {
   PRODUCT_SERVICE_NAME,
@@ -83,8 +87,35 @@ export class CartItemService implements OnModuleInit {
     ...data
   }: AddCartItemRequest): Promise<AddCartResponse> {
     await this.validateSKU(data);
-    const addCart = await this.cartItemRepository.add(data);
-    this.kafkaService.emit(QueueTopics.CART.ADD_CART, addCart);
-    return addCart;
+    const addCartItem = await this.cartItemRepository.add(data);
+    this.kafkaService.emit(QueueTopics.CART.ADD_CART, addCartItem);
+    return addCartItem;
+  }
+
+  async update({
+    processId,
+    ...data
+  }: UpdateCartItemRequest): Promise<AddCartResponse> {
+    await this.validateSKU(data);
+    const updateCartItem = await this.cartItemRepository.update(data);
+    this.kafkaService.emit(QueueTopics.CART.UPDATE_CART, updateCartItem);
+    return updateCartItem;
+  }
+
+  async delete({
+    processId,
+    ...data
+  }: DeleteCartItemRequest): Promise<DeleteCartResponse> {
+    const deleteCartItem = await this.cartItemRepository.delete(data);
+    this.kafkaService.emit(QueueTopics.CART.DELETE_CART, deleteCartItem);
+    return deleteCartItem;
+  }
+
+  async validateCartItems({ processId, ...data }: ValidateCartItemsRequest) {
+    const cartItems = await this.cartItemRepository.validateCartItems(data);
+    if (cartItems.length !== data.cartItemIds.length) {
+      throw new NotFoundException('Error.CartItemNotFound');
+    }
+    return { cartItems };
   }
 }

@@ -42,21 +42,38 @@ export interface AddCartItemResponse {
   cartCount: number;
 }
 
+/** ==================== ValidateCartItems ====================// */
+export interface ValidateCartItemsRequest {
+  processId?: string | undefined;
+  cartItemIds: string[];
+  userId: string;
+}
+
+export interface ValidateCartItemsResponse {
+  cartItems: CartItemResponse[];
+}
+
 export const CART_SERVICE_PACKAGE_NAME = "CART_SERVICE";
 
 export interface CartServiceClient {
   addCartItem(request: AddCartItemRequest): Observable<AddCartItemResponse>;
+
+  validateCartItems(request: ValidateCartItemsRequest): Observable<ValidateCartItemsResponse>;
 }
 
 export interface CartServiceController {
   addCartItem(
     request: AddCartItemRequest,
   ): Promise<AddCartItemResponse> | Observable<AddCartItemResponse> | AddCartItemResponse;
+
+  validateCartItems(
+    request: ValidateCartItemsRequest,
+  ): Promise<ValidateCartItemsResponse> | Observable<ValidateCartItemsResponse> | ValidateCartItemsResponse;
 }
 
 export function CartServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["addCartItem"];
+    const grpcMethods: string[] = ["addCartItem", "validateCartItems"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("CartService", method)(constructor.prototype[method], method, descriptor);
