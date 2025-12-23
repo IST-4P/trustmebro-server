@@ -1,9 +1,18 @@
 import z from 'zod';
 
 export const AppConfigurationSchema = z.object({
-  AUTH_SERVICE_PORT: z.coerce.number(),
   BFF_WEB_SERVICE_PORT: z.coerce.number(),
+  BFF_ADMIN_SERVICE_PORT: z.coerce.number(),
+  USER_ACCESS_SERVICE_PORT: z.coerce.number(),
   MEDIA_SERVICE_PORT: z.coerce.number(),
+  ROLE_SERVICE_PORT: z.coerce.number(),
+  PRODUCT_SERVICE_PORT: z.coerce.number(),
+  QUERY_SERVICE_PORT: z.coerce.number(),
+  NOTIFICATION_SERVICE_PORT: z.coerce.number(),
+  CHAT_SERVICE_PORT: z.coerce.number(),
+  CART_SERVICE_PORT: z.coerce.number(),
+  ORDER_SERVICE_PORT: z.coerce.number(),
+  PAYMENT_SERVICE_PORT: z.coerce.number(),
 });
 
 const configServer = AppConfigurationSchema.safeParse(process.env);

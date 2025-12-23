@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package USER_ACCESS_SERVICE;
+
+service UserAccessService {
+  rpc LoginDirectAccessGrants(LoginRequest) returns (LoginResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (LoginResponse);
+  rpc Logout(LogoutRequest) returns (Empty);
+  rpc Register(RegisterRequest) returns (Empty);
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+
+  rpc CreateUser(CreateUserRequest) returns (UserResponse);
+}
+
+//==================== Login ====================//
+message LoginRequest {
+  optional string processId = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message LoginResponse {
+  string accessToken = 1;
+  string refreshToken = 2;
+  int32 expiresIn = 3;
+  int32 refreshExpiresIn = 4;
+}
+
+// ==================== Refresh Token ====================//
+message RefreshTokenRequest {
+  optional string processId = 1;
+  string refreshToken = 2;
+}
+
+// ==================== Logout ====================//
+
+message LogoutRequest {
+  optional string processId = 1;
+  string refreshToken = 2;
+}
+
+// ==================== Register ====================//
+message RegisterRequest {
+  optional string processId = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string username = 4;
+  string email = 5;
+  string password = 6;
+  string phoneNumber = 7;
+  string gender = 8;
+}
+
+message Empty {}
+
+// ==================== Verify Token ====================//
+message VerifyTokenRequest {
+  optional string processId = 1;
+  string token = 2;
+  optional bool withPermissions = 3;
+}
+
+message VerifyTokenResponse {
+  bool isValid = 1;
+  string userId = 2;
+  string roleId = 3;
+  string roleName = 4;
+  repeated Permissions permissions = 5;
+}
+
+message Permissions {
+  string id = 1;
+  string path = 2;
+  string method = 3;
+}
+
+//==================== CreateUser ====================//
+message CreateUserRequest {
+  optional string processId = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  string username = 5;
+  string phoneNumber = 6;
+  string avatar = 7;
+  string gender = 8;
+  string roleId = 9;
+  string roleName = 10;
+}
+
+message UserResponse {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  string username = 5;
+  string phoneNumber = 6;
+  string avatar = 7;
+  string birthday = 8; // ISO 8601 format
+  string gender = 9;
+  string status = 10;
+  string roleId = 11;
+  string roleName = 12;
+  string createdById = 13;
+  string updatedById = 14;
+  string deletedById = 15;
+  string deletedAt = 16;
+  string createdAt = 17;
+  string updatedAt = 18;
+}

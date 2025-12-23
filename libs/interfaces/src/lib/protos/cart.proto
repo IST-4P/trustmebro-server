@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package CART_SERVICE;
+
+service CartService {
+  rpc AddCartItem(AddCartItemRequest) returns (AddCartItemResponse);
+  rpc validateCartItems(ValidateCartItemsRequest) returns (ValidateCartItemsResponse);
+}
+
+//==================== AddCartItem ====================//
+message AddCartItemRequest {
+  optional string processId = 1;
+  string userId = 2;
+  string productId = 3;
+  string skuId = 4;
+  string shopId = 5;
+  int32 quantity = 6;
+  string skuValue = 7;
+  string productName = 8;
+  string productImage = 9;
+}
+
+message CartItemResponse {
+  string id = 1;
+  string cartId = 2;
+  string productId = 3;
+  string skuId = 4;
+  string shopId = 5;
+  int32 quantity = 6;
+  string productName = 7;
+  string skuValue = 8;
+  string productImage = 9;
+  string createdAt = 10;
+  string updatedAt = 11;
+}
+
+message AddCartItemResponse {
+  CartItemResponse cartItem = 1;
+  int32 cartCount = 2;
+}
+
+//==================== ValidateCartItems ====================//
+message ValidateCartItemsRequest {
+  optional string processId = 1;
+  repeated string cartItemIds = 2;
+  string userId = 3;
+}
+
+message ValidateCartItemsResponse {
+  repeated CartItemResponse cartItems = 1;
+}

@@ -20,7 +20,6 @@ export interface StandardResponse<T = any> {
 }
 
 export class ExceptionInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(ExceptionInterceptor.name);
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>
@@ -73,17 +72,21 @@ export class ExceptionInterceptor implements NestInterceptor {
         };
       }),
       catchError((error) => {
-        this.logger.error(error);
         const durationMs = Date.now() - startTime;
         const message =
+          error?.details ||
           error?.response?.message ||
           error.message ||
           error ||
           HTTP_MESSAGE.INTERNAL_SERVER_ERROR;
         const code =
           error?.response?.statusCode ||
-          error.status ||
+          error.code ||
           HttpStatus.INTERNAL_SERVER_ERROR;
+        // Logger.error(error);
+        Logger.error(
+          `HTTP >> Error process '${processId}' >> message: '${message}' >> code: '${code}'`
+        );
         throw new HttpException(
           {
             data: null,

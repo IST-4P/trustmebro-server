@@ -1,19 +1,22 @@
+import { GrpcService } from '@common/constants/grpc.constant';
 import { ClientProviderOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import z from 'zod';
 
 export const GrpcConfigurationSchema = z.object({
-  AUTH_SERVICE_GRPC_URL: z.string(),
-  AUTH_SERVICE_PROTO_PATH: z.string(),
+  PROTO_PATH: z.string(),
 
+  USER_ACCESS_SERVICE_GRPC_URL: z.string(),
   MEDIA_SERVICE_GRPC_URL: z.string(),
-  MEDIA_SERVICE_PROTO_PATH: z.string(),
+  ROLE_SERVICE_GRPC_URL: z.string(),
+  PRODUCT_SERVICE_GRPC_URL: z.string(),
+  QUERY_SERVICE_GRPC_URL: z.string(),
+  NOTIFICATION_SERVICE_GRPC_URL: z.string(),
+  CHAT_SERVICE_GRPC_URL: z.string(),
+  CART_SERVICE_GRPC_URL: z.string(),
+  ORDER_SERVICE_GRPC_URL: z.string(),
+  PAYMENT_SERVICE_GRPC_URL: z.string(),
 });
-
-export enum GrpcService {
-  AUTH_SERVICE = 'AUTH_SERVICE',
-  MEDIA_SERVICE = 'MEDIA_SERVICE',
-}
 
 const configServer = GrpcConfigurationSchema.safeParse(process.env);
 
@@ -25,6 +28,18 @@ if (!configServer.success) {
 
 export const GrpcConfiguration = configServer.data;
 
+const normalizeServiceName = (name: GrpcService): string =>
+  name
+    .replace(/_SERVICE$/, '')
+    .toLowerCase()
+    .replace(/_/g, '-');
+
+const getProtoPath = (serviceName: GrpcService) => {
+  return `${GrpcConfiguration.PROTO_PATH}${normalizeServiceName(
+    serviceName
+  )}.proto`;
+};
+
 export const GrpcClientProvider = (
   serviceName: GrpcService
 ): ClientProviderOptions => {
@@ -34,10 +49,7 @@ export const GrpcClientProvider = (
     options: {
       url: GrpcConfiguration[`${serviceName}_GRPC_URL`],
       package: serviceName,
-      protoPath: join(
-        __dirname,
-        GrpcConfiguration[`${serviceName}_PROTO_PATH`]
-      ),
+      protoPath: join(__dirname, getProtoPath(serviceName)),
     },
   };
 };
@@ -48,10 +60,7 @@ export const GrpcServerOptions = (serviceName: GrpcService) => {
     options: {
       url: GrpcConfiguration[`${serviceName}_GRPC_URL`],
       package: serviceName,
-      protoPath: join(
-        __dirname,
-        GrpcConfiguration[`${serviceName}_PROTO_PATH`]
-      ),
+      protoPath: join(__dirname, getProtoPath(serviceName)),
     },
   };
 };

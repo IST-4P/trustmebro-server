@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+package QUERY_SERVICE;
+
+service QueryService {
+  rpc GetCategory(GetCategoryRequest) returns (GetCategoryResponse);
+  rpc GetManyCategories(GetManyCategoriesRequest) returns (GetManyCategoriesResponse);
+
+  rpc GetBrand(GetBrandRequest) returns (GetBrandResponse);
+  rpc GetManyBrands(GetManyBrandsRequest) returns (GetManyBrandsResponse);
+
+  rpc GetAttribute(GetAttributeRequest) returns (GetAttributeResponse);
+  rpc GetManyAttributes(GetManyAttributesRequest) returns (GetManyAttributesResponse);
+
+  rpc GetShipsFrom(GetShipsFromRequest) returns (GetShipsFromResponse);
+  rpc GetManyShipsFrom(GetManyShipsFromRequest) returns (GetManyShipsFromResponse);
+
+  rpc GetManyNotifications(GetManyNotificationsRequest) returns (GetManyNotificationsResponse);
+}
+
+//====================================== Category ======================================//
+message CategoryProduct {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  optional string parentCategoryId = 4;
+}
+//==================== GetCategoryRequest ====================//
+message GetCategoryRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetCategoryResponse {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  optional string parentId = 4;
+  string path = 5;
+  int32 level = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+//==================== GetManyCategoriesRequest ====================//
+message GetManyCategoriesRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string name = 4;
+}
+
+message GetManyCategoriesResponse {
+  repeated GetCategoryResponse categories = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//====================================== Brand ======================================//
+//==================== GetBrandRequest ====================//
+message GetBrandRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetBrandResponse {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  int32 productsCount = 4;
+  int32 soldCount = 5;
+  repeated string categoryIds = 6;
+  repeated CategoryProduct categories = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+}
+
+//==================== GetManyBrandsRequest ====================//
+message GetManyBrandsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string name = 4;
+}
+
+message GetManyBrandsResponse {
+  repeated GetBrandResponse brands = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//====================================== Attribute ======================================//
+//==================== GetAttributeRequest ====================//
+message GetAttributeRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetAttributeResponse {
+  string id = 1;
+  string name = 2;
+  repeated string categoryIds = 3;
+  repeated CategoryProduct categories = 4;
+  string createdAt = 5;
+  string updatedAt = 6;
+}
+
+//==================== GetManyAttributesRequest ====================//
+message GetManyAttributesRequest {
+  optional string processId = 1;
+  optional string name = 2;
+  optional string categoryId = 3;
+}
+
+message GetManyAttributesResponse {
+  repeated GetAttributeResponse attributes = 1;
+}
+
+//====================================== ShipsFrom ======================================//
+//==================== GetShipsFromRequest ====================//
+message GetShipsFromRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetShipsFromResponse {
+  string id = 1;
+  string address = 2;
+  string createdAt = 3;
+  string updatedAt = 4;
+}
+
+//==================== GetManyShipsFromRequest ====================//
+message GetManyShipsFromRequest {
+  optional string processId = 1;
+  optional string address = 2;
+}
+
+message GetManyShipsFromResponse {
+  repeated GetShipsFromResponse shipsFromList = 1;
+}
+
+
+//====================================== Notifications ======================================//
+//==================== GetManyNotificationsRequest ====================//
+message GetManyNotificationsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  string userId = 4;
+}
+
+message GetManyNotificationsResponse {
+  repeated NotificationResponse notifications = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+message Metadata {
+  optional string orderId = 1;
+  optional string articleId = 2;
+}
+
+message NotificationResponse {
+  string id = 1;
+  string userId = 2;
+  string type = 3;
+  string title = 4;
+  string description = 5;
+  optional string link = 6;
+  optional string image = 7;
+  bool isRead = 8;
+  optional Metadata metadata = 9;
+  string createdAt = 10;
+  string updatedAt = 11;
+}

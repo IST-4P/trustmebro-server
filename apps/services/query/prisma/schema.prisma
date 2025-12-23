@@ -1,0 +1,175 @@
+generator client {
+    provider     = "prisma-client"
+    output       = "../src/generated/prisma-client"
+    moduleFormat = "cjs"
+    // binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+generator json {
+    provider = "prisma-json-types-generator"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum ProductStatus {
+    ACTIVE
+    INACTIVE
+    BANNED
+    DRAFT
+}
+
+model ProductView {
+    id               String  @id
+    name             String
+    description      String? @db.Text
+    shipsFromId      String
+    shipsFromAddress String
+
+    brandId   String
+    brandName String
+    brandLogo String
+
+    // Lưu mảng các Category ID để filter nhanh: WHERE categoryIds ?& ['cat_1']
+    categoryIds String[]
+    /// [Categories]
+    categories  Json // Lưu chi tiết: [{id, name, slug}, ...] để hiển thị breadcrumb
+
+    // Tính toán từ bảng SKU lúc sync dữ liệu sang đây
+    basePrice    Float @default(0) // Giá gốc hiển thị
+    virtualPrice Float @default(0) // Giá ảo hiển thị
+    minPrice     Float @default(0) // Giá thấp nhất trong các SKU (để hiển thị "Từ 50k...")
+    maxPrice     Float @default(0) // Giá cao nhất
+
+    totalStock  Int     @default(0)
+    isAvailable Boolean @default(true) // Tính toán: totalStock > 0 && status == ACTIVE
+
+    images    String[]
+    sizeGuide String?  @db.Text
+
+    /// [Variants]
+    variants Json
+
+    /// [Attributes]
+    attributes Json
+
+    /// [Skus]
+    skus Json
+
+    reviewIds   String[]
+    ratingCount Int      @default(0)
+    averageRate Float    @default(0)
+    soldCount   Int      @default(0)
+    viewCount   Int      @default(0)
+    likeCount   Int      @default(0)
+
+    shopId     String
+    status     ProductStatus
+    isApproved Boolean       @default(false)
+    isHidden   Boolean       @default(false)
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    @@index([shopId])
+    @@index([brandId])
+    @@index([minPrice, maxPrice]) // Index cho filter khoảng giá
+    @@index([isAvailable]) // Index cho filter "Còn hàng"
+    @@index([createdAt]) // Index cho sort "Mới nhất"
+    @@index([soldCount]) // Index cho sort "Bán chạy"
+    @@index([categoryIds]) // Index GIN cho mảng string (Postgres hỗ trợ tốt)
+    @@index([name]) // Có thể thay bằng Full Text Search index
+}
+
+// Model này phục vụ Navigation Menu / Mega Menu
+model CategoryView {
+    id       String  @id
+    name     String
+    logo     String?
+    parentId String?
+
+    // Lưu path để query cây: "grandparent_id/parent_id"
+    path  String?
+    level Int     @default(0)
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    @@index([parentId])
+    @@index([name])
+    @@index([level])
+}
+
+model BrandView {
+    id   String @id
+    name String
+    logo String @db.VarChar(1000)
+
+    // Giúp sort brand "Hot nhất" mà không cần count bảng Product
+    productCount Int @default(0) // Tổng số sản phẩm đang active
+    soldCount    Int @default(0) // Tổng số lượng đã bán của brand này
+
+    categoryIds String[]
+    /// [Categories]
+    categories  Json
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    @@index([soldCount(sort: Desc)]) // Query "Thương hiệu bán chạy"
+    @@index([name]) // Search tên brand
+}
+
+model AttributeView {
+    id          String   @id
+    name        String   @unique
+    categoryIds String[]
+    /// [Categories]
+    categories  Json
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    @@index([name])
+}
+
+model ShipsFromView {
+    id        String   @id
+    address   String   @unique
+    createdAt DateTime
+    updatedAt DateTime
+}
+
+enum NotificationType {
+    ORDER_UPDATE
+    PROMOTION
+    WALLET_UPDATE
+    TRUST_ME_BRO_UPDATE
+}
+
+model NotificationView {
+    id     String @id
+    userId String
+
+    type        NotificationType
+    title       String
+    description String?          @db.Text
+    link        String?
+    image       String?
+
+    /// [Metadata]
+    metadata Json?
+
+    isRead Boolean @default(false)
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    // Index Composite [userId + createdAt DESC] giúp query này cực nhanh, không cần sort lại
+    @@index([userId, createdAt(sort: Desc)])
+    // Query đếm badge: "User A có bao nhiêu noti chưa đọc?"
+    @@index([userId, isRead])
+    //(Optional) Nếu có tính năng lọc theo loại (Tab Khuyến mãi, Tab Đơn hàng...)
+    @@index([userId, type, createdAt(sort: Desc)])
+}

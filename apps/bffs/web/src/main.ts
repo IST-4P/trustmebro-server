@@ -5,7 +5,10 @@
 
 import { AppConfiguration } from '@common/configurations/app.config';
 import { BaseConfiguration } from '@common/configurations/base.config';
-import { Logger } from '@nestjs/common';
+import { DefaultRoleNameValues } from '@common/constants/user.constant';
+import { WebSocketAdapter } from '@common/redis/websocket/websocket.adapter';
+import { WebSocketService } from '@common/redis/websocket/websocket.service';
+import { syncPermissions } from '@common/utils/sync-permissions.util';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
@@ -36,10 +39,16 @@ async function bootstrap() {
   SwaggerModule.setup(`${globalPrefix}/docs`, app, documentFactory);
 
   const port = AppConfiguration.BFF_WEB_SERVICE_PORT || 3100;
+
+  const webSocketService = app.get(WebSocketService);
+  const websocketAdapter = new WebSocketAdapter(app, webSocketService);
+  await websocketAdapter.connectToRedis();
+  app.useWebSocketAdapter(websocketAdapter);
+
   await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
-  );
+
+  // Sync permissions with database
+  await syncPermissions(app, DefaultRoleNameValues.CUSTOMER);
 }
 
 bootstrap();

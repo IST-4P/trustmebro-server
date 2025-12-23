@@ -1,0 +1,75 @@
+generator client {
+    provider     = "prisma-client"
+    output       = "../src/generated/prisma-client"
+    moduleFormat = "cjs"
+    // binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+generator json {
+    provider = "prisma-json-types-generator"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum MessageType {
+    TEXT
+    IMAGE
+    VIDEO
+    PRODUCT_CARD
+    ORDER_CARD
+    STICKER
+}
+
+// Mỗi cuộc hội thoại 1-1 là một record duy nhất
+model Conversation {
+    id String @id @default(uuid())
+
+    // Danh sách ID của 2 user tham gia (để filter nhanh)
+    // Luôn đảm bảo sort ID để tạo unique key: ["userId1", "userId2"] (với id1 < id2)
+    participantIds String[]
+
+    lastMessageId      String?  @unique
+    lastMessageContent String?  @db.Text // "Em ăn cơm chưa?" hoặc "Đã gửi 1 ảnh"
+    lastMessageAt      DateTime @default(now()) // Để sort inbox: Mới nhất lên đầu
+    lastSenderId       String? // Để hiển thị: "Bạn: ..." hay "Người ấy: ..."
+
+    // Trạng thái đọc tin (JSON lưu trạng thái của từng user)
+    // VD: { "userA": { "isRead": true, "readAt": "..." }, "userB": { "isRead": false } }
+    /// [ConversationReadStatus]
+    readStatus Json @default("{}")
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    messages  Message[]
+
+    // Index tối quan trọng: Tìm inbox của User A và sort theo thời gian
+    // Sử dụng GIN index cho array participantIds
+    @@index([participantIds], type: Gin)
+    @@index([lastMessageAt(sort: Desc)])
+}
+
+model Message {
+    id String @id @default(uuid())
+
+    conversationId String
+    conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+    senderId String
+
+    content String @db.Text
+
+    // Support đa phương tiện (Ảnh, Video, File...)
+    // Type: TEXT, IMAGE, VIDEO, FILE, PRODUCT_CARD...
+    type MessageType @default(TEXT)
+
+    // Metadata cho tin nhắn đặc biệt (VD: Chiều rộng/cao ảnh, Product ID nếu share sp)
+    /// [MessageMetadata]
+    metadata Json?
+
+    createdAt DateTime @default(now())
+
+    // Index để load lịch sử chat (Pagination/Infinite Scroll)
+    @@index([conversationId, createdAt(sort: Desc)])
+}
