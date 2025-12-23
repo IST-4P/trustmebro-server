@@ -4,7 +4,7 @@ export const BaseConfigurationSchema = z
   .object({
     NODE_ENV: z.string().default('development'),
     GLOBAL_PREFIX: z.string().min(1).default('api/v1'),
-    AVATAR_DEFAULT_URL: z.url(),
+    AVATAR_DEFAULT_URL: z.string(),
     OTP_EXPIRES: z.string().default('10m'),
   })
   .transform((data) => ({
