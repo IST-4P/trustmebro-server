@@ -1,5 +1,6 @@
+import { PaymentStatusValues } from '@common/constants/payment.constant';
 import { CreateOrderRepository } from '@common/interfaces/models/order';
-import { generateOrderCode } from '@common/utils/order-code.util';
+import { generateCode } from '@common/utils/order-code.util';
 import { Injectable } from '@nestjs/common';
 import { OrderStatus } from '@prisma-client/order';
 import { PrismaService } from '../prisma/prisma.service';
@@ -18,7 +19,7 @@ export class OrderRepository {
           );
           return tx.order.create({
             data: {
-              code: generateOrderCode(),
+              code: generateCode('ORDER'),
               userId: data.userId,
               shopId: shopOrder.shopId,
               status: OrderStatus.PENDING,
@@ -31,6 +32,8 @@ export class OrderRepository {
 
               receiver: data.receiver,
               paymentMethod: data.paymentMethod,
+              paymentId: data.paymentId,
+              paymentStatus: PaymentStatusValues.PENDING,
               timeline: [{ status: OrderStatus.PENDING, at: new Date() }],
               createdById: data.userId,
 
@@ -55,6 +58,48 @@ export class OrderRepository {
         })
       );
     });
+    return orders;
+  }
+
+  async cancel(orderIds: string[], userId: string) {
+    const orders = await this.prismaService.$transaction(async (tx) => {
+      const existingOrders = await tx.order.findMany({
+        where: {
+          id: { in: orderIds },
+          userId: userId,
+          status: {
+            in: [OrderStatus.PENDING, OrderStatus.CONFIRMED],
+          },
+          deletedAt: null,
+        },
+      });
+
+      if (existingOrders.length === 0) {
+        throw new Error('No valid orders found to cancel');
+      }
+
+      const updatedOrders = await Promise.all(
+        existingOrders.map((order) =>
+          tx.order.update({
+            where: { id: order.id },
+            data: {
+              status: OrderStatus.CANCELLED,
+              timeline: [
+                ...(Array.isArray(order.timeline) ? order.timeline : []),
+                { status: OrderStatus.CANCELLED, at: new Date() },
+              ],
+              updatedById: userId,
+            },
+            include: {
+              items: true,
+            },
+          })
+        )
+      );
+
+      return updatedOrders;
+    });
+
     return orders;
   }
 }

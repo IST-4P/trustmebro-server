@@ -1,4 +1,4 @@
-import { PaymentMethodEnums } from '@common/constants/order.constant';
+import { PaymentMethodEnums } from '@common/constants/payment.constant';
 import { ReceiverSchema } from '@common/schemas/order';
 import z from 'zod';
 import { ValidateItemResultSchema } from '../product';
@@ -22,6 +22,7 @@ export const CreateOrderRepositorySchema = z.object({
   shippingFee: z.number(),
   paymentMethod: PaymentMethodEnums,
   receiver: ReceiverSchema,
+  paymentId: z.uuid(),
   orders: z.array(
     z.object({
       shopId: z.uuid(),

@@ -13,80 +13,72 @@ datasource db {
     provider = "postgresql"
 }
 
-enum OrderStatus {
-    CREATING // đang tạo đơn
-    PENDING // chờ xác nhận
-    CONFIRMED // đã xác nhận, đang chuẩn bị
-    SHIPPING // đang giao
-    COMPLETED // đã giao
-    CANCELLED // đã hủy
-    REFUNDED // đã hoàn tiền
+enum PaymentStatus {
+    PENDING
+    SUCCESS
+    FAILED
+    CANCELLED
 }
 
 enum PaymentMethod {
     COD
-    WALLET
     ONLINE
+    WALLET
 }
 
-enum PaymentStatus {
+enum RefundStatus {
     PENDING
-    PAID
-    FAILED
-    REFUNDED
+    APPROVED
+    REJECTED
 }
 
-model OrderItem {
-    id String @id @default(uuid())
+model Payment {
+    id      String        @id @default(uuid())
+    code    String        @unique
+    userId  String
+    orderId String[]
+    method  PaymentMethod
+    status  PaymentStatus @default(PENDING)
 
-    orderId String
-    order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    amount Int
 
-    productId String
-    skuId     String
-    shopId    String
+    createdById String?
+    updatedById String?
+    deletedById String?
 
-    productName String
-    skuValue    String
-    quantity    Int
-    price       Float
-    total       Float
+    deletedAt DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
 
-    productImage String
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
+    @@index([code])
+    @@index([userId])
     @@index([orderId])
-    @@index([shopId])
+    @@index([status])
 }
 
-model Order {
-    id   String @id @default(uuid())
-    code String @unique
+model Transaction {
+    id                 Int      @id @default(autoincrement())
+    gateway            String   @db.VarChar(100)
+    transactionDate    DateTime @default(now())
+    accountNumber      String?  @db.VarChar(100)
+    subAccount         String?  @db.VarChar(250)
+    amountIn           Int      @default(0)
+    amountOut          Int      @default(0)
+    accumulated        Int      @default(0)
+    code               String?  @db.VarChar(250)
+    transactionContent String?  @db.Text
+    referenceNumber    String?  @db.VarChar(255)
+    body               String?  @db.Text
+    createdAt          DateTime @default(now())
+}
 
-    userId String
-    shopId String
-    status OrderStatus
-
-    itemTotal   Float @default(0) // tổng tiền hàng
-    shippingFee Float @default(0)
-    discount    Float @default(0)
-    grandTotal  Float @default(0) // phải trả
-
-    // Snapshot user nhận hàng
-    /// [Receiver]
-    receiver Json
-
-    paymentMethod PaymentMethod
-    paymentStatus PaymentStatus @default(PENDING)
-
-    // log timeline (optional)
-    // [{ status: 'PENDING', at: '...' }, { status: 'CONFIRMED', at: '...' }]
-    /// [Timeline]
-    timeline Json?
-
-    items OrderItem[]
+model Refund {
+    id      String       @id @default(uuid())
+    userId  String
+    orderId String
+    amount  Int // Số tiền hoàn trả
+    status  RefundStatus @default(PENDING)
+    reason  String?      @db.Text
 
     createdById String?
     updatedById String?
@@ -97,7 +89,6 @@ model Order {
     updatedAt DateTime  @updatedAt
 
     @@index([userId])
-    @@index([shopId])
-    @@index([status, deletedAt])
-    @@index([deletedAt])
+    @@index([orderId])
+    @@index([status])
 }

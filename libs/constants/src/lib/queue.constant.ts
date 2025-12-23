@@ -5,6 +5,7 @@ export enum QueueService {
   NOTIFICATION_SERVICE = 'notification',
   CART_SERVICE = 'cart',
   ORDER_SERVICE = 'order',
+  PAYMENT_SERVICE = 'payment',
 }
 
 export enum QueueGroups {
@@ -13,6 +14,7 @@ export enum QueueGroups {
   PRODUCT_GROUP = 'product-group',
   CART_GROUP = 'cart-group',
   ORDER_GROUP = 'order-group',
+  PAYMENT_GROUP = 'payment-group',
 }
 
 enum CategoryQueueTopics {
@@ -25,7 +27,7 @@ enum ProductQueueTopics {
   CREATE_PRODUCT = 'create_product',
   UPDATE_PRODUCT = 'update_product',
   DELETE_PRODUCT = 'delete_product',
-  STOCK_RESERVED = 'stock_reserved',
+  STOCK_DECREASE = 'stock_decrease',
 }
 
 enum BrandQueueTopics {
@@ -65,7 +67,8 @@ enum CartQueueTopics {
 enum OrderQueueTopics {
   CREATE_ORDER = 'create_order',
   UPDATE_ORDER = 'update_order',
-  DELETE_ORDER = 'delete_order',
+  CANCEL_ORDER = 'cancel_order',
+  CREATE_PAYMENT_BY_ORDER = 'create_payment_by_order',
 }
 
 export const QueueTopics = {

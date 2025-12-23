@@ -8,7 +8,7 @@ import { CartItemService } from '../services/cart-item.service';
 export class CartConsumerController {
   constructor(private readonly cartItemService: CartItemService) {}
 
-  @EventPattern(QueueTopics.PRODUCT.STOCK_RESERVED)
+  @EventPattern(QueueTopics.PRODUCT.STOCK_DECREASE)
   deleteCartItems(@Payload() payload: DeleteCartItemRequest) {
     return this.cartItemService.delete(payload);
   }

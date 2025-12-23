@@ -80,6 +80,7 @@ model Order {
 
     paymentMethod PaymentMethod
     paymentStatus PaymentStatus @default(PENDING)
+    paymentId     String
 
     // log timeline (optional)
     // [{ status: 'PENDING', at: '...' }, { status: 'CONFIRMED', at: '...' }]

@@ -20,17 +20,4 @@ export const OrderStatusEnums = z.enum([
   OrderStatusValues.REFUNDED,
 ]);
 
-export const PaymentMethodValues = {
-  COD: 'COD',
-  WALLET: 'WALLET',
-  ONLINE: 'ONLINE',
-} as const;
-
-export const PaymentMethodEnums = z.enum([
-  PaymentMethodValues.COD,
-  PaymentMethodValues.WALLET,
-  PaymentMethodValues.ONLINE,
-]);
-
 export type OrderStatus = z.infer<typeof OrderStatusEnums>;
-export type PaymentMethod = z.infer<typeof PaymentMethodEnums>;

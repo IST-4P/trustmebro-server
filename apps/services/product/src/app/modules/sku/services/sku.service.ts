@@ -29,7 +29,7 @@ export class SKUService {
             value: item.skuValue,
             quantity: item.quantity,
           });
-          this.kafkaService.emit(QueueTopics.PRODUCT.STOCK_RESERVED, {
+          this.kafkaService.emit(QueueTopics.PRODUCT.STOCK_DECREASE, {
             productId: item.productId,
             skuId: item.skuId,
             userId: data.userId,

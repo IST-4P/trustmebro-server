@@ -1,7 +1,7 @@
 import z from 'zod';
+import { BaseSchema } from '../common/base.schema';
 
-export const OrderItemSchema = z.object({
-  id: z.uuid(),
+export const OrderItemSchema = BaseSchema.extend({
   orderId: z.uuid(),
   productId: z.uuid(),
   skuId: z.uuid(),
@@ -12,6 +12,4 @@ export const OrderItemSchema = z.object({
   price: z.number().min(0),
   total: z.number().min(0),
   productImage: z.string(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
 });
