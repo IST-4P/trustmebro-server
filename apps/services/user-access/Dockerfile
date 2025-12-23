@@ -28,6 +28,5 @@ ENV NODE_ENV=production
 RUN npm install --omit=dev
 
 COPY --from=builder /workspace/dist ./dist
-COPY --from=builder /workspace/libs/interfaces/src/lib/protos ./proto
 
 CMD ["node", "dist/apps/services/user-access/main.js"]
