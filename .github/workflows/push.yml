@@ -16,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Chỉ cần setup pnpm MỘT LẦN
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -24,7 +23,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "pnpm"
 
       - name: Setup protoc
         uses: arduino/setup-protoc@v3.0.0
@@ -74,7 +72,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "pnpm"
 
       - name: Download node_modules
         uses: actions/download-artifact@v4
