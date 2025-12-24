@@ -44,6 +44,7 @@ Thumbs.db
 .github/instructions/nx.instructions.md
 
 .env
+.env.production
 
 docker/**/docker_data
 /src/generated/prisma
