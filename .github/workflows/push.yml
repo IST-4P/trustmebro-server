@@ -16,6 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Chỉ cần setup pnpm MỘT LẦN
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -25,18 +26,13 @@ jobs:
           node-version: 22
           cache: "pnpm"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
-
       - name: Setup protoc
         uses: arduino/setup-protoc@v3.0.0
 
       - name: Configure Git protocol
         run: git config --global url."https://github.com/".insteadOf git://github.com/
 
-      # Cache pnpm store để tái sử dụng
+      # Cache pnpm store
       - name: Cache pnpm store
         id: cache-pnpm-store
         uses: actions/cache@v4
@@ -51,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Upload node_modules để các job khác dùng
+      # Upload node_modules
       - name: Upload node_modules
         uses: actions/upload-artifact@v4
         with:
@@ -70,15 +66,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Setup pnpm trước
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: "pnpm"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
 
       - name: Download node_modules
         uses: actions/download-artifact@v4
