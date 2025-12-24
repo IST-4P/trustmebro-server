@@ -62,8 +62,24 @@ jobs:
             dockerfile: apps/services/media/Dockerfile
           - name: role
             dockerfile: apps/services/role/Dockerfile
+          - name: cart
+            dockerfile: apps/services/cart/Dockerfile
+          - name: chat
+            dockerfile: apps/services/chat/Dockerfile
+          - name: notification
+            dockerfile: apps/services/notification/Dockerfile
+          - name: order
+            dockerfile: apps/services/order/Dockerfile
+          - name: payment
+            dockerfile: apps/services/payment/Dockerfile
+          - name: product
+            dockerfile: apps/services/product/Dockerfile
+          - name: query
+            dockerfile: apps/services/query/Dockerfile
           - name: web
             dockerfile: apps/bffs/web/Dockerfile
+          - name: admin
+            dockerfile: apps/bffs/admin/Dockerfile
     steps:
       - uses: actions/checkout@v4
 
