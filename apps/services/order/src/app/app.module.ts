@@ -4,6 +4,7 @@ import { QueueService } from '@common/constants/queue.constant';
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
+import { OrderGrpcController } from './controllers/order-grpc.controller';
 import { OrderRepository } from './repositories/order.repository';
 import { OrderService } from './services/order.service';
 
@@ -15,7 +16,7 @@ import { OrderService } from './services/order.service';
     ]),
     KafkaModule.register(QueueService.ORDER_SERVICE),
   ],
-  controllers: [],
+  controllers: [OrderGrpcController],
   providers: [OrderRepository, OrderService],
 })
 export class AppModule {}

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package ORDER_SERVICE;
+
+service OrderService {
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+}
+
+message CreateOrderRequest {
+  optional string processId = 1;
+  string userId = 2;
+  int32 shippingFee = 3;
+  string paymentMethod = 4;
+  Receiver receiver = 5;
+  repeated OrderGroup orders = 6;
+}
+
+message Receiver {
+  string name = 1;
+  string phone = 2;
+  string address = 3;
+}
+
+message OrderGroup {
+  string shopId = 1;
+  repeated string cartItemIds = 2;
+}
+
+message CreateOrderResponse {
+  repeated Order orders = 1;
+}
+
+message Order {
+  string id = 1;
+  string userId = 2;
+  string shopId = 3;
+  double grandTotal = 4;
+  string status = 5;
+}
+

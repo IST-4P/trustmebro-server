@@ -5,6 +5,7 @@
   "scripts": {
     "lite": "pnpm nx reset && pnpm nx run-many -t serve --projects=user-access,admin,web,notification,query",
     "dev": "pnpm nx reset && pnpm nx run-many -t serve --projects=web,admin,user-access,role,media",
+    "build": "pnpm nx reset && pnpm nx run-many -t build --projects=web,admin,cart,chat,media,notification,order,payment,product,query,role,user-access",
     "generate-ts-proto": "pnpm nx generate-ts-proto interfaces"
   },
   "private": true,

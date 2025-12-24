@@ -15,7 +15,24 @@ module.exports = {
       compiler: 'tsc',
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
-      assets: ['./src/assets'],
+      assets: [
+        // './src/assets',
+        {
+          glob: 'order.proto',
+          input: 'libs/interfaces/src/lib/protos',
+          output: './proto',
+        },
+        {
+          glob: 'product.proto',
+          input: 'libs/interfaces/src/lib/protos',
+          output: './proto',
+        },
+        {
+          glob: 'cart.proto',
+          input: 'libs/interfaces/src/lib/protos',
+          output: './proto',
+        },
+      ],
       optimization: false,
       outputHashing: 'none',
       generatePackageJson: true,
