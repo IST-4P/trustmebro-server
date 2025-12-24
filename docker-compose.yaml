@@ -87,6 +87,7 @@ services:
       - .env
     environment:
       - "KAFKA_URL=kafka:9092"
+      - "ROLE_SERVICE_GRPC_URL=role:5002"
     ports:
       - "3100:3100"
     depends_on:
