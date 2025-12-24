@@ -2,7 +2,7 @@ import { Metadata as MetadataType } from '@common/schemas/notification';
 import {
   AttributesProduct as AttributesProductType,
   Category as CategoryType,
-  Sku as SkuType,
+  SKU as SkuType,
   VariantsProduct as VariantsProductType,
 } from '@common/schemas/product';
 
