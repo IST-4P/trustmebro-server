@@ -24,15 +24,12 @@ RUN apt-get update -y && apt-get install -y openssl
 WORKDIR /app
 
 COPY --from=builder /workspace/dist/apps/services/user-access/package.json ./
+COPY --from=builder /workspace/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /workspace/dist/apps/services/user-access/pnpm-lock.yaml ./
-COPY --from=builder /workspace/node_modules/@prisma ./node_modules/@prisma
 
 ENV NODE_ENV=production
 
 RUN npm install --omit=dev
-
-# Copy Prisma Client đã được generate từ builder stage
-
 
 COPY --from=builder /workspace/dist ./dist
 
