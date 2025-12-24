@@ -118,31 +118,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "npm"
 
       - name: Configure Git protocol
         run: git config --global url."https://github.com/".insteadOf git://github.com/
 
       # Cache pnpm store
-      - name: Cache node_modules
-        id: cache-node-modules
+      - name: Cache pnpm store
+        id: cache-pnpm-store
         uses: actions/cache@v4
         with:
           path: |
+            ~/.pnpm-store
             node_modules
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm ci --legacy-peer-deps
+        run: pnpm install --frozen-lockfile
 
-      # Upload node_modules để các job khác dùng
+      # Upload node_modules
       - name: Upload node_modules
         uses: actions/upload-artifact@v4
         with:
