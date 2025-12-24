@@ -74,6 +74,111 @@ services:
     networks:
       - trustmebro-network
 
+  product:
+    image: caophi562005/trustmebro-product
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3003:3003"
+      - "5003:5003"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  query:
+    image: caophi562005/trustmebro-query
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3004:3004"
+      - "5004:5004"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  notification:
+    image: caophi562005/trustmebro-notification
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3005:3005"
+      - "5005:5005"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  chat:
+    image: caophi562005/trustmebro-chat
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3006:3006"
+      - "5006:5006"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  cart:
+    image: caophi562005/trustmebro-cart
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3007:3007"
+      - "5007:5007"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  order:
+    image: caophi562005/trustmebro-order
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3008:3008"
+      - "5008:5008"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  payment:
+    image: caophi562005/trustmebro-payment
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3009:3009"
+      - "5009:5009"
+    depends_on:
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
   web:
     image: caophi562005/trustmebro-web
     pull_policy: always
@@ -81,6 +186,22 @@ services:
       - .env
     ports:
       - "3100:3100"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      role: # Thêm dependency này
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  admin:
+    image: caophi562005/trustmebro-admin
+    pull_policy: always
+    env_file:
+      - .env
+    ports:
+      - "3200:3200"
     depends_on:
       kafka:
         condition: service_healthy
