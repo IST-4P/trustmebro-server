@@ -202,6 +202,6 @@ jobs:
       - name: Trigger Coolify deployment via webhook
         uses: fjogeleit/http-request-action@v1
         with:
-          url: ${{ secrets.COOLIFY_URL }}/api/v1/deploy?uuid=${{ secrets.COOLIFY_RESOURCE_ID }}&force=false
+          url: ${{ secrets.COOLIFY_URL }}/api/v1/deploy?uuid=${{ secrets.COOLIFY_RESOURCE_ID }}&force=true
           method: GET
           bearerToken: ${{ secrets.COOLIFY_API_TOKEN }}
