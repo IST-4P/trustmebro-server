@@ -1,47 +1,51 @@
-# services:
-#   kafka:
-#     container_name: kafka_server
-#     image: bitnamilegacy/kafka
-#     ports:
-#       - "9092:9092" # host (NestJS local) sẽ dùng port này
-#       - "29092:29092" # optional external listener
-#     environment:
-#       - KAFKA_CFG_NODE_ID=0
-#       - KAFKA_CFG_PROCESS_ROLES=controller,broker
-#       - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:29092
-#       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
-#       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@localhost:9093
-#       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-#       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092,EXTERNAL://localhost:29092
-#       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
-#       - ALLOW_PLAINTEXT_LISTENER=yes
-#     volumes:
-#       - ./docker/docker_data/kafka_data/bitnami_data:/bitnami/kafka
-#     restart: unless-stopped
-
-# kafka-ui:
-#   container_name: kafka_ui
-#   image: provectuslabs/kafka-ui:latest
-#   ports:
-#     - "8080:8080"
-#   environment:
-#     - KAFKA_CLUSTERS_0_NAME=local
-#     - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
-#     - DYNAMIC_CONFIG_ENABLED=true
-#   depends_on:
-#     kafka:
-#       condition: service_healthy
-#   restart: unless-stopped
-
 services:
+  kafka:
+    container_name: kafka_server
+    image: bitnamilegacy/kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - "KAFKA_CFG_PROCESS_ROLES=controller,broker"
+      - "KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:29092"
+      - "KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      - "KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@localhost:9093"
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - "KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092"
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - "./docker/docker_data/kafka_data/bitnami_data:/bitnami/kafka"
+    networks:
+      - trustmebro-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   user-access:
-    container_name: trustmebro-user-access
-    build:
-      context: .
-      dockerfile: apps/services/user-access/Dockerfile
+    image: caophi562005/trustmebro-user-access
+    env_file:
+      - .env
+    environment:
+      - KAFKA_URL=kafka:9092
     ports:
       - "3000:3000"
       - "5000:5000"
-    env_file:
-      - .env.example
+    depends_on:
+      kafka:
+        condition: service_healthy
     restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+networks:
+  trustmebro-network:
+    driver: bridge
+    name: trustmebro-network
