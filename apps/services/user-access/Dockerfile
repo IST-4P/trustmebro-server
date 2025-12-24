@@ -63,12 +63,13 @@ WORKDIR /app
 COPY --from=builder /workspace/dist/apps/services/user-access/package.json ./
 
 # Copy Prisma Client đã được generate từ builder stage
-# COPY --from=builder /workspace/node_modules/prisma ./node_modules/prisma
-# COPY --from=builder /workspace/node_modules/@prisma ./node_modules/@prisma
 
 ENV NODE_ENV=production
 
 RUN npm install --omit=dev
+
+COPY --from=builder /workspace/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /workspace/node_modules/@prisma ./node_modules/@prisma
 
 COPY --from=builder /workspace/dist ./dist
 
