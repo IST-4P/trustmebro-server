@@ -10,6 +10,7 @@ import {
   VerifyTokenRequest,
   VerifyTokenResponse,
 } from '@common/interfaces/models/auth';
+import { MessageResponse } from '@common/interfaces/models/common/response.model';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from '../services/auth.service';
@@ -20,7 +21,7 @@ export class AuthGrpcController {
   constructor(private readonly authService: AuthService) {}
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'Register')
-  async register(data: RegisterRequest): Promise<void> {
+  async register(data: RegisterRequest): Promise<MessageResponse> {
     return this.authService.register(data);
   }
 
@@ -47,8 +48,8 @@ export class AuthGrpcController {
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'Logout')
-  async logout(data: LogoutRequest): Promise<void> {
-    await this.authService.logout(data);
+  async logout(data: LogoutRequest): Promise<MessageResponse> {
+    return this.authService.logout(data);
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'VerifyToken')

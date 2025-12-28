@@ -46,6 +46,8 @@ Thumbs.db
 .env
 .env.production
 
+docker-compose.local.yaml
+
 docker/**/docker_data
 /src/generated/prisma
 

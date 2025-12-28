@@ -19,7 +19,10 @@ async function bootstrap() {
   const globalPrefix = BaseConfiguration.GLOBAL_PREFIX || 'api/v1';
   app.setGlobalPrefix(globalPrefix);
 
-  app.enableCors({ origin: '*' });
+  app.enableCors({
+    origin: true, // Cho phép tất cả origin khi dùng credentials
+    credentials: true, // Cho phép gửi cookies/credentials
+  });
 
   const config = new DocumentBuilder()
     .setTitle('TrustMeBro-Web API')

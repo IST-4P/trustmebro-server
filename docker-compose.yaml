@@ -32,6 +32,7 @@ services:
   user-access:
     image: caophi562005/trustmebro-user-access
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -47,6 +48,7 @@ services:
   media:
     image: caophi562005/trustmebro-media
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -62,6 +64,7 @@ services:
   role:
     image: caophi562005/trustmebro-role
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -77,6 +80,7 @@ services:
   product:
     image: caophi562005/trustmebro-product
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -92,6 +96,7 @@ services:
   query:
     image: caophi562005/trustmebro-query
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -107,6 +112,7 @@ services:
   notification:
     image: caophi562005/trustmebro-notification
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -122,6 +128,7 @@ services:
   chat:
     image: caophi562005/trustmebro-chat
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -137,6 +144,7 @@ services:
   cart:
     image: caophi562005/trustmebro-cart
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -152,6 +160,7 @@ services:
   order:
     image: caophi562005/trustmebro-order
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -167,6 +176,7 @@ services:
   payment:
     image: caophi562005/trustmebro-payment
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -182,6 +192,7 @@ services:
   web:
     image: caophi562005/trustmebro-web
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:
@@ -198,6 +209,7 @@ services:
   admin:
     image: caophi562005/trustmebro-admin
     pull_policy: always
+    mem_limit: 256m
     env_file:
       - .env
     ports:

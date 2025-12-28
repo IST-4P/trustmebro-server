@@ -47,7 +47,8 @@ export interface RegisterRequest {
   gender: string;
 }
 
-export interface Empty {
+export interface MessageResponse {
+  message: string;
 }
 
 /** ==================== Verify Token ====================// */
@@ -114,9 +115,9 @@ export interface UserAccessServiceClient {
 
   refreshToken(request: RefreshTokenRequest): Observable<LoginResponse>;
 
-  logout(request: LogoutRequest): Observable<Empty>;
+  logout(request: LogoutRequest): Observable<MessageResponse>;
 
-  register(request: RegisterRequest): Observable<Empty>;
+  register(request: RegisterRequest): Observable<MessageResponse>;
 
   verifyToken(request: VerifyTokenRequest): Observable<VerifyTokenResponse>;
 
@@ -128,9 +129,9 @@ export interface UserAccessServiceController {
 
   refreshToken(request: RefreshTokenRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
 
-  logout(request: LogoutRequest): Promise<Empty> | Observable<Empty> | Empty;
+  logout(request: LogoutRequest): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
-  register(request: RegisterRequest): Promise<Empty> | Observable<Empty> | Empty;
+  register(request: RegisterRequest): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
   verifyToken(
     request: VerifyTokenRequest,

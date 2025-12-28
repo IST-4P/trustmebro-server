@@ -16,7 +16,7 @@ export class NotificationRepository {
     return this.prismaService.notification.update({
       where: {
         id: data.id as string,
-        updatedById: data?.updatedById as string,
+        userId: data?.updatedById as string,
       },
       data: {
         updatedById: data.updatedById,

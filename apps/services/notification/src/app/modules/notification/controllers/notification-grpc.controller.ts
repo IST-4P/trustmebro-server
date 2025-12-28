@@ -19,8 +19,8 @@ export class NotificationGrpcController {
     return this.notificationService.create(data);
   }
 
-  @GrpcMethod(GrpcServiceName.NOTIFICATION_SERVICE, 'UpdateNotification')
-  updateNotification(data: ReadNotificationRequest) {
+  @GrpcMethod(GrpcServiceName.NOTIFICATION_SERVICE, 'ReadNotification')
+  readNotification(data: ReadNotificationRequest) {
     return this.notificationService.read(data);
   }
 

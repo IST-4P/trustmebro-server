@@ -74,8 +74,11 @@ export class AuthService implements OnModuleInit {
     return this.keycloakHttpService.refreshToken(data);
   }
 
-  logout(data: LogoutRequest) {
-    return this.keycloakHttpService.logout(data);
+  async logout(data: LogoutRequest) {
+    await this.keycloakHttpService.logout(data);
+    return {
+      message: 'Message.LogoutSuccessfully',
+    };
   }
 
   async register(data: RegisterRequest) {
@@ -98,6 +101,9 @@ export class AuthService implements OnModuleInit {
       roleId: roleCustomer.id,
       roleName: roleCustomer.name,
     });
+    return {
+      message: 'Message.RegisterSuccessfully',
+    };
   }
 
   async verifyToken(data: VerifyTokenRequest): Promise<VerifyTokenResponse> {

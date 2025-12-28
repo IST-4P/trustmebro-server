@@ -5,8 +5,8 @@ package USER_ACCESS_SERVICE;
 service UserAccessService {
   rpc LoginDirectAccessGrants(LoginRequest) returns (LoginResponse);
   rpc RefreshToken(RefreshTokenRequest) returns (LoginResponse);
-  rpc Logout(LogoutRequest) returns (Empty);
-  rpc Register(RegisterRequest) returns (Empty);
+  rpc Logout(LogoutRequest) returns (MessageResponse);
+  rpc Register(RegisterRequest) returns (MessageResponse);
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
 
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
@@ -51,7 +51,9 @@ message RegisterRequest {
   string gender = 8;
 }
 
-message Empty {}
+message MessageResponse {
+  string message = 1;
+}
 
 // ==================== Verify Token ====================//
 message VerifyTokenRequest {
