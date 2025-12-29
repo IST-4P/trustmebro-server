@@ -2,7 +2,10 @@ import z from 'zod';
 
 export const LokiConfigurationSchema = z.object({
   LOKI_HOST: z.string(),
-  LOKI_ENABLE_PUSH: z.coerce.boolean().default(false),
+  LOKI_ENABLE_PUSH: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
 });
 
 const configServer = LokiConfigurationSchema.safeParse(process.env);
