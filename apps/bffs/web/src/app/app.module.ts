@@ -1,17 +1,22 @@
 import { GrpcClientProvider } from '@common/configurations/grpc.config';
+import { RedisProvider } from '@common/configurations/redis.config';
+import { ThrottlerProvider } from '@common/configurations/throttler.config';
 import { GrpcService } from '@common/constants/grpc.constant';
 import { QueueService } from '@common/constants/queue.constant';
 import { AccessTokenGuard } from '@common/guards/access-token.guard';
 import { AuthenticationGuard } from '@common/guards/authentication.guard';
 import { PaymentAPIKeyGuard } from '@common/guards/payment-api-key.guard';
+import { ThrottlerBehindProxyGuard } from '@common/guards/throttler-behind-proxy.guard';
 import { ExceptionInterceptor } from '@common/interceptors/exception.interceptor';
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
+import { LoggerModule } from '@common/observability/logger';
 import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
 import { ChatModule } from './modules/chat/chat.module';
+import { HealthModule } from './modules/health/health.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
@@ -23,6 +28,10 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
       GrpcClientProvider(GrpcService.USER_ACCESS_SERVICE),
     ]),
     KafkaModule.register(QueueService.BFF_WEB_SERVICE),
+    RedisProvider,
+    ThrottlerProvider,
+    HealthModule,
+    LoggerModule.forRoot('bff-web'),
     UserAccessModule,
     MediaModule,
     NotificationModule,
@@ -39,6 +48,10 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerBehindProxyGuard,
     },
   ],
   exports: [WebSocketService],

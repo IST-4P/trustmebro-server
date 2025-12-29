@@ -129,6 +129,7 @@ export class AuthService implements OnModuleInit {
           this.roleService.getRole({
             id: user.roleId,
             withInheritance: true,
+            processId: data.processId,
           })
         );
       }

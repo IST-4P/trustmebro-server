@@ -1,7 +1,10 @@
+import { createKeyv } from '@keyv/redis';
+import { CacheModule } from '@nestjs/cache-manager';
 import z from 'zod';
 
 export const RedisConfigurationSchema = z.object({
   REDIS_URL: z.string(),
+  REDIS_TTL: z.coerce.number(),
 });
 
 const configServer = RedisConfigurationSchema.safeParse(process.env);
@@ -13,3 +16,8 @@ if (!configServer.success) {
 }
 
 export const RedisConfiguration = configServer.data;
+
+export const RedisProvider = CacheModule.register({
+  stores: [createKeyv(RedisConfiguration.REDIS_URL)],
+  ttl: RedisConfiguration.REDIS_TTL, // 30 minutes
+});

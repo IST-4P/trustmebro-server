@@ -6,6 +6,7 @@ import {
   VerifyTokenResponse,
 } from '@common/interfaces/proto-types/user-access';
 import { getAccessToken } from '@common/utils/get-access.util';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   CanActivate,
   ExecutionContext,
@@ -16,6 +17,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { Cache } from 'cache-manager';
+import { createHash } from 'crypto';
 import { keyBy } from 'lodash';
 import { firstValueFrom } from 'rxjs';
 
@@ -25,7 +28,8 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
 
   constructor(
     @Inject(USER_ACCESS_SERVICE_PACKAGE_NAME)
-    private userAccessClient: ClientGrpc
+    private userAccessClient: ClientGrpc,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   onModuleInit() {
@@ -35,12 +39,27 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
       );
   }
 
+  private generateTokenCacheKey(token: string): string {
+    const hash = createHash('sha256').update(token).digest('hex');
+    return `user-token:${hash}`;
+  }
+
   private async extractAndValidateToken(
     request: any
   ): Promise<VerifyTokenResponse> {
     const accessToken = getAccessToken(request);
     if (!accessToken) {
       throw new UnauthorizedException('Error.AccessTokenNotFound');
+    }
+
+    const cacheKey = this.generateTokenCacheKey(accessToken);
+
+    const cacheData = await this.cacheManager.get<VerifyTokenResponse>(
+      cacheKey
+    );
+
+    if (cacheData) {
+      return cacheData;
     }
 
     const processId = request[MetadataKeys.PROCESS_ID];
@@ -52,6 +71,11 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
           withPermissions: true,
         })
       );
+
+      if (!decodedAccessToken.isValid) {
+        throw new UnauthorizedException('Error.InvalidAccessToken');
+      }
+      this.cacheManager.set(cacheKey, decodedAccessToken, 30 * 60 * 1000);
       request[MetadataKeys.USER_DATA] = decodedAccessToken;
       return decodedAccessToken;
     } catch (e) {

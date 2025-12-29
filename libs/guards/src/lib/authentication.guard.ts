@@ -17,6 +17,7 @@ import { PaymentAPIKeyGuard } from './payment-api-key.guard';
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   private readonly authTypeGuardMap: Record<string, CanActivate>;
+  private readonly excludedPaths = ['/metrics', '/health'];
 
   constructor(
     private readonly reflector: Reflector,
@@ -31,6 +32,11 @@ export class AuthenticationGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    if (this.excludedPaths.some((path) => request.url.includes(path))) {
+      return true;
+    }
+
     const authTypeValue = this.getAuthTypeValue(context);
     const guards = authTypeValue.authTypes.map(
       (type) => this.authTypeGuardMap[type]
