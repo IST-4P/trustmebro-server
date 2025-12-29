@@ -2,6 +2,7 @@ import { GrpcClientProvider } from '@common/configurations/grpc.config';
 import { GrpcService } from '@common/constants/grpc.constant';
 import { QueueService } from '@common/constants/queue.constant';
 import { KafkaModule } from '@common/kafka/kafka.module';
+import { LoggerModule } from '@common/observability/logger';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { OrderGrpcController } from './controllers/order-grpc.controller';
@@ -17,6 +18,7 @@ import { OrderService } from './services/order.service';
       GrpcClientProvider(GrpcService.CART_SERVICE),
     ]),
     KafkaModule.register(QueueService.ORDER_SERVICE),
+    LoggerModule.forRoot('order'),
   ],
   controllers: [OrderGrpcController],
   providers: [OrderRepository, OrderService],
