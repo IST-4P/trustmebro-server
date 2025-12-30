@@ -108,6 +108,16 @@ export interface UserResponse {
   updatedAt: string;
 }
 
+/** ==================== CheckParticipantExists ====================// */
+export interface CheckParticipantExistsRequest {
+  processId?: string | undefined;
+  participantIds: string[];
+}
+
+export interface CheckParticipantExistsResponse {
+  count: number;
+}
+
 export const USER_ACCESS_SERVICE_PACKAGE_NAME = "USER_ACCESS_SERVICE";
 
 export interface UserAccessServiceClient {
@@ -122,6 +132,8 @@ export interface UserAccessServiceClient {
   verifyToken(request: VerifyTokenRequest): Observable<VerifyTokenResponse>;
 
   createUser(request: CreateUserRequest): Observable<UserResponse>;
+
+  checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
 }
 
 export interface UserAccessServiceController {
@@ -138,6 +150,13 @@ export interface UserAccessServiceController {
   ): Promise<VerifyTokenResponse> | Observable<VerifyTokenResponse> | VerifyTokenResponse;
 
   createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+
+  checkParticipantExists(
+    request: CheckParticipantExistsRequest,
+  ):
+    | Promise<CheckParticipantExistsResponse>
+    | Observable<CheckParticipantExistsResponse>
+    | CheckParticipantExistsResponse;
 }
 
 export function UserAccessServiceControllerMethods() {
@@ -149,6 +168,7 @@ export function UserAccessServiceControllerMethods() {
       "register",
       "verifyToken",
       "createUser",
+      "checkParticipantExists",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

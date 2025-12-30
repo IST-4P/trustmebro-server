@@ -20,4 +20,14 @@ export class UserRepository {
       data,
     });
   }
+
+  checkParticipantExists(participantIds: string[]) {
+    return this.prismaService.user.count({
+      where: {
+        id: {
+          in: participantIds,
+        },
+      },
+    });
+  }
 }

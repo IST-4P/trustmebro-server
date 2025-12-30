@@ -1,4 +1,5 @@
 import { PaymentMethodValues } from '@common/constants/payment.constant';
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
   CreatePaymentRequest,
   DeletePaymentRequest,
@@ -35,7 +36,7 @@ export class PaymentService {
       // this.kafkaService.emit(QueueTopics.BRAND.DELETE_BRAND, deletedPayment);
       return deletedPayment;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.PaymentNotFound');
       }
       throw error;

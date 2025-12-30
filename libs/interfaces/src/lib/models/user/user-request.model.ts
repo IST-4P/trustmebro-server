@@ -21,5 +21,13 @@ export const CreateUserRequestSchema = UserSchema.pick({
   roleName: true,
 });
 
+export const CheckParticipantExistsRequestSchema = z.object({
+  processId: z.uuid().optional(),
+  participantIds: z.array(z.uuid()),
+});
+
 export type GetUserRequest = z.infer<typeof GetUserRequestSchema>;
 export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;
+export type CheckParticipantExistsRequest = z.infer<
+  typeof CheckParticipantExistsRequestSchema
+>;

@@ -10,6 +10,7 @@ service UserAccessService {
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
 
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
+  rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
 }
 
 //==================== Login ====================//
@@ -109,4 +110,14 @@ message UserResponse {
   string deletedAt = 16;
   string createdAt = 17;
   string updatedAt = 18;
+}
+
+//==================== CheckParticipantExists ====================//
+message CheckParticipantExistsRequest {
+  optional string processId = 1;
+  repeated string participantIds = 2;
+}
+
+message CheckParticipantExistsResponse {
+  int32 count = 1;
 }

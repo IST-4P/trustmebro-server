@@ -1,3 +1,4 @@
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
   ConversationResponse,
   CreateConversationRequest,
@@ -5,14 +6,38 @@ import {
   GetManyConversationsResponse,
   UpdateConversationRequest,
 } from '@common/interfaces/models/chat';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  USER_ACCESS_SERVICE_NAME,
+  USER_ACCESS_SERVICE_PACKAGE_NAME,
+  UserAccessServiceClient,
+} from '@common/interfaces/proto-types/user-access';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { ConversationRepository } from '../repositories/conversation.repository';
 
 @Injectable()
-export class ConversationService {
+export class ConversationService implements OnModuleInit {
+  private userAccessService!: UserAccessServiceClient;
+
   constructor(
+    @Inject(USER_ACCESS_SERVICE_PACKAGE_NAME)
+    private userAccessClient: ClientGrpc,
     private readonly conversationRepository: ConversationRepository
   ) {}
+
+  onModuleInit() {
+    this.userAccessService =
+      this.userAccessClient.getService<UserAccessServiceClient>(
+        USER_ACCESS_SERVICE_NAME
+      );
+  }
 
   async list({
     processId,
@@ -29,9 +54,28 @@ export class ConversationService {
     processId,
     ...data
   }: CreateConversationRequest): Promise<ConversationResponse> {
-    return this.conversationRepository.create({
-      participantIds: data.participantIds.sort(),
-    });
+    try {
+      const checkParticipantExists = await firstValueFrom(
+        this.userAccessService.checkParticipantExists({
+          processId,
+          participantIds: data.participantIds,
+        })
+      );
+
+      if (checkParticipantExists.count < 2) {
+        throw new BadRequestException('Error.ParticipantNotFound');
+      }
+
+      const createdConversation = await this.conversationRepository.create({
+        participantIds: data.participantIds.sort(),
+      });
+      return createdConversation;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new BadRequestException('Error.ConversationAlreadyExists');
+      }
+      throw error;
+    }
   }
 
   async update({
@@ -45,7 +89,7 @@ export class ConversationService {
 
       return updatedConversation;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.ConversationNotFound');
       }
       throw error;

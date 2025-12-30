@@ -15,7 +15,7 @@ export class MessageRepository {
     const skip = (data.page - 1) * data.limit;
     const take = data.limit;
 
-    const conversation = await this.prismaService.conversation.findUnique({
+    const conversation = await this.prismaService.conversation.findFirst({
       where: {
         id: data.conversationId,
         participantIds: { has: data.senderId },

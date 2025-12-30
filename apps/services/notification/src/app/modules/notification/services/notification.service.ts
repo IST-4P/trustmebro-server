@@ -1,3 +1,4 @@
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import { RedisChannel } from '@common/constants/redis.constant';
 import {
@@ -47,7 +48,7 @@ export class NotificationService {
       );
       return readNotification;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.NotificationNotFound');
       }
       throw error;
@@ -66,7 +67,7 @@ export class NotificationService {
       );
       return deletedNotification;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.NotificationNotFound');
       }
       throw error;

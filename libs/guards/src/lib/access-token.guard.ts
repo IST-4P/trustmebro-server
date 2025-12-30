@@ -59,6 +59,7 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
     );
 
     if (cacheData) {
+      request[MetadataKeys.USER_DATA] = cacheData;
       return cacheData;
     }
 

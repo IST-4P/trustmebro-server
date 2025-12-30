@@ -1,3 +1,4 @@
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   CreateShipsFromRequest,
@@ -32,7 +33,7 @@ export class ShipsFromService {
       );
       return createdShipsFrom;
     } catch (error) {
-      if (error.code === 'P2002') {
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
         throw new ConflictException('Error.ShipsFromAlreadyExists');
       }
       throw error;
@@ -51,7 +52,7 @@ export class ShipsFromService {
       );
       return updatedShipsFrom;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.ShipsFromNotFound');
       }
       throw error;
@@ -73,7 +74,7 @@ export class ShipsFromService {
       );
       return deletedShipsFrom;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.ShipsFromNotFound');
       }
       throw error;

@@ -1,6 +1,7 @@
 import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
+  CheckParticipantExistsRequest,
   CreateUserRequest,
   UserResponse,
 } from '@common/interfaces/models/user';
@@ -16,5 +17,10 @@ export class UserGrpcController {
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'CreateUser')
   createUser(@Body() body: CreateUserRequest): Promise<UserResponse> {
     return this.userService.createUser(body);
+  }
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'CheckParticipantExists')
+  checkParticipantExists(@Body() body: CheckParticipantExistsRequest) {
+    return this.userService.checkParticipantExists(body);
   }
 }

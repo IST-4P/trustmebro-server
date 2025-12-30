@@ -1,4 +1,6 @@
 import {
+  CheckParticipantExistsRequest,
+  CheckParticipantExistsResponse,
   CreateUserRequest,
   GetUserRequest,
 } from '@common/interfaces/models/user';
@@ -15,5 +17,15 @@ export class UserService {
 
   async createUser(data: CreateUserRequest) {
     return this.userRepository.create(data);
+  }
+
+  async checkParticipantExists({
+    processId,
+    ...data
+  }: CheckParticipantExistsRequest): Promise<CheckParticipantExistsResponse> {
+    const count = await this.userRepository.checkParticipantExists(
+      data.participantIds
+    );
+    return { count };
   }
 }
