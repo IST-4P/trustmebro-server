@@ -51,7 +51,7 @@ services:
       - trustmebro-network
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3100/ready"]
-      interval: 30s
+      interval: 60s
       timeout: 5s
       retries: 3
       start_period: 20s
@@ -68,8 +68,10 @@ services:
     depends_on:
       - loki
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:9080/ready"]
-      interval: 30s
+      test:
+        - CMD-SHELL
+        - "nc -z localhost 9080"
+      interval: 60s
       timeout: 5s
       retries: 3
       start_period: 20s
