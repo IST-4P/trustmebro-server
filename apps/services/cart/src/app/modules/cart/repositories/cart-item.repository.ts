@@ -8,7 +8,7 @@ import {
 } from '@common/interfaces/models/cart';
 import { CartShopGroup } from '@common/schemas/cart';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class CartItemRepository {

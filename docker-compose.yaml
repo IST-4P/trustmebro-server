@@ -49,6 +49,12 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - trustmebro-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3100/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   promtail:
     image: grafana/promtail:3.0.0
@@ -61,6 +67,12 @@ services:
       - trustmebro-network
     depends_on:
       - loki
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9080/ready"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   grafana:
     image: grafana/grafana:10.2.0
@@ -77,6 +89,12 @@ services:
       - grafana_data:/var/lib/grafana
     depends_on:
       - loki
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   user-access:
     image: caophi562005/trustmebro-user-access
@@ -93,6 +111,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3000/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   media:
     image: caophi562005/trustmebro-media
@@ -109,6 +137,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3001/api/v1/health/liveness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   role:
     image: caophi562005/trustmebro-role
@@ -125,6 +163,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3002/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   product:
     image: caophi562005/trustmebro-product
@@ -141,6 +189,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3003/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   query:
     image: caophi562005/trustmebro-query
@@ -157,6 +215,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3004/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   notification:
     image: caophi562005/trustmebro-notification
@@ -173,6 +241,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3005/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   chat:
     image: caophi562005/trustmebro-chat
@@ -189,6 +267,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3006/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   cart:
     image: caophi562005/trustmebro-cart
@@ -205,6 +293,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3007/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   order:
     image: caophi562005/trustmebro-order
@@ -221,6 +319,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3008/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   payment:
     image: caophi562005/trustmebro-payment
@@ -237,6 +345,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3009/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
   web:
     image: caophi562005/trustmebro-web
@@ -261,10 +379,10 @@ services:
           "CMD-SHELL",
           'node -e "fetch(''http://localhost:3100/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
         ]
-      interval: 30s
-      timeout: 10s
+      interval: 60s
+      timeout: 20s
       retries: 3
-      start_period: 40s
+      start_period: 60s
 
   admin:
     image: caophi562005/trustmebro-admin
@@ -283,6 +401,16 @@ services:
     restart: unless-stopped
     networks:
       - trustmebro-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:3200/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
 
 networks:
   trustmebro-network:

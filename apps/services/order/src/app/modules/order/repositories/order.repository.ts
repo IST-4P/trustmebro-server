@@ -3,7 +3,7 @@ import { CreateOrderRepository } from '@common/interfaces/models/order';
 import { generateCode } from '@common/utils/order-code.util';
 import { Injectable } from '@nestjs/common';
 import { OrderStatus } from '@prisma-client/order';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class OrderRepository {

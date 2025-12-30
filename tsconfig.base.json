@@ -30,7 +30,8 @@
       "@common/schemas/*": ["libs/schemas/src/lib/*"],
       "@common/kafka/*": ["libs/kafka/src/lib/*"],
       "@common/redis/*": ["libs/redis/src/lib/*"],
-      "@common/observability/*": ["libs/observability/src/lib/*"]
+      "@common/observability/*": ["libs/observability/src/lib/*"],
+      "@common/health": ["libs/health/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

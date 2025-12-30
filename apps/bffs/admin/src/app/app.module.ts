@@ -10,6 +10,7 @@ import { LoggerModule } from '@common/observability/logger';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
+import { HealthModule } from './modules/health/health.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { ProductModule } from './modules/product/product.module';
 import { RoleModule } from './modules/role/role.module';
@@ -23,6 +24,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     ]),
     RedisProvider,
     LoggerModule.forRoot('bff-admin'),
+    HealthModule,
     UserAccessModule,
     RoleModule,
     ProductModule,

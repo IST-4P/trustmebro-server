@@ -1,3 +1,5 @@
+import { PAYMENT_QUEUE_NAME } from '@common/constants/payment.constant';
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { PaymentConsumerController } from './controllers/payment-consumer.controller';
 import { PaymentGrpcController } from './controllers/payment-grpc.controller';
@@ -7,7 +9,8 @@ import { PaymentRepository } from './repositories/payment.repository';
 import { PaymentService } from './services/payment.service';
 
 @Module({
+  imports: [BullModule.registerQueue({ name: PAYMENT_QUEUE_NAME })],
   controllers: [PaymentGrpcController, PaymentConsumerController],
   providers: [PaymentRepository, PaymentService, PaymentProducer, PaymentQueue],
 })
-export class AppModule {}
+export class PaymentModule {}
