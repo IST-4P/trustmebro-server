@@ -27,9 +27,9 @@ model ProductView {
     shipsFromId      String
     shipsFromAddress String
 
-    brandId   String
-    brandName String
-    brandLogo String
+    brandId   String?
+    brandName String?
+    brandLogo String?
 
     // Lưu mảng các Category ID để filter nhanh: WHERE categoryIds ?& ['cat_1']
     categoryIds String[]
@@ -96,8 +96,8 @@ model CategoryView {
     createdAt DateTime
     updatedAt DateTime
 
-    @@index([parentId])
     @@index([name])
+    @@index([parentId])
     @@index([level])
 }
 

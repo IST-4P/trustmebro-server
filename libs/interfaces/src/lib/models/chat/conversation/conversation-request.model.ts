@@ -16,15 +16,10 @@ export const CreateConversationRequestSchema = ConversationSchema.pick({
   })
   .strict();
 
-export const UpdateConversationRequestSchema = ConversationSchema.pick({
-  id: true,
-  lastMessageId: true,
-  lastMessageContent: true,
-  lastMessageAt: true,
-  lastSenderId: true,
-  readStatus: true,
-})
-  .extend({
+export const DeleteConversationRequestSchema = z
+  .object({
+    id: z.uuid(),
+    userId: z.uuid(),
     processId: z.uuid().optional(),
   })
   .strict();
@@ -35,6 +30,6 @@ export type GetManyConversationsRequest = z.infer<
 export type CreateConversationRequest = z.infer<
   typeof CreateConversationRequestSchema
 >;
-export type UpdateConversationRequest = z.infer<
-  typeof UpdateConversationRequestSchema
+export type DeleteConversationRequest = z.infer<
+  typeof DeleteConversationRequestSchema
 >;

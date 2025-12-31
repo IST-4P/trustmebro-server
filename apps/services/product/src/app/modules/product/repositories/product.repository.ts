@@ -181,14 +181,16 @@ export class ProductRepository {
 
   async create(data: CreateProductRequest) {
     await this.validateAttributes(data.attributes);
-    const { skus, categories, brandId, shipsFromId, ...productData } = data;
+    const { skus, categories, shipsFromId, brandId, ...productData } = data;
     return this.prismaService.product.create({
       data: {
         ...productData,
         createdById: data.createdById,
-        brand: {
-          connect: { id: brandId },
-        },
+        brand: data.brandId
+          ? {
+              connect: { id: data.brandId },
+            }
+          : undefined,
         shipsFrom: {
           connect: { id: shipsFromId },
         },

@@ -1,5 +1,5 @@
 import { GrpcClientProvider } from '@common/configurations/grpc.config';
-import { RedisProvider } from '@common/configurations/redis.config';
+import { CacheProvider } from '@common/configurations/redis.config';
 import { ThrottlerProvider } from '@common/configurations/throttler.config';
 import { GrpcService } from '@common/constants/grpc.constant';
 import { QueueService } from '@common/constants/queue.constant';
@@ -19,6 +19,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { HealthModule } from './modules/health/health.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { ProductModule } from './modules/product/product.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
 @Module({
@@ -28,7 +29,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
       GrpcClientProvider(GrpcService.USER_ACCESS_SERVICE),
     ]),
     KafkaModule.register(QueueService.BFF_WEB_SERVICE),
-    RedisProvider,
+    CacheProvider,
     ThrottlerProvider,
     HealthModule,
     LoggerModule.forRoot('bff-web'),
@@ -36,6 +37,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     MediaModule,
     NotificationModule,
     ChatModule,
+    ProductModule,
   ],
   providers: [
     WebSocketService,

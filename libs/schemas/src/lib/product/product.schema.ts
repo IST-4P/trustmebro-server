@@ -11,7 +11,7 @@ export const ProductSchema = BaseSchema.extend({
   basePrice: z.number().default(0),
   virtualPrice: z.number().default(0),
   status: ProductStatusEnums,
-  brandId: z.uuid(),
+  brandId: z.uuid().optional(),
   images: z.array(z.string()),
   variants: VariantsProductSchema,
   reviewIds: z.array(z.string()),

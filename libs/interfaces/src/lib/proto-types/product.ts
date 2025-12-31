@@ -208,7 +208,7 @@ export interface CreateProductRequest {
   name: string;
   basePrice: number;
   virtualPrice: number;
-  brandId: string;
+  brandId?: string | undefined;
   images: string[];
   variants: Variant[];
   createdById?: string | undefined;

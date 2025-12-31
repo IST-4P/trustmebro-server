@@ -1,3 +1,4 @@
+import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import { UserData } from '@common/decorators/user-data.decorator';
 import {
@@ -44,6 +45,7 @@ export class CategoryController {
   }
 
   @Post()
+  @IsPublic()
   async createCategory(
     @Body() body: CreateCategoryRequestDto,
     @ProcessId() processId: string,

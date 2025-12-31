@@ -1,3 +1,4 @@
+import { RedisConfiguration } from '@common/configurations/redis.config';
 import { GrpcService } from '@common/constants/grpc.constant';
 import { HealthLibService } from '@common/health';
 import { Injectable } from '@nestjs/common';
@@ -17,7 +18,7 @@ export class HealthService {
   checkReadiness() {
     return this.healthLibService.checkReadiness({
       grpcServices: Object.values(GrpcService),
-      redis: null,
+      redis: RedisConfiguration.REDIS_URL,
       prismaClient: this.prismaService,
     });
   }

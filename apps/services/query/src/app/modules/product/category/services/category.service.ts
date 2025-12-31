@@ -1,22 +1,47 @@
+import { RedisConfiguration } from '@common/configurations/redis.config';
 import {
   CategoryResponse,
   GetCategoryRequest,
   GetManyCategoriesRequest,
+  GetManyCategoriesResponse,
 } from '@common/interfaces/models/product';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { generateCategoryCacheKey } from '@common/utils/cache-key.util';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { CategoryMapper } from '../mappers/category.mapper';
 import { CategoryRepository } from '../repositories/category.repository';
 
 @Injectable()
 export class CategoryService {
-  constructor(private readonly categoryRepository: CategoryRepository) {}
+  constructor(
+    private readonly categoryRepository: CategoryRepository,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {}
 
-  async list(data: GetManyCategoriesRequest) {
+  async list({
+    processId,
+    ...data
+  }: GetManyCategoriesRequest): Promise<GetManyCategoriesResponse> {
+    // Check cache
+    const cacheKey = generateCategoryCacheKey(data.parentCategoryId ?? '');
+    const cacheData = await this.cacheManager.get<GetManyCategoriesResponse>(
+      cacheKey
+    );
+    if (cacheData) {
+      return cacheData;
+    }
+
     const categories = await this.categoryRepository.list(data);
-    if (categories.totalItems === 0) {
+    if (categories.length === 0) {
       throw new NotFoundException('Error.CategoryNotFound');
     }
-    return categories;
+    this.cacheManager.set(
+      cacheKey,
+      { categories },
+      RedisConfiguration.CACHE_CATEGORY_TTL
+    );
+    return { categories };
   }
 
   async findById(data: GetCategoryRequest) {

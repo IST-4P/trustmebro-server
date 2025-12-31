@@ -48,6 +48,8 @@ Thumbs.db
 
 docker-compose.local.yaml
 
+scripts
+
 docker/**/docker_data
 /src/generated/prisma
 

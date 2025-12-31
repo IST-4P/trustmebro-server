@@ -45,7 +45,6 @@ model Conversation {
     messages  Message[]
 
     // Index tối quan trọng: Tìm inbox của User A và sort theo thời gian
-    // Sử dụng GIN index cho array participantIds
     @@unique([participantIds])
     @@index([lastMessageAt(sort: Desc)])
 }

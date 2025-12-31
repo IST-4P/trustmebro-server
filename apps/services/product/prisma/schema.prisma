@@ -38,8 +38,8 @@ model Category {
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
 
-    @@index([parentCategoryId])
     @@index([name])
+    @@index([parentCategoryId])
     @@index([deletedAt])
 }
 
@@ -84,8 +84,8 @@ model Product {
     sizeGuide    String?    @db.Text
     basePrice    Float      @default(0)
     virtualPrice Float      @default(0)
-    brandId      String
-    brand        Brand      @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    brandId      String?
+    brand        Brand?     @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     images       String[]
     categories   Category[] @relation("ProductCategories")
     /// [Variants]

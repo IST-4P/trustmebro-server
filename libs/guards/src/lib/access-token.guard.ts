@@ -1,3 +1,4 @@
+import { RedisConfiguration } from '@common/configurations/redis.config';
 import { MetadataKeys } from '@common/constants/common.constant';
 import {
   USER_ACCESS_SERVICE_NAME,
@@ -5,6 +6,7 @@ import {
   UserAccessServiceClient,
   VerifyTokenResponse,
 } from '@common/interfaces/proto-types/user-access';
+import { generateTokenCacheKey } from '@common/utils/cache-key.util';
 import { getAccessToken } from '@common/utils/get-access.util';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
@@ -18,7 +20,6 @@ import {
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Cache } from 'cache-manager';
-import { createHash } from 'crypto';
 import { keyBy } from 'lodash';
 import { firstValueFrom } from 'rxjs';
 
@@ -39,11 +40,6 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
       );
   }
 
-  private generateTokenCacheKey(token: string): string {
-    const hash = createHash('sha256').update(token).digest('hex');
-    return `user-token:${hash}`;
-  }
-
   private async extractAndValidateToken(
     request: any
   ): Promise<VerifyTokenResponse> {
@@ -52,7 +48,7 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
       throw new UnauthorizedException('Error.AccessTokenNotFound');
     }
 
-    const cacheKey = this.generateTokenCacheKey(accessToken);
+    const cacheKey = generateTokenCacheKey(accessToken);
 
     const cacheData = await this.cacheManager.get<VerifyTokenResponse>(
       cacheKey
@@ -76,7 +72,11 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
       if (!decodedAccessToken.isValid) {
         throw new UnauthorizedException('Error.InvalidAccessToken');
       }
-      this.cacheManager.set(cacheKey, decodedAccessToken, 30 * 60 * 1000);
+      this.cacheManager.set(
+        cacheKey,
+        decodedAccessToken,
+        RedisConfiguration.CACHE_TOKEN_TTL
+      );
       request[MetadataKeys.USER_DATA] = decodedAccessToken;
       return decodedAccessToken;
     } catch (e) {

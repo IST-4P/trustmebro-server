@@ -12,9 +12,9 @@ export const ProductMapper = (
     shipsFromId: data.shipsFrom.id,
     shipsFromAddress: data.shipsFrom.address,
 
-    brandId: data.brand.id,
-    brandName: data.brand.name,
-    brandLogo: data.brand.logo,
+    brandId: data.brand ? data.brand.id : undefined,
+    brandName: data.brand ? data.brand.name : undefined,
+    brandLogo: data.brand ? data.brand.logo : undefined,
 
     categoryIds: data.categories.map((c) => c.id),
     categories: data.categories.map((c) => {

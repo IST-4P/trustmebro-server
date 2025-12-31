@@ -1,4 +1,3 @@
-import { BaseConfiguration } from '@common/configurations/base.config';
 import { HTTP_MESSAGE } from '@common/constants/http-message.constant';
 import { toPlain } from '@common/utils/to-plain.util';
 import {
@@ -38,11 +37,13 @@ export class GrpcLoggingInterceptor implements NestInterceptor {
       tap((data) => {
         const logMessage = `gRPC >> End process: '${processId}' >> method: '${handlerName}' >> duration: '${
           Date.now() - now
-        } ms'${
-          BaseConfiguration.NODE_ENV === 'development'
-            ? ` >> response: ${JSON.stringify(data)}`
-            : ''
-        }`;
+        } ms'`;
+        // ${
+        //   BaseConfiguration.NODE_ENV === 'development'
+        //     ? ` >> response: ${JSON.stringify(data)}`
+        //     : ''
+        // }
+
         Logger.log(logMessage);
       }),
       catchError((error) => {

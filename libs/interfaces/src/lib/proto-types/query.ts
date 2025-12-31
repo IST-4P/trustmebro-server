@@ -38,17 +38,11 @@ export interface GetCategoryResponse {
 /** ==================== GetManyCategoriesRequest ====================// */
 export interface GetManyCategoriesRequest {
   processId?: string | undefined;
-  page: number;
-  limit: number;
-  name?: string | undefined;
+  parentCategoryId?: string | undefined;
 }
 
 export interface GetManyCategoriesResponse {
   categories: GetCategoryResponse[];
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
 }
 
 /**

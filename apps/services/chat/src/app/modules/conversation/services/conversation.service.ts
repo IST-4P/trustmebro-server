@@ -2,9 +2,9 @@ import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
   ConversationResponse,
   CreateConversationRequest,
+  DeleteConversationRequest,
   GetManyConversationsRequest,
   GetManyConversationsResponse,
-  UpdateConversationRequest,
 } from '@common/interfaces/models/chat';
 import {
   USER_ACCESS_SERVICE_NAME,
@@ -78,16 +78,15 @@ export class ConversationService implements OnModuleInit {
     }
   }
 
-  async update({
+  async delete({
     processId,
     ...data
-  }: UpdateConversationRequest): Promise<ConversationResponse> {
+  }: DeleteConversationRequest): Promise<ConversationResponse> {
     try {
-      const updatedConversation = await this.conversationRepository.update(
+      const deletedConversation = await this.conversationRepository.delete(
         data
       );
-
-      return updatedConversation;
+      return deletedConversation;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.ConversationNotFound');

@@ -45,17 +45,11 @@ message GetCategoryResponse {
 //==================== GetManyCategoriesRequest ====================//
 message GetManyCategoriesRequest {
   optional string processId = 1;
-  int32 page = 2;
-  int32 limit = 3;
-  optional string name = 4;
+  optional string parentCategoryId = 2;
 }
 
 message GetManyCategoriesResponse {
   repeated GetCategoryResponse categories = 1;
-  int32 page = 2;
-  int32 limit = 3;
-  int32 totalItems = 4;
-  int32 totalPages = 5;
 }
 
 //====================================== Brand ======================================//

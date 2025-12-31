@@ -1,5 +1,5 @@
 import { GrpcClientProvider } from '@common/configurations/grpc.config';
-import { RedisProvider } from '@common/configurations/redis.config';
+import { CacheProvider } from '@common/configurations/redis.config';
 import { GrpcService } from '@common/constants/grpc.constant';
 import { AccessTokenGuard } from '@common/guards/access-token.guard';
 import { AuthenticationGuard } from '@common/guards/authentication.guard';
@@ -22,7 +22,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
       GrpcClientProvider(GrpcService.USER_ACCESS_SERVICE),
       GrpcClientProvider(GrpcService.ROLE_SERVICE),
     ]),
-    RedisProvider,
+    CacheProvider,
     LoggerModule.forRoot('bff-admin'),
     HealthModule,
     UserAccessModule,
