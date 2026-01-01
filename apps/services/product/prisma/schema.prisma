@@ -21,14 +21,13 @@ enum ProductStatus {
 }
 
 model Category {
-    id                 String              @id @default(uuid())
-    products           Product[]           @relation("ProductCategories")
-    name               String              @db.VarChar(500)
-    logo               String?             @db.VarChar(1000)
+    id                 String     @id @default(uuid())
+    products           Product[]  @relation("ProductCategories")
+    name               String     @db.VarChar(500)
+    logo               String?    @db.VarChar(1000)
     parentCategoryId   String?
-    parentCategory     Category?           @relation("ParentCategoryCategories", fields: [parentCategoryId], references: [id], onDelete: SetNull, onUpdate: NoAction)
-    childrenCategories Category[]          @relation("ParentCategoryCategories")
-    attributes         CategoryAttribute[]
+    parentCategory     Category?  @relation("ParentCategoryCategories", fields: [parentCategoryId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+    childrenCategories Category[] @relation("ParentCategoryCategories")
 
     createdById String?
     updatedById String?
@@ -57,6 +56,7 @@ model Brand {
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
 
+    @@unique([name])
     @@index([deletedAt])
 }
 
@@ -125,9 +125,9 @@ model Product {
 }
 
 model Attribute {
-    id         String              @id @default(uuid())
-    name       String              @db.VarChar(255)
-    categories CategoryAttribute[]
+    id   String  @id @default(uuid())
+    name String  @db.VarChar(255)
+    url  String?
 
     createdById String?
     updatedById String?
@@ -139,22 +139,6 @@ model Attribute {
 
     @@unique([name])
     @@index([deletedAt])
-}
-
-model CategoryAttribute {
-    id String @id @default(uuid())
-
-    categoryId  String
-    attributeId String
-
-    isRequired Boolean @default(false)
-
-    category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-    attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
-
-    @@unique([categoryId, attributeId])
-    @@index([categoryId])
-    @@index([attributeId])
 }
 
 model SKU {

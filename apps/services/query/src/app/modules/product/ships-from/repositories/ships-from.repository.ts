@@ -10,8 +10,8 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 export class ShipsFromRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async list(data: GetManyShipsFromRequest) {
-    const shipsFromList = await this.prismaService.shipsFromView.findMany({
+  list(data: GetManyShipsFromRequest) {
+    return this.prismaService.shipsFromView.findMany({
       where: {
         address: data.address
           ? { contains: data.address, mode: 'insensitive' }
@@ -21,9 +21,6 @@ export class ShipsFromRepository {
         address: 'desc',
       },
     });
-    return {
-      shipsFromList,
-    };
   }
 
   findById(data: GetShipsFromRequest) {

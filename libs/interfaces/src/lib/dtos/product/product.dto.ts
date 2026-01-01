@@ -1,13 +1,19 @@
-import { CreateProductRequestSchema } from '@common/interfaces/models/product';
+import {
+  CreateProductRequestSchema,
+  GetManyProductsRequestSchema,
+  GetManyProductsResponseSchema,
+  GetProductRequestSchema,
+  GetProductResponseSchema,
+} from '@common/interfaces/models/product';
 import { createZodDto } from 'nestjs-zod';
 
-// export class GetManyProductsRequestDto extends createZodDto(
-//   GetManyProductsRequestSchema
-// ) {}
+export class GetManyProductsRequestDto extends createZodDto(
+  GetManyProductsRequestSchema
+) {}
 
-// export class GetProductRequestDto extends createZodDto(
-//   GetProductRequestSchema
-// ) {}
+export class GetProductRequestDto extends createZodDto(
+  GetProductRequestSchema
+) {}
 
 export class CreateProductRequestDto extends createZodDto(
   CreateProductRequestSchema
@@ -23,10 +29,10 @@ export class CreateProductRequestDto extends createZodDto(
 
 //=================================================Response DTOs=================================================
 
-// export class GetManyProductsResponseDto extends createZodDto(
-//   GetManyProductsResponseSchema
-// ) {}
+export class GetManyProductsResponseDto extends createZodDto(
+  GetManyProductsResponseSchema
+) {}
 
-// export class GetProductResponseDto extends createZodDto(
-//   GetProductResponseSchema
-// ) {}
+export class GetProductResponseDto extends createZodDto(
+  GetProductResponseSchema
+) {}

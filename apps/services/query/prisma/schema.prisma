@@ -122,11 +122,9 @@ model BrandView {
 }
 
 model AttributeView {
-    id          String   @id
-    name        String   @unique
-    categoryIds String[]
-    /// [Categories]
-    categories  Json
+    id   String  @id
+    name String  @unique
+    url  String?
 
     createdAt DateTime
     updatedAt DateTime

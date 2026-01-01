@@ -9,7 +9,7 @@ export class AttributeConsumerController {
   constructor(private readonly attributeService: AttributeService) {}
 
   @EventPattern(QueueTopics.ATTRIBUTE.CREATE_ATTRIBUTE)
-  createAttribute(@Payload() payload: any) {
+  createAttribute(@Payload() payload: AttributeResponse) {
     return this.attributeService.create(payload);
   }
 

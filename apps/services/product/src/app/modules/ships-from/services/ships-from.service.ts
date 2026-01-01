@@ -7,18 +7,23 @@ import {
   UpdateShipsFromRequest,
 } from '@common/interfaces/models/product';
 import { KafkaService } from '@common/kafka/kafka.service';
+import { generateShipsFromCacheKey } from '@common/utils/cache-key.util';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { ShipsFromRepository } from '../repositories/ships-from.repository';
 
 @Injectable()
 export class ShipsFromService {
   constructor(
     private readonly shipsFromRepository: ShipsFromRepository,
-    private readonly kafkaService: KafkaService
+    private readonly kafkaService: KafkaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   async create({
@@ -31,6 +36,7 @@ export class ShipsFromService {
         QueueTopics.SHIPS_FROM.CREATE_SHIPS_FROM,
         createdShipsFrom
       );
+      this.cacheManager.del(generateShipsFromCacheKey());
       return createdShipsFrom;
     } catch (error) {
       if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
@@ -50,6 +56,7 @@ export class ShipsFromService {
         QueueTopics.SHIPS_FROM.UPDATE_SHIPS_FROM,
         updatedShipsFrom
       );
+      this.cacheManager.del(generateShipsFromCacheKey());
       return updatedShipsFrom;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
@@ -72,6 +79,7 @@ export class ShipsFromService {
         QueueTopics.SHIPS_FROM.DELETE_SHIPS_FROM,
         deletedShipsFrom
       );
+      this.cacheManager.del(generateShipsFromCacheKey());
       return deletedShipsFrom;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {

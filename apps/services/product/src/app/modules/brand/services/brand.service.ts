@@ -21,9 +21,16 @@ export class BrandService {
     processId,
     ...data
   }: CreateBrandRequest): Promise<BrandResponse> {
-    const createdBrand = await this.brandRepository.create(data);
-    this.kafkaService.emit(QueueTopics.BRAND.CREATE_BRAND, createdBrand);
-    return createdBrand;
+    try {
+      const createdBrand = await this.brandRepository.create(data);
+      this.kafkaService.emit(QueueTopics.BRAND.CREATE_BRAND, createdBrand);
+      return createdBrand;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new NotFoundException('Error.BrandAlreadyExists');
+      }
+      throw error;
+    }
   }
 
   async update({

@@ -17,8 +17,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { BrandReadService } from '../services/brand-read.service';
-import { BrandWriteService } from '../services/brand-write.service';
+import { BrandReadService } from '../services/brand/brand-read.service';
+import { BrandWriteService } from '../services/brand/brand-write.service';
 
 @Controller('brand-admin')
 export class BrandController {

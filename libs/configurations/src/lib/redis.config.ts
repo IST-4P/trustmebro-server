@@ -8,6 +8,7 @@ export const RedisConfigurationSchema = z.object({
 
   CACHE_TOKEN_TTL: z.coerce.number(),
   CACHE_CATEGORY_TTL: z.coerce.number(),
+  CACHE_SHIPS_FROM_TTL: z.coerce.number(),
 });
 
 const configServer = RedisConfigurationSchema.safeParse(process.env);

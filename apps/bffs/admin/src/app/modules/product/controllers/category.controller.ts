@@ -1,4 +1,3 @@
-import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import { UserData } from '@common/decorators/user-data.decorator';
 import {
@@ -18,8 +17,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { CategoryReadService } from '../services/category-read.service';
-import { CategoryWriteService } from '../services/category-write.service';
+import { CategoryReadService } from '../services/category/category-read.service';
+import { CategoryWriteService } from '../services/category/category-write.service';
 
 @Controller('category-admin')
 export class CategoryController {
@@ -45,7 +44,6 @@ export class CategoryController {
   }
 
   @Post()
-  @IsPublic()
   async createCategory(
     @Body() body: CreateCategoryRequestDto,
     @ProcessId() processId: string,

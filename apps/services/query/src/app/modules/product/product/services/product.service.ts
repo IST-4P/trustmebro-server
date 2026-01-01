@@ -1,5 +1,11 @@
-import { ProductResponse } from '@common/interfaces/models/product';
-import { Injectable } from '@nestjs/common';
+import {
+  GetManyProductsRequest,
+  GetManyProductsResponse,
+  GetProductRequest,
+  GetProductResponse,
+  ProductResponse,
+} from '@common/interfaces/models/product';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductMapper } from '../mappers/product.mapper';
 import { ProductRepository } from '../repositories/product.repository';
 
@@ -7,21 +13,27 @@ import { ProductRepository } from '../repositories/product.repository';
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
 
-  // async list(data: GetManyBrandsRequest): Promise<GetManyBrandsResponse> {
-  //   const brands = await this.brandRepository.list(data);
-  //   if (brands.totalItems === 0) {
-  //     throw new NotFoundException('Error.BrandNotFound');
-  //   }
-  //   return brands;
-  // }
+  async list({
+    processId,
+    ...data
+  }: GetManyProductsRequest): Promise<GetManyProductsResponse> {
+    const products = await this.productRepository.list(data);
+    if (products.totalItems === 0) {
+      throw new NotFoundException('Error.ProductNotFound');
+    }
+    return products;
+  }
 
-  // async findById(data: GetBrandRequest): Promise<GetBrandResponse | null> {
-  //   const brand = await this.brandRepository.findById(data.id);
-  //   if (!brand) {
-  //     throw new NotFoundException('Error.BrandNotFound');
-  //   }
-  //   return brand;
-  // }
+  async findById({
+    processId,
+    ...data
+  }: GetProductRequest): Promise<GetProductResponse> {
+    const product = await this.productRepository.findById(data);
+    if (!product) {
+      throw new NotFoundException('Error.ProductNotFound');
+    }
+    return product;
+  }
 
   create(data: ProductResponse) {
     return this.productRepository.create(ProductMapper(data));

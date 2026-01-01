@@ -17,7 +17,7 @@ export class AttributeService {
     data: GetManyAttributesRequest
   ): Promise<GetManyAttributesResponse> {
     const attributes = await this.attributeRepository.list(data);
-    if (attributes.attributes.length === 0) {
+    if (attributes.totalItems === 0) {
       throw new NotFoundException('Error.AttributeNotFound');
     }
     return attributes;

@@ -109,7 +109,7 @@ export interface Category {
 export interface AttributeResponse {
   id: string;
   name: string;
-  categories: AttributeCategory[];
+  url: string;
   createdById: string;
   updatedById: string;
   deletedById: string;
@@ -123,8 +123,7 @@ export interface CreateAttributeRequest {
   processId?: string | undefined;
   name: string;
   createdById?: string | undefined;
-  categoryId?: string | undefined;
-  isRequired?: boolean | undefined;
+  url?: string | undefined;
 }
 
 /** ==================== UpdateAttributeRequest ====================// */
@@ -133,6 +132,7 @@ export interface UpdateAttributeRequest {
   id: string;
   name: string;
   updatedById?: string | undefined;
+  url?: string | undefined;
 }
 
 /** ==================== DeleteAttributeRequest ====================// */

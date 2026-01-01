@@ -11,16 +11,35 @@ export class AttributeRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async list(data: GetManyAttributesRequest) {
-    const attributes = await this.prismaService.attributeView.findMany({
-      where: {
-        name: data.name
-          ? { contains: data.name, mode: 'insensitive' }
-          : undefined,
-        categoryIds: data.categoryId ? { has: data.categoryId } : undefined,
-      },
-    });
+    console.log('Data: ', data);
+    const skip = (data.page - 1) * data.limit;
+    const take = data.limit;
+
+    const [totalItems, attributes] = await Promise.all([
+      this.prismaService.attributeView.count({
+        where: {
+          name: data.name
+            ? { contains: data.name, mode: 'insensitive' }
+            : undefined,
+        },
+      }),
+      this.prismaService.attributeView.findMany({
+        where: {
+          name: data.name
+            ? { contains: data.name, mode: 'insensitive' }
+            : undefined,
+        },
+        skip,
+        take,
+        orderBy: { name: 'asc' },
+      }),
+    ]);
     return {
       attributes,
+      totalItems,
+      page: data.page,
+      limit: data.limit,
+      totalPages: Math.ceil(totalItems / data.limit),
     };
   }
 

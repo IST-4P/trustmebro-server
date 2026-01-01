@@ -5,6 +5,11 @@ export const generateCategoryCacheKey = (parentCategoryId: string): string => {
   return `category:${hash}`;
 };
 
+export const generateShipsFromCacheKey = (): string => {
+  // const hash = createHash('sha256').update(parentCategoryId).digest('hex');
+  return `ships-from:all`;
+};
+
 export const generateTokenCacheKey = (token: string): string => {
   const hash = createHash('sha256').update(token).digest('hex');
   return `user-token:${hash}`;

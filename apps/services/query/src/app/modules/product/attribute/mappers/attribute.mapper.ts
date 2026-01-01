@@ -4,13 +4,7 @@ export const AttributeMapper = (data: AttributeResponse) => {
   return {
     id: data.id,
     name: data.name,
-    categoryIds: data.categories.map((c) => c.category.id),
-    categories: data.categories.map((c) => {
-      return {
-        ...c.category,
-        isRequired: c.isRequired,
-      };
-    }),
+    url: data.url || undefined,
     createdAt: new Date(data.createdAt),
     updatedAt: new Date(data.updatedAt),
   };
