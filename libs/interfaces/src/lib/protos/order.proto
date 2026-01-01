@@ -10,9 +10,10 @@ message CreateOrderRequest {
   optional string processId = 1;
   string userId = 2;
   int32 shippingFee = 3;
-  string paymentMethod = 4;
-  Receiver receiver = 5;
-  repeated OrderGroup orders = 6;
+  int32 discount = 4;
+  string paymentMethod = 5;
+  Receiver receiver = 6;
+  repeated OrderGroup orders = 7;
 }
 
 message Receiver {
@@ -30,11 +31,48 @@ message CreateOrderResponse {
   repeated Order orders = 1;
 }
 
+message OrderItem {
+  string id = 1;
+  string orderId = 2;
+  string productId = 3;
+  string skuId = 4;
+  string shopId = 5;
+  string productName = 6;
+  string skuValue = 7;
+  int32 quantity = 8;
+  double price = 9;
+  double total = 10;
+  string productImage = 11;
+  string createdAt = 12;
+  string updatedAt = 13;
+}
+
+message Timeline {
+  string status = 1;
+  string at = 2;
+}
+
 message Order {
   string id = 1;
-  string userId = 2;
-  string shopId = 3;
-  double grandTotal = 4;
+  string code = 2;
+  string userId = 3;
+  string shopId = 4;
   string status = 5;
+  double itemTotal = 6;
+  double shippingFee = 7;
+  double discount = 8;
+  double grandTotal = 9;
+  Receiver receiver = 10;
+  string paymentMethod = 11;
+  string paymentStatus = 12;
+  string paymentId = 13;
+  repeated Timeline timeline = 14;
+  repeated OrderItem items = 15;
+  optional string createdById = 16;
+  optional string updatedById = 17;
+  optional string deletedById = 18;
+  optional string deletedAt = 19;
+  string createdAt = 20;
+  string updatedAt = 21;
 }
 

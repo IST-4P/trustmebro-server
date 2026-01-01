@@ -13,6 +13,7 @@ export const GetManyProductsResponseSchema =
   PaginationQueryResponseSchema.extend({
     products: z.array(
       ProductViewSchema.pick({
+        id: true,
         name: true,
         basePrice: true,
         virtualPrice: true,

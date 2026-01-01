@@ -4,7 +4,8 @@ package CART_SERVICE;
 
 service CartService {
   rpc AddCartItem(AddCartItemRequest) returns (AddCartItemResponse);
-  rpc validateCartItems(ValidateCartItemsRequest) returns (ValidateCartItemsResponse);
+  rpc ValidateCartItems(ValidateCartItemsRequest) returns (ValidateCartItemsResponse);
+  rpc GetManyCartItems(GetManyCartItemsRequest) returns (GetManyCartItemsResponse);
 }
 
 //==================== AddCartItem ====================//
@@ -17,7 +18,7 @@ message AddCartItemRequest {
   int32 quantity = 6;
   string skuValue = 7;
   string productName = 8;
-  string productImage = 9;
+  optional string productImage = 9;
 }
 
 message CartItemResponse {
@@ -48,4 +49,25 @@ message ValidateCartItemsRequest {
 
 message ValidateCartItemsResponse {
   repeated CartItemResponse cartItems = 1;
+}
+
+//==================== GetManyCartItems ====================//
+message GetManyCartItemsRequest {
+  optional string processId = 1;
+  string userId = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message ShopCartItems {
+  string shopId = 1;
+  repeated CartItemResponse cartItems = 2;
+}
+
+message GetManyCartItemsResponse {
+  repeated ShopCartItems cartItems = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
 }

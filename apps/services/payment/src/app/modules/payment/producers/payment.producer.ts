@@ -1,3 +1,4 @@
+import { RedisConfiguration } from '@common/configurations/redis.config';
 import {
   CANCEL_PAYMENT_JOB_NAME,
   PAYMENT_QUEUE_NAME,
@@ -19,7 +20,7 @@ export class PaymentProducer {
       CANCEL_PAYMENT_JOB_NAME,
       { paymentId },
       {
-        delay: 1000 * 60 * 15,
+        delay: RedisConfiguration.PAYMENT_TTL,
         jobId: generateCancelPaymentJobId(paymentId),
         removeOnComplete: true,
         removeOnFail: true,

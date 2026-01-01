@@ -10,6 +10,7 @@ import { ShipsFromController } from './controllers/ships-from.controller';
 import { AttributeReadService } from './services/attribute-read.service';
 import { BrandReadService } from './services/brand-read.service';
 import { CategoryReadService } from './services/category-read.service';
+import { ProductReadService } from './services/product-read.service';
 import { ShipsFromReadService } from './services/ships-from-read.service';
 
 @Module({
@@ -29,6 +30,7 @@ import { ShipsFromReadService } from './services/ships-from-read.service';
   providers: [
     CategoryReadService,
     BrandReadService,
+    ProductReadService,
     AttributeReadService,
     ShipsFromReadService,
   ],

@@ -31,7 +31,7 @@ enum PaymentMethod {
 
 enum PaymentStatus {
     PENDING
-    PAID
+    SUCCESS
     FAILED
     REFUNDED
 }
@@ -69,10 +69,10 @@ model Order {
     shopId String
     status OrderStatus
 
-    itemTotal   Float @default(0) // tổng tiền hàng
-    shippingFee Float @default(0)
-    discount    Float @default(0)
-    grandTotal  Float @default(0) // phải trả
+    itemTotal   Int @default(0) // tổng tiền hàng
+    shippingFee Int @default(0)
+    discount    Int @default(0)
+    grandTotal  Int @default(0) // phải trả
 
     // Snapshot user nhận hàng
     /// [Receiver]
