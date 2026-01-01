@@ -1,0 +1,278 @@
+syntax = "proto3";
+
+package QUERY_SERVICE;
+
+service QueryService {
+  rpc GetCategory(GetCategoryRequest) returns (GetCategoryResponse);
+  rpc GetManyCategories(GetManyCategoriesRequest) returns (GetManyCategoriesResponse);
+
+  rpc GetBrand(GetBrandRequest) returns (GetBrandResponse);
+  rpc GetManyBrands(GetManyBrandsRequest) returns (GetManyBrandsResponse);
+
+  rpc GetAttribute(GetAttributeRequest) returns (GetAttributeResponse);
+  rpc GetManyAttributes(GetManyAttributesRequest) returns (GetManyAttributesResponse);
+
+  rpc GetShipsFrom(GetShipsFromRequest) returns (GetShipsFromResponse);
+  rpc GetManyShipsFrom(GetManyShipsFromRequest) returns (GetManyShipsFromResponse);
+
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+  rpc GetManyProducts(GetManyProductsRequest) returns (GetManyProductsResponse);
+
+  rpc GetManyNotifications(GetManyNotificationsRequest) returns (GetManyNotificationsResponse);
+}
+
+//====================================== Category ======================================//
+message CategoryProduct {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  optional string parentCategoryId = 4;
+}
+//==================== GetCategoryRequest ====================//
+message GetCategoryRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetCategoryResponse {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  optional string parentId = 4;
+  string path = 5;
+  int32 level = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+//==================== GetManyCategoriesRequest ====================//
+message GetManyCategoriesRequest {
+  optional string processId = 1;
+  optional string parentCategoryId = 2;
+}
+
+message GetManyCategoriesResponse {
+  repeated GetCategoryResponse categories = 1;
+}
+
+//====================================== Brand ======================================//
+//==================== GetBrandRequest ====================//
+message GetBrandRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetBrandResponse {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  int32 productsCount = 4;
+  int32 soldCount = 5;
+  repeated string categoryIds = 6;
+  repeated CategoryProduct categories = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+}
+
+//==================== GetManyBrandsRequest ====================//
+message GetManyBrandsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string name = 4;
+}
+
+message GetManyBrandsResponse {
+  repeated GetBrandResponse brands = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//====================================== Attribute ======================================//
+//==================== GetAttributeRequest ====================//
+message GetAttributeRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetAttributeResponse {
+  string id = 1;
+  string name = 2;
+  repeated string categoryIds = 3;
+  repeated CategoryProduct categories = 4;
+  string createdAt = 5;
+  string updatedAt = 6;
+}
+
+//==================== GetManyAttributesRequest ====================//
+message GetManyAttributesRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string name = 4;
+}
+
+message GetManyAttributesResponse {
+  repeated GetAttributeResponse attributes = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//====================================== ShipsFrom ======================================//
+//==================== GetShipsFromRequest ====================//
+message GetShipsFromRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetShipsFromResponse {
+  string id = 1;
+  string address = 2;
+  string createdAt = 3;
+  string updatedAt = 4;
+}
+
+//==================== GetManyShipsFromRequest ====================//
+message GetManyShipsFromRequest {
+  optional string processId = 1;
+  optional string address = 2;
+}
+
+message GetManyShipsFromResponse {
+  repeated GetShipsFromResponse shipsFromList = 1;
+}
+
+//====================================== Product ======================================//
+message Variant {
+  string value = 1;
+  repeated string options = 2;
+}
+
+message AttributeProduct {
+  string name = 1;
+  string value = 2;
+}
+
+message SKU {
+  string id = 1;
+  string value = 2;
+  double price = 3;
+  int32 stock = 4;
+  optional string image = 5;
+}
+
+//==================== GetProductRequest ====================//
+message GetProductRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message GetProductResponse {
+  string id = 1;
+  string name = 2;
+  optional string description = 3;
+  string shipsFromId = 4;
+  string shipsFromAddress = 5;
+
+  optional string brandId = 6;
+  optional string brandName = 7;
+  optional string brandLogo = 8;
+
+  repeated string categoryIds = 9;
+  repeated CategoryProduct categories = 10;
+
+  double basePrice = 11;
+  double virtualPrice = 12;
+  double minPrice = 13;
+  double maxPrice = 14;
+
+  int32 totalStock = 15;
+  bool isAvailable = 16;
+
+  repeated string images = 17;
+  optional string sizeGuide = 18;
+
+  repeated Variant variants = 19;
+  repeated AttributeProduct attributes = 20;
+  repeated SKU skus = 21;
+
+  repeated string reviewIds = 22;
+  int32 ratingCount = 23;
+  double averageRate = 24;
+  int32 soldCount = 25;
+  int32 viewCount = 26;
+  int32 likeCount = 27;
+
+  string shopId = 28;
+  string status = 29;
+  bool isApproved = 30;
+  bool isHidden = 31;
+
+  string createdAt = 32;
+  string updatedAt = 33;
+}
+
+//==================== GetManyProductsRequest ====================//
+message GetManyProductsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string name = 4;
+  optional string status = 5;
+  optional string shopId = 6;
+  repeated string brandIds = 7;
+  repeated string categories = 8;
+  optional double minPrice = 9;
+  optional double maxPrice = 10;
+  optional string sortBy = 11;
+  optional string orderBy = 12;
+}
+
+message GetManyProductsResponse {
+  repeated GetProductResponse products = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+
+//====================================== Notifications ======================================//
+//==================== GetManyNotificationsRequest ====================//
+message GetManyNotificationsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  string userId = 4;
+}
+
+message GetManyNotificationsResponse {
+  repeated NotificationResponse notifications = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+message Metadata {
+  optional string orderId = 1;
+  optional string articleId = 2;
+}
+
+message NotificationResponse {
+  string id = 1;
+  string userId = 2;
+  string type = 3;
+  string title = 4;
+  string description = 5;
+  optional string link = 6;
+  optional string image = 7;
+  bool isRead = 8;
+  optional Metadata metadata = 9;
+  string createdAt = 10;
+  string updatedAt = 11;
+}

@@ -6,7 +6,7 @@ service MediaService {
   rpc CreatePresignedUrl(CreatePresignedUrlRequest) returns (CreatePresignedUrlResponse);
 }
 
-//==================== Login ====================//
+//==================== CreatePresignedUrl ====================//
 message CreatePresignedUrlRequest {
   optional string processId = 1;
   string filename = 2;

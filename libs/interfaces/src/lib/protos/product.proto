@@ -1,0 +1,352 @@
+syntax = "proto3";
+
+package PRODUCT_SERVICE;
+
+service ProductService {
+  rpc CreateCategory(CreateCategoryRequest) returns (CategoryResponse);
+  rpc UpdateCategory(UpdateCategoryRequest) returns (CategoryResponse);
+  rpc DeleteCategory(DeleteCategoryRequest) returns (CategoryResponse);
+
+  rpc CreateBrand(CreateBrandRequest) returns (BrandResponse);
+  rpc UpdateBrand(UpdateBrandRequest) returns (BrandResponse);
+  rpc DeleteBrand(DeleteBrandRequest) returns (BrandResponse);
+
+  rpc CreateAttribute(CreateAttributeRequest) returns (AttributeResponse);
+  rpc UpdateAttribute(UpdateAttributeRequest) returns (AttributeResponse);
+  rpc DeleteAttribute(DeleteAttributeRequest) returns (AttributeResponse);
+
+  rpc CreateShipsFrom(CreateShipsFromRequest) returns (ShipsFromResponse);
+  rpc UpdateShipsFrom(UpdateShipsFromRequest) returns (ShipsFromResponse);
+  rpc DeleteShipsFrom(DeleteShipsFromRequest) returns (ShipsFromResponse);
+
+  rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
+
+  rpc GetSKU(GetSKURequest) returns (SKUResponse);
+
+  rpc ValidateProducts(ValidateProductsRequest) returns (ValidateProductsResponse);
+}
+
+//====================================== Category ======================================//
+message ParentCategoryResponse {
+  string id = 1;
+  string name = 2;
+}
+
+message CategoryResponse {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  string parentCategoryId = 4;
+  string createdById = 5;
+  string updatedById = 6;
+  string deletedById = 7;
+  string deletedAt = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+  optional ParentCategoryResponse parentCategory = 11;
+}
+
+//==================== CreateCategoryRequest ====================//
+message CreateCategoryRequest {
+  optional string processId = 1;
+  string name = 2;
+  string logo = 3;
+  optional string parentCategoryId = 4;
+  optional string createdById = 5;
+}
+
+//==================== UpdateCategoryRequest ====================//
+message UpdateCategoryRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string name = 3;
+  optional string logo = 4;
+  optional string parentCategoryId = 5;
+  optional string updatedById = 6;
+}
+
+//==================== DeleteCategoryRequest ====================//
+message DeleteCategoryRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string deletedById = 3;
+}
+
+//========================================== Brand ==========================================//
+message BrandResponse {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  string createdById = 4;
+  string updatedById = 5;
+  string deletedById = 6;
+  string deletedAt = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+}
+
+//==================== CreateBrandRequest ====================//
+message CreateBrandRequest {
+  optional string processId = 1;
+  string name = 2;
+  string logo = 3;
+  optional string createdById = 4;
+}
+
+//==================== UpdateBrandRequest ====================//
+message UpdateBrandRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string name = 3;
+  optional string logo = 4;
+  optional string updatedById = 5;
+}
+
+//==================== DeleteBrandRequest ====================//
+message DeleteBrandRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string deletedById = 3;
+}
+
+//======================================== Attribute =========================================//
+message AttributeCategory {
+  bool isRequired = 1;
+  Category category = 2;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  string parentCategoryId = 4;
+}
+
+message AttributeResponse {
+  string id = 1;
+  string name = 2;
+  string url = 3;
+  string createdById = 4;
+  string updatedById = 5;
+  string deletedById = 6;
+  string deletedAt = 7;
+  string createdAt = 8;
+  string updatedAt = 9;
+}
+
+//==================== CreateAttributeRequest ====================//
+message CreateAttributeRequest {
+  optional string processId = 1;
+  string name = 2;
+  optional string createdById = 3;
+  optional string url = 4;
+}
+
+//==================== UpdateAttributeRequest ====================//
+message UpdateAttributeRequest {
+  optional string processId = 1;
+  string id = 2;
+  string name = 3;
+  optional string updatedById = 4;
+  optional string url = 5;
+}
+
+//==================== DeleteAttributeRequest ====================//
+message DeleteAttributeRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string deletedById = 3;
+}
+
+//======================================== ShipsFrom =========================================//
+message ShipsFromResponse {
+  string id = 1;
+  string address = 2;
+  string createdById = 3;
+  string updatedById = 4;
+  string deletedById = 5;
+  string deletedAt = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+//==================== CreateShipsFromRequest ====================//
+message CreateShipsFromRequest {
+  optional string processId = 1;
+  string address = 2;
+  optional string createdById = 3;
+}
+
+//==================== UpdateShipsFromRequest ====================//
+message UpdateShipsFromRequest {
+  optional string processId = 1;
+  string id = 2;
+  string address = 3;
+  optional string updatedById = 4;
+}
+
+//==================== DeleteShipsFromRequest ====================//
+message DeleteShipsFromRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string deletedById = 3;
+}
+
+//======================================== Product =========================================//
+message Variant {
+  string value = 1;
+  repeated string options = 2;
+}
+
+message AttributeProduct {
+  string name = 1;
+  string value = 2;
+}
+
+message SKU {
+  string id = 1;
+  string value = 2;
+  double price = 3;
+  int32 stock = 4;
+  string image = 5;
+}
+
+message SKUInput {
+  string value = 1;
+  double price = 2;
+  int32 stock = 3;
+  optional string image = 4;
+}
+
+//==================== CreateProductRequest ====================//
+message CreateProductRequest {
+  optional string processId = 1;
+  string name = 2;
+  double basePrice = 3;
+  double virtualPrice = 4;
+  optional string brandId = 5;
+  repeated string images = 6;
+  repeated Variant variants = 7;
+  optional string createdById = 8;
+  string shopId = 9;
+  string description = 10;
+  optional string sizeGuide = 11;
+  string shipsFromId = 12;
+  string status = 13;
+  repeated string categories = 14;
+  repeated SKUInput skus = 15;
+  repeated AttributeProduct attributes = 16;
+}
+
+//==================== ProductResponse ====================//
+message ProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string shipsFromId = 4;
+  optional string sizeGuide = 5;
+  double basePrice = 6;
+  double virtualPrice = 7;
+  string status = 8;
+  string brandId = 9;
+  repeated string images = 10;
+  repeated Variant variants = 11;
+  repeated string reviewIds = 12;
+  string shopId = 13;
+  int32 likeCount = 14;
+  int32 ratingCount = 15;
+  int32 ratingSum = 16;
+  double averageRate = 17;
+  repeated AttributeProduct attributes = 18;
+  int32 soldCount = 19;
+  int32 viewCount = 20;
+  bool isApproved = 21;
+  bool isHidden = 22;
+  int32 totalStock = 23;
+  repeated SKU skus = 24;
+  BrandInfo brand = 25;
+  repeated CategoryInfo categories = 26;
+  ShipsFromInfo shipsFrom = 27;
+  string createdById = 28;
+  string updatedById = 29;
+  string deletedById = 30;
+  string deletedAt = 31;
+  string createdAt = 32;
+  string updatedAt = 33;
+}
+
+message BrandInfo {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+}
+
+message CategoryInfo {
+  string id = 1;
+  string name = 2;
+  string logo = 3;
+  string parentCategoryId = 4;
+}
+
+message ShipsFromInfo {
+  string id = 1;
+  string address = 2;
+}
+
+//====================================================== SKU ======================================//
+//==================== GetSKURequest ====================//
+message GetSKURequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+//==================== SKUResponse ====================//
+message SKUResponse {
+  string id = 1;
+  string value = 2;
+  int32 price = 3;
+  int32 stock = 4;
+  string productId = 5;
+  string image = 6;
+  ProductResponse product = 7;
+  string createdById = 8;
+  string updatedById = 9;
+  string deletedById = 10;
+  string deletedAt = 11;
+  string createdAt = 12;
+  string updatedAt = 13;
+}
+
+
+//==================== ValidateProductsRequest ====================//
+message ValidateItems {
+  string productId = 1;
+  string skuId = 2;
+  int32 quantity = 3;
+  string cartItemId = 4;
+}
+
+message ValidateProductsRequest {
+  optional string processId = 1;
+  repeated ValidateItems productIds = 2;
+}
+
+//==================== ValidateProductsResponse ====================//
+message ValidateItemsResponse {
+  string productId = 1;
+  string skuId = 2;
+  string cartItemId = 3;
+  int32 quantity = 4;
+  bool isValid = 5;
+  int32 price = 6;
+  string productName = 7;
+  string productImage = 8;
+  string skuValue = 9;
+  string shopId = 10;
+  string error = 11;
+}
+
+
+message ValidateProductsResponse {
+  bool isValid = 1;
+  repeated ValidateItemsResponse items = 2;
+}

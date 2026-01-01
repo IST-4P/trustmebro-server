@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "MEDIA_SERVICE";
 
-/** ==================== Login ====================// */
+/** ==================== CreatePresignedUrl ====================// */
 export interface CreatePresignedUrlRequest {
   processId?: string | undefined;
   filename: string;

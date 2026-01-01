@@ -1,0 +1,54 @@
+generator client {
+    provider      = "prisma-client"
+    output        = "../src/generated/prisma-client"
+    moduleFormat  = "cjs"
+    binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+generator json {
+    provider = "prisma-json-types-generator"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model Cart {
+    id     String @id @default(uuid())
+    userId String
+
+    // Tổng số item
+    itemCount Int @default(0)
+
+    items CartItem[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId])
+    @@index([userId])
+}
+
+model CartItem {
+    id     String @id @default(uuid())
+    cartId String
+    cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+    productId String
+    skuId     String
+
+    shopId   String
+    quantity Int    @default(1)
+
+    // snapshot thông tin hiển thị (thumbnail, tên…)
+    productName  String
+    skuValue     String // “Đỏ - Size L”
+    productImage String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([cartId, productId, skuId])
+    @@index([cartId])
+    @@index([shopId])
+}

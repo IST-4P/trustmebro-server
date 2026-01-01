@@ -20,7 +20,6 @@ export interface StandardResponse<T = any> {
 }
 
 export class ExceptionInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(ExceptionInterceptor.name);
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>
@@ -39,6 +38,11 @@ export class ExceptionInterceptor implements NestInterceptor {
         const durationMs = Date.now() - startTime;
         const response = ctx.getResponse();
         const statusCode = response.statusCode;
+
+        // Trường hợp data là string, cho /metrics
+        if (typeof data === 'string') {
+          return data;
+        }
 
         // Data đã đúng format chuẩn
         if (this.isStandardResponse(data)) {
@@ -73,20 +77,32 @@ export class ExceptionInterceptor implements NestInterceptor {
         };
       }),
       catchError((error) => {
-        this.logger.error(error);
         const durationMs = Date.now() - startTime;
         const message =
+          error?.details ||
           error?.response?.message ||
           error.message ||
           error ||
           HTTP_MESSAGE.INTERNAL_SERVER_ERROR;
         const code =
           error?.response?.statusCode ||
-          error.status ||
+          error.code ||
           HttpStatus.INTERNAL_SERVER_ERROR;
+
+        const response = error?.response;
+        const data = response ? { ...response } : null;
+        if (data && typeof data === 'object') {
+          delete data.message;
+          delete data.statusCode;
+        }
+
+        // Logger.error(error);
+        Logger.error(
+          `HTTP >> Error process '${processId}' >> message: '${message}' >> code: '${code}'`
+        );
         throw new HttpException(
           {
-            data: null,
+            data,
             message,
             statusCode: code,
             duration: `${durationMs} ms`,
