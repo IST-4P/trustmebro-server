@@ -1,3 +1,4 @@
+import { RedisConfiguration } from '@common/configurations/redis.config';
 import { MetadataKeys } from '@common/constants/common.constant';
 import {
   USER_ACCESS_SERVICE_NAME,
@@ -5,7 +6,9 @@ import {
   UserAccessServiceClient,
   VerifyTokenResponse,
 } from '@common/interfaces/proto-types/user-access';
+import { generateTokenCacheKey } from '@common/utils/cache-key.util';
 import { getAccessToken } from '@common/utils/get-access.util';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import {
   CanActivate,
   ExecutionContext,
@@ -16,6 +19,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { Cache } from 'cache-manager';
 import { keyBy } from 'lodash';
 import { firstValueFrom } from 'rxjs';
 
@@ -25,7 +29,8 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
 
   constructor(
     @Inject(USER_ACCESS_SERVICE_PACKAGE_NAME)
-    private userAccessClient: ClientGrpc
+    private userAccessClient: ClientGrpc,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
   onModuleInit() {
@@ -43,6 +48,17 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
       throw new UnauthorizedException('Error.AccessTokenNotFound');
     }
 
+    const cacheKey = generateTokenCacheKey(accessToken);
+
+    const cacheData = await this.cacheManager.get<VerifyTokenResponse>(
+      cacheKey
+    );
+
+    if (cacheData) {
+      request[MetadataKeys.USER_DATA] = cacheData;
+      return cacheData;
+    }
+
     const processId = request[MetadataKeys.PROCESS_ID];
     try {
       const decodedAccessToken = await firstValueFrom(
@@ -51,6 +67,15 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
           processId,
           withPermissions: true,
         })
+      );
+
+      if (!decodedAccessToken.isValid) {
+        throw new UnauthorizedException('Error.InvalidAccessToken');
+      }
+      this.cacheManager.set(
+        cacheKey,
+        decodedAccessToken,
+        RedisConfiguration.CACHE_TOKEN_TTL
       );
       request[MetadataKeys.USER_DATA] = decodedAccessToken;
       return decodedAccessToken;

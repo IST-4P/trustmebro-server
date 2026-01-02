@@ -47,7 +47,8 @@ export interface RegisterRequest {
   gender: string;
 }
 
-export interface Empty {
+export interface MessageResponse {
+  message: string;
 }
 
 /** ==================== Verify Token ====================// */
@@ -107,6 +108,64 @@ export interface UserResponse {
   updatedAt: string;
 }
 
+/** ==================== CheckParticipantExists ====================// */
+export interface CheckParticipantExistsRequest {
+  processId?: string | undefined;
+  participantIds: string[];
+}
+
+export interface CheckParticipantExistsResponse {
+  count: number;
+}
+
+/** ==================== GetShop ====================// */
+export interface GetShopRequest {
+  processId?: string | undefined;
+  id: string;
+}
+
+export interface ShopResponse {
+  id: string;
+  name: string;
+  description: string;
+  ownerId: string;
+  logo?: string | undefined;
+  address?: string | undefined;
+  phone?: string | undefined;
+  rating: number;
+  isOpen: boolean;
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** ==================== CreateShop ====================// */
+export interface CreateShopRequest {
+  processId?: string | undefined;
+  name: string;
+  description: string;
+  ownerId: string;
+  logo?: string | undefined;
+  address?: string | undefined;
+  phone?: string | undefined;
+}
+
+/** ==================== UpdateShop ====================// */
+export interface UpdateShopRequest {
+  processId?: string | undefined;
+  id: string;
+  ownerId: string;
+  name?: string | undefined;
+  description?: string | undefined;
+  logo?: string | undefined;
+  address?: string | undefined;
+  phone?: string | undefined;
+  isOpen?: boolean | undefined;
+}
+
 export const USER_ACCESS_SERVICE_PACKAGE_NAME = "USER_ACCESS_SERVICE";
 
 export interface UserAccessServiceClient {
@@ -114,13 +173,21 @@ export interface UserAccessServiceClient {
 
   refreshToken(request: RefreshTokenRequest): Observable<LoginResponse>;
 
-  logout(request: LogoutRequest): Observable<Empty>;
+  logout(request: LogoutRequest): Observable<MessageResponse>;
 
-  register(request: RegisterRequest): Observable<Empty>;
+  register(request: RegisterRequest): Observable<MessageResponse>;
 
   verifyToken(request: VerifyTokenRequest): Observable<VerifyTokenResponse>;
 
   createUser(request: CreateUserRequest): Observable<UserResponse>;
+
+  checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
+
+  getShop(request: GetShopRequest): Observable<ShopResponse>;
+
+  createShop(request: CreateShopRequest): Observable<ShopResponse>;
+
+  updateShop(request: UpdateShopRequest): Observable<ShopResponse>;
 }
 
 export interface UserAccessServiceController {
@@ -128,15 +195,28 @@ export interface UserAccessServiceController {
 
   refreshToken(request: RefreshTokenRequest): Promise<LoginResponse> | Observable<LoginResponse> | LoginResponse;
 
-  logout(request: LogoutRequest): Promise<Empty> | Observable<Empty> | Empty;
+  logout(request: LogoutRequest): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
-  register(request: RegisterRequest): Promise<Empty> | Observable<Empty> | Empty;
+  register(request: RegisterRequest): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
   verifyToken(
     request: VerifyTokenRequest,
   ): Promise<VerifyTokenResponse> | Observable<VerifyTokenResponse> | VerifyTokenResponse;
 
   createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+
+  checkParticipantExists(
+    request: CheckParticipantExistsRequest,
+  ):
+    | Promise<CheckParticipantExistsResponse>
+    | Observable<CheckParticipantExistsResponse>
+    | CheckParticipantExistsResponse;
+
+  getShop(request: GetShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
+
+  createShop(request: CreateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
+
+  updateShop(request: UpdateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 }
 
 export function UserAccessServiceControllerMethods() {
@@ -148,6 +228,10 @@ export function UserAccessServiceControllerMethods() {
       "register",
       "verifyToken",
       "createUser",
+      "checkParticipantExists",
+      "getShop",
+      "createShop",
+      "updateShop",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

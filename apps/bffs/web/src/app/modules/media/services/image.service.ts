@@ -23,9 +23,6 @@ export class ImageService implements OnModuleInit {
   }
 
   async createPresignedUrl(data: CreatePresignedUrlRequest) {
-    const result = await firstValueFrom(
-      this.mediaService.createPresignedUrl(data)
-    );
-    return result;
+    return await firstValueFrom(this.mediaService.createPresignedUrl(data));
   }
 }

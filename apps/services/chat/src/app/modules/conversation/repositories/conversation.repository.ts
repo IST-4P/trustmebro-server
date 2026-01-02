@@ -1,4 +1,7 @@
-import { GetManyConversationsRequest } from '@common/interfaces/models/chat';
+import {
+  DeleteConversationRequest,
+  GetManyConversationsRequest,
+} from '@common/interfaces/models/chat';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/chat';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -50,12 +53,24 @@ export class ConversationRepository {
     });
   }
 
-  update(data: Prisma.ConversationUpdateInput) {
+  async delete(data: DeleteConversationRequest) {
+    const conversation = await this.prismaService.conversation.findFirst({
+      where: { id: data.id, participantIds: { has: data.userId } },
+    });
     return this.prismaService.conversation.update({
       where: {
-        id: data.id as string,
+        id: conversation.id,
       },
-      data,
+      data: {
+        readStatus: {
+          ...conversation.readStatus,
+          [data.userId]: {
+            isRead: true,
+            lastSeenMessageId: null,
+            deletedAt: new Date(),
+          },
+        },
+      },
     });
   }
 }

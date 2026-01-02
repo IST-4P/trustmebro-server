@@ -1,3 +1,4 @@
+import { IncreaseStockRequest } from '@common/interfaces/models/product';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/product';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -5,6 +6,52 @@ import { PrismaService } from '../../../prisma/prisma.service';
 @Injectable()
 export class SKURepository {
   constructor(private readonly prismaService: PrismaService) {}
+
+  getProduct(data: { id: string }) {
+    return this.prismaService.product.findUnique({
+      where: {
+        id: data.id,
+      },
+      include: {
+        skus: {
+          where: {
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+            value: true,
+            price: true,
+            stock: true,
+            image: true,
+          },
+        },
+        brand: {
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+          },
+        },
+        categories: {
+          where: {
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+            name: true,
+            logo: true,
+            parentCategory: true,
+          },
+        },
+        shipsFrom: {
+          select: {
+            id: true,
+            address: true,
+          },
+        },
+      },
+    });
+  }
 
   findById(data: Prisma.SKUWhereUniqueInput) {
     return this.prismaService.sKU.findUnique({
@@ -31,6 +78,25 @@ export class SKURepository {
           decrement: data.quantity,
         },
       },
+    });
+  }
+
+  increaseStock(data: IncreaseStockRequest) {
+    return this.prismaService.$transaction(async (tx) => {
+      await Promise.all(
+        data.items.map(async (item) => {
+          await tx.sKU.update({
+            where: {
+              id: item.skuId,
+            },
+            data: {
+              stock: {
+                increment: item.quantity,
+              },
+            },
+          });
+        })
+      );
     });
   }
 }

@@ -1,3 +1,4 @@
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   BrandResponse,
@@ -20,9 +21,16 @@ export class BrandService {
     processId,
     ...data
   }: CreateBrandRequest): Promise<BrandResponse> {
-    const createdBrand = await this.brandRepository.create(data);
-    this.kafkaService.emit(QueueTopics.BRAND.CREATE_BRAND, createdBrand);
-    return createdBrand;
+    try {
+      const createdBrand = await this.brandRepository.create(data);
+      this.kafkaService.emit(QueueTopics.BRAND.CREATE_BRAND, createdBrand);
+      return createdBrand;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new NotFoundException('Error.BrandAlreadyExists');
+      }
+      throw error;
+    }
   }
 
   async update({
@@ -34,7 +42,7 @@ export class BrandService {
       this.kafkaService.emit(QueueTopics.BRAND.UPDATE_BRAND, updatedBrand);
       return updatedBrand;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.BrandNotFound');
       }
       throw error;
@@ -47,7 +55,7 @@ export class BrandService {
       this.kafkaService.emit(QueueTopics.BRAND.DELETE_BRAND, deletedBrand);
       return deletedBrand;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.BrandNotFound');
       }
       throw error;

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SKUConsumerController } from './controllers/SKU-consumer.controller';
+import { SKUConsumerController } from './controllers/sku-consumer.controller';
 import { SKUGrpcController } from './controllers/sku-grpc.controller';
 import { SKURepository } from './repositories/sku.repository';
 import { SKUService } from './services/sku.service';

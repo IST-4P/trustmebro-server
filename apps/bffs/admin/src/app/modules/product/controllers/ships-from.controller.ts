@@ -17,8 +17,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ShipsFromReadService } from '../services/ships-from-read.service';
-import { ShipsFromWriteService } from '../services/ships-from-write.service';
+import { ShipsFromReadService } from '../services/ships-from/ships-from-read.service';
+import { ShipsFromWriteService } from '../services/ships-from/ships-from-write.service';
 
 @Controller('ships-from-admin')
 export class ShipsFromController {

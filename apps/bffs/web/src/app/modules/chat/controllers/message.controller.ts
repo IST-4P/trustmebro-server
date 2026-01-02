@@ -4,7 +4,7 @@ import { GetManyMessagesRequestDto } from '@common/interfaces/dtos/chat';
 import { Controller, Get, Query } from '@nestjs/common';
 import { MessageReadService } from '../services/message-read.service';
 
-@Controller('chat/messages')
+@Controller('chat/message')
 export class MessageController {
   constructor(private readonly messageReadService: MessageReadService) {}
 

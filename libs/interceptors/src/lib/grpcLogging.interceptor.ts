@@ -34,15 +34,21 @@ export class GrpcLoggingInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map((data) => toPlain(data)),
-      tap(() =>
-        Logger.log(
-          `gRPC >> End process: '${processId}' >> method: '${handlerName}' >> duration: '${
-            Date.now() - now
-          } ms'`
-        )
-      ),
+      tap((data) => {
+        const logMessage = `gRPC >> End process: '${processId}' >> method: '${handlerName}' >> duration: '${
+          Date.now() - now
+        } ms'`;
+        // ${
+        //   BaseConfiguration.NODE_ENV === 'development'
+        //     ? ` >> response: ${JSON.stringify(data)}`
+        //     : ''
+        // }
+
+        Logger.log(logMessage);
+      }),
       catchError((error) => {
         const duration = Date.now() - now;
+        // Logger.error(error);
         Logger.error(
           `gRPC >> Error process '${processId}' >> message: ${error.message} >> code: ${error.status} >> after: '${duration}ms'`
         );

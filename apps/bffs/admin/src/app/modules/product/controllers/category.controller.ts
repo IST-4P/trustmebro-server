@@ -17,8 +17,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { CategoryReadService } from '../services/category-read.service';
-import { CategoryWriteService } from '../services/category-write.service';
+import { CategoryReadService } from '../services/category/category-read.service';
+import { CategoryWriteService } from '../services/category/category-write.service';
 
 @Controller('category-admin')
 export class CategoryController {

@@ -4,7 +4,7 @@ import {
   LoginRequestDto,
   RegisterRequestDto,
   SendOtpRequestDto,
-} from '@common/interfaces/dtos/auth';
+} from '@common/interfaces/dtos/user-access';
 import {
   Body,
   Controller,
@@ -104,14 +104,8 @@ export class AuthController {
 
   @Post('register')
   @IsPublic()
-  async register(
-    @Body() body: RegisterRequestDto,
-    @ProcessId() processId: string
-  ) {
-    await this.authService.register({ ...body, processId });
-    return {
-      message: 'Message.RegisterSuccessfully',
-    };
+  register(@Body() body: RegisterRequestDto, @ProcessId() processId: string) {
+    return this.authService.register({ ...body, processId });
   }
 
   @Post('send-otp')

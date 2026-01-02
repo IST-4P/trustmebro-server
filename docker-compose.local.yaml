@@ -1,0 +1,101 @@
+services:
+  kafka:
+    container_name: kafka_server
+    image: bitnamilegacy/kafka
+    ports:
+      - "9092:9092" # host (NestJS local) sẽ dùng port này
+      - "29092:29092" # optional external listener
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093,EXTERNAL://0.0.0.0:29092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@localhost:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092,EXTERNAL://localhost:29092
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - ./docker/docker_data/kafka_data/bitnami_data:/bitnami/kafka
+    restart: unless-stopped
+    networks:
+      - trustmebro-network
+
+  redis:
+    image: redis:7
+    container_name: redis_server
+    ports:
+      - "127.0.0.1:6379:6379"
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - ./docker/docker_data/redis_data:/data
+    networks:
+      - trustmebro-network
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: loki
+    ports:
+      - "3501:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - trustmebro-network
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: promtail
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    networks:
+      - trustmebro-network
+    depends_on:
+      - loki
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "test -e /proc/1/cmdline && grep -q promtail /proc/1/cmdline",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    ports:
+      - "3500:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - trustmebro-network
+    volumes:
+      - ./docker/docker_data/grafana_data:/var/lib/grafana
+    depends_on:
+      - loki
+
+  # prometheus:
+  #   image: prom/prometheus:v3.8.0
+  #   container_name: prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #   networks:
+  #     - trustmebro-network
+  #   restart: unless-stopped
+
+networks:
+  trustmebro-network:
+    driver: bridge
+    name: trustmebro-network

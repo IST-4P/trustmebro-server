@@ -44,6 +44,20 @@ Thumbs.db
 .github/instructions/nx.instructions.md
 
 .env
+.env.production
+
+
+docker/**/docker_data
+
+.vs/
+**/.vs/
+
+*obj/
+*bin/
+
+docker-compose.local.yaml
+
+scripts
 
 docker/**/docker_data
 /src/generated/prisma

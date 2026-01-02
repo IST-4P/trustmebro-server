@@ -2,8 +2,8 @@ import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateConversationRequest,
+  DeleteConversationRequest,
   GetManyConversationsRequest,
-  UpdateConversationRequest,
 } from '@common/interfaces/models/chat';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
@@ -24,8 +24,8 @@ export class ConversationGrpcController {
     return this.conversationService.create(data);
   }
 
-  @GrpcMethod(GrpcServiceName.CHAT_SERVICE, 'UpdateConversation')
-  updateConversation(data: UpdateConversationRequest) {
-    return this.conversationService.update(data);
+  @GrpcMethod(GrpcServiceName.CHAT_SERVICE, 'DeleteConversation')
+  deleteConversation(data: DeleteConversationRequest) {
+    return this.conversationService.delete(data);
   }
 }

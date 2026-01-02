@@ -2,6 +2,7 @@ import {
   BrandSchema,
   CategorySchema,
   ProductSchema,
+  ProductViewSchema,
   ShipsFromSchema,
   SKUSchema,
 } from '@common/schemas/product';
@@ -11,7 +12,8 @@ import { PaginationQueryResponseSchema } from '../../common/pagination.model';
 export const GetManyProductsResponseSchema =
   PaginationQueryResponseSchema.extend({
     products: z.array(
-      ProductSchema.pick({
+      ProductViewSchema.pick({
+        id: true,
         name: true,
         basePrice: true,
         virtualPrice: true,
@@ -19,6 +21,7 @@ export const GetManyProductsResponseSchema =
         status: true,
         averageRate: true,
         soldCount: true,
+        shipsFromAddress: true,
       })
     ),
   });
@@ -52,6 +55,8 @@ export const ProductResponseSchema = ProductSchema.extend({
   }),
 });
 
+export const GetProductResponseSchema = ProductViewSchema;
+
 export const ValidateItemResultSchema = z.object({
   productId: z.string(),
   skuId: z.string(),
@@ -74,6 +79,7 @@ export const ValidateProductsResponseSchema = z.object({
 export type GetManyProductsResponse = z.infer<
   typeof GetManyProductsResponseSchema
 >;
+export type GetProductResponse = z.infer<typeof GetProductResponseSchema>;
 export type ProductResponse = z.infer<typeof ProductResponseSchema>;
 export type ValidateItemResult = z.infer<typeof ValidateItemResultSchema>;
 export type ValidateProductsResponse = z.infer<

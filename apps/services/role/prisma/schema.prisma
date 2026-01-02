@@ -1,9 +1,8 @@
 generator client {
-    provider     = "prisma-client"
-    // output       = "../../../../node_modules/@prisma-clients/role"
-    output       = "../src/generated/prisma-client"
-    moduleFormat = "cjs"
-    // binaryTargets = ["native", "debian-openssl-1.1.x"]
+    provider      = "prisma-client"
+    output        = "../src/generated/prisma-client"
+    moduleFormat  = "cjs"
+    binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {

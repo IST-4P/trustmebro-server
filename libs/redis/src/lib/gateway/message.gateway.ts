@@ -37,8 +37,10 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
 
   handleConnection(client: Socket) {
     const conversationId = client.handshake.query['conversationId'];
+
     if (conversationId) {
       const room = generateRoomConversation(conversationId as string);
+      console.log('✅ Join room: ', room);
       client.join(room);
     }
   }

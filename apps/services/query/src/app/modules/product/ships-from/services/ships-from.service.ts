@@ -1,3 +1,4 @@
+import { RedisConfiguration } from '@common/configurations/redis.config';
 import {
   GetManyShipsFromRequest,
   GetManyShipsFromResponse,
@@ -5,20 +6,40 @@ import {
   GetShipsFromResponse,
   ShipsFromResponse,
 } from '@common/interfaces/models/product';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { generateShipsFromCacheKey } from '@common/utils/cache-key.util';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { ShipsFromMapper } from '../mappers/ships-from.mapper';
 import { ShipsFromRepository } from '../repositories/ships-from.repository';
 
 @Injectable()
 export class ShipsFromService {
-  constructor(private readonly shipsFromRepository: ShipsFromRepository) {}
+  constructor(
+    private readonly shipsFromRepository: ShipsFromRepository,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {}
 
   async list(data: GetManyShipsFromRequest): Promise<GetManyShipsFromResponse> {
+    // Check cache
+    const cacheKey = generateShipsFromCacheKey();
+    const cacheData = await this.cacheManager.get<GetManyShipsFromResponse>(
+      cacheKey
+    );
+    if (cacheData) {
+      return cacheData;
+    }
+
     const shipsFromList = await this.shipsFromRepository.list(data);
-    if (shipsFromList.shipsFromList.length === 0) {
+    if (shipsFromList.length === 0) {
       throw new NotFoundException('Error.ShipsFromNotFound');
     }
-    return shipsFromList;
+    this.cacheManager.set(
+      cacheKey,
+      { shipsFromList },
+      RedisConfiguration.CACHE_SHIPS_FROM_TTL
+    );
+    return { shipsFromList };
   }
 
   async findById(

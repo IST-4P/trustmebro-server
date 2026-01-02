@@ -38,17 +38,11 @@ export interface GetCategoryResponse {
 /** ==================== GetManyCategoriesRequest ====================// */
 export interface GetManyCategoriesRequest {
   processId?: string | undefined;
-  page: number;
-  limit: number;
-  name?: string | undefined;
+  parentCategoryId?: string | undefined;
 }
 
 export interface GetManyCategoriesResponse {
   categories: GetCategoryResponse[];
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
 }
 
 /**
@@ -109,12 +103,17 @@ export interface GetAttributeResponse {
 /** ==================== GetManyAttributesRequest ====================// */
 export interface GetManyAttributesRequest {
   processId?: string | undefined;
+  page: number;
+  limit: number;
   name?: string | undefined;
-  categoryId?: string | undefined;
 }
 
 export interface GetManyAttributesResponse {
   attributes: GetAttributeResponse[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
 }
 
 /**
@@ -141,6 +140,91 @@ export interface GetManyShipsFromRequest {
 
 export interface GetManyShipsFromResponse {
   shipsFromList: GetShipsFromResponse[];
+}
+
+/** ====================================== Product ======================================// */
+export interface Variant {
+  value: string;
+  options: string[];
+}
+
+export interface AttributeProduct {
+  name: string;
+  value: string;
+}
+
+export interface SKU {
+  id: string;
+  value: string;
+  price: number;
+  stock: number;
+  image?: string | undefined;
+}
+
+/** ==================== GetProductRequest ====================// */
+export interface GetProductRequest {
+  processId?: string | undefined;
+  id: string;
+}
+
+export interface GetProductResponse {
+  id: string;
+  name: string;
+  description?: string | undefined;
+  shipsFromId: string;
+  shipsFromAddress: string;
+  brandId?: string | undefined;
+  brandName?: string | undefined;
+  brandLogo?: string | undefined;
+  categoryIds: string[];
+  categories: CategoryProduct[];
+  basePrice: number;
+  virtualPrice: number;
+  minPrice: number;
+  maxPrice: number;
+  totalStock: number;
+  isAvailable: boolean;
+  images: string[];
+  sizeGuide?: string | undefined;
+  variants: Variant[];
+  attributes: AttributeProduct[];
+  skus: SKU[];
+  reviewIds: string[];
+  ratingCount: number;
+  averageRate: number;
+  soldCount: number;
+  viewCount: number;
+  likeCount: number;
+  shopId: string;
+  status: string;
+  isApproved: boolean;
+  isHidden: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** ==================== GetManyProductsRequest ====================// */
+export interface GetManyProductsRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  name?: string | undefined;
+  status?: string | undefined;
+  shopId?: string | undefined;
+  brandIds: string[];
+  categories: string[];
+  minPrice?: number | undefined;
+  maxPrice?: number | undefined;
+  sortBy?: string | undefined;
+  orderBy?: string | undefined;
+}
+
+export interface GetManyProductsResponse {
+  products: GetProductResponse[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
 }
 
 /**
@@ -200,6 +284,10 @@ export interface QueryServiceClient {
 
   getManyShipsFrom(request: GetManyShipsFromRequest): Observable<GetManyShipsFromResponse>;
 
+  getProduct(request: GetProductRequest): Observable<GetProductResponse>;
+
+  getManyProducts(request: GetManyProductsRequest): Observable<GetManyProductsResponse>;
+
   getManyNotifications(request: GetManyNotificationsRequest): Observable<GetManyNotificationsResponse>;
 }
 
@@ -234,6 +322,14 @@ export interface QueryServiceController {
     request: GetManyShipsFromRequest,
   ): Promise<GetManyShipsFromResponse> | Observable<GetManyShipsFromResponse> | GetManyShipsFromResponse;
 
+  getProduct(
+    request: GetProductRequest,
+  ): Promise<GetProductResponse> | Observable<GetProductResponse> | GetProductResponse;
+
+  getManyProducts(
+    request: GetManyProductsRequest,
+  ): Promise<GetManyProductsResponse> | Observable<GetManyProductsResponse> | GetManyProductsResponse;
+
   getManyNotifications(
     request: GetManyNotificationsRequest,
   ): Promise<GetManyNotificationsResponse> | Observable<GetManyNotificationsResponse> | GetManyNotificationsResponse;
@@ -250,6 +346,8 @@ export function QueryServiceControllerMethods() {
       "getManyAttributes",
       "getShipsFrom",
       "getManyShipsFrom",
+      "getProduct",
+      "getManyProducts",
       "getManyNotifications",
     ];
     for (const method of grpcMethods) {

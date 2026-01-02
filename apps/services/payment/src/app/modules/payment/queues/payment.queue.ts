@@ -24,7 +24,9 @@ export class PaymentQueue extends WorkerHost {
         //   id: paymentId,
         // });
         await this.paymentService.delete({ id: paymentId });
-        this.kafkaService.emit(QueueTopics.ORDER.DELETE_ORDER, { paymentId });
+        this.kafkaService.emit(QueueTopics.PAYMENT.CANCEL_ORDER_BY_PAYMENT, {
+          paymentId,
+        });
         console.log('cancel: ', paymentId);
         return {};
       }

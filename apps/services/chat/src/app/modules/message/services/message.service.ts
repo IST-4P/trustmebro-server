@@ -34,7 +34,7 @@ export class MessageService {
     const createdMessage = await this.messageRepository.create(data);
     await this.redisService.publish(
       RedisChannel.UPDATE_CONVERSATION_CHANNEL,
-      JSON.stringify(createdMessage.participantIds)
+      JSON.stringify(createdMessage)
     );
     return createdMessage.message;
   }

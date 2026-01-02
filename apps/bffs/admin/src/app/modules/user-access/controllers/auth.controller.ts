@@ -1,6 +1,6 @@
 import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
-import { LoginRequestDto } from '@common/interfaces/dtos/auth';
+import { LoginRequestDto } from '@common/interfaces/dtos/user-access';
 import {
   Body,
   Controller,

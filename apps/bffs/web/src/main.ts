@@ -6,6 +6,7 @@
 import { AppConfiguration } from '@common/configurations/app.config';
 import { BaseConfiguration } from '@common/configurations/base.config';
 import { DefaultRoleNameValues } from '@common/constants/user.constant';
+import { PinoLogger } from '@common/observability/logger';
 import { WebSocketAdapter } from '@common/redis/websocket/websocket.adapter';
 import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { syncPermissions } from '@common/utils/sync-permissions.util';
@@ -14,12 +15,19 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+
+  app.useLogger(app.get(PinoLogger));
 
   const globalPrefix = BaseConfiguration.GLOBAL_PREFIX || 'api/v1';
   app.setGlobalPrefix(globalPrefix);
 
-  app.enableCors({ origin: '*' });
+  app.enableCors({
+    origin: true, // Cho phép tất cả origin khi dùng credentials
+    credentials: true, // Cho phép gửi cookies/credentials
+  });
 
   const config = new DocumentBuilder()
     .setTitle('TrustMeBro-Web API')

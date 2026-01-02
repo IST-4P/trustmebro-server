@@ -17,8 +17,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { AttributeReadService } from '../services/attribute-read.service';
-import { AttributeWriteService } from '../services/attribute-write.service';
+import { AttributeReadService } from '../services/attribute/attribute-read.service';
+import { AttributeWriteService } from '../services/attribute/attribute-write.service';
 
 @Controller('attribute-admin')
 export class AttributeController {

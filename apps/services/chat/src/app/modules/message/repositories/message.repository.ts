@@ -15,16 +15,18 @@ export class MessageRepository {
     const skip = (data.page - 1) * data.limit;
     const take = data.limit;
 
-    const conversation = await this.prismaService.conversation.findUnique({
+    const conversation = await this.prismaService.conversation.findFirst({
       where: {
         id: data.conversationId,
         participantIds: { has: data.senderId },
       },
-      select: { id: true },
     });
 
     const where: Prisma.MessageWhereInput = {
       conversationId: conversation.id,
+      createdAt: {
+        gte: conversation.readStatus?.[data.senderId]?.deletedAt || undefined,
+      },
     };
 
     const [totalItems, messages] = await Promise.all([
@@ -44,6 +46,25 @@ export class MessageRepository {
           type: true,
           metadata: true,
           createdAt: true,
+        },
+      }),
+      this.prismaService.conversation.update({
+        where: {
+          id: data.conversationId,
+        },
+        data: {
+          readStatus: {
+            ...conversation.readStatus,
+            [data.senderId]: {
+              isRead: true,
+              lastSeenMessageId: conversation.readStatus?.[data.senderId]
+                ?.lastSeenMessageId
+                ? conversation.lastMessageId
+                : null,
+              deletedAt:
+                conversation.readStatus?.[data.senderId]?.deletedAt || null,
+            },
+          },
         },
       }),
     ]);

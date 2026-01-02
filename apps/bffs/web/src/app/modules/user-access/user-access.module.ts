@@ -3,7 +3,9 @@ import { GrpcService } from '@common/constants/grpc.constant';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { AuthController } from './controllers/auth.controller';
+import { ShopController } from './controllers/shop.controller';
 import { AuthService } from './services/auth.service';
+import { ShopService } from './services/shop.service';
 
 @Module({
   imports: [
@@ -11,7 +13,7 @@ import { AuthService } from './services/auth.service';
       GrpcClientProvider(GrpcService.USER_ACCESS_SERVICE),
     ]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [AuthController, ShopController],
+  providers: [AuthService, ShopService],
 })
 export class UserAccessModule {}

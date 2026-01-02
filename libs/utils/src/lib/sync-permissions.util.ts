@@ -58,6 +58,12 @@ const executeSyncWithRetry = async (
             const method = String(
               layer.route?.stack[0].method
             ).toUpperCase() as keyof typeof HttpMethodValues;
+
+            // Skip wildcard routes or routes without valid HTTP methods
+            if (path.includes('*') || !HttpMethodValues[method]) {
+              return undefined;
+            }
+
             // Remove global prefix to get actual module name
             // e.g., /api/v1/auth/login -> auth
             const pathWithoutPrefix = path.replace(`/${globalPrefix}/`, '');

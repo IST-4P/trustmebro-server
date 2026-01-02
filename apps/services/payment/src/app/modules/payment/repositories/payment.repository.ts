@@ -1,3 +1,4 @@
+import { PaymentStatusValues } from '@common/constants/payment.constant';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/payment';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -35,6 +36,7 @@ export class PaymentRepository {
             deletedAt: null,
           },
           data: {
+            status: PaymentStatusValues.CANCELLED,
             deletedAt: new Date(),
             deletedById: data.deletedById as string,
           },

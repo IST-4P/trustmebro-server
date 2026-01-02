@@ -1,6 +1,5 @@
 import { CategorySchema } from '@common/schemas/product';
 import z from 'zod';
-import { PaginationQueryResponseSchema } from '../../common/pagination.model';
 
 export const CategoryResponseSchema = CategorySchema.extend({
   parentCategory: z
@@ -22,10 +21,9 @@ export const GetCategoryResponseSchema = z.object({
   updatedAt: z.date(),
 });
 
-export const GetManyCategoriesResponseSchema =
-  PaginationQueryResponseSchema.extend({
-    categories: z.array(GetCategoryResponseSchema),
-  });
+export const GetManyCategoriesResponseSchema = z.object({
+  categories: z.array(GetCategoryResponseSchema),
+});
 
 export type GetManyCategoriesResponse = z.infer<
   typeof GetManyCategoriesResponseSchema

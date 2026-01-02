@@ -1,21 +1,18 @@
-import { GrpcClientProvider } from '@common/configurations/grpc.config';
-import { GrpcService } from '@common/constants/grpc.constant';
 import { QueueService } from '@common/constants/queue.constant';
 import { KafkaModule } from '@common/kafka/kafka.module';
+import { LoggerModule } from '@common/observability/logger';
 import { Module } from '@nestjs/common';
-import { ClientsModule } from '@nestjs/microservices';
-import { OrderRepository } from './repositories/order.repository';
-import { OrderService } from './services/order.service';
+import { HealthModule } from './modules/health/health.module';
+import { OrderModule } from './modules/order/order.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      GrpcClientProvider(GrpcService.PRODUCT_SERVICE),
-      GrpcClientProvider(GrpcService.CART_SERVICE),
-    ]),
+    PrismaModule,
     KafkaModule.register(QueueService.ORDER_SERVICE),
+    LoggerModule.forRoot('order'),
+    HealthModule,
+    OrderModule,
   ],
-  controllers: [],
-  providers: [OrderRepository, OrderService],
 })
 export class AppModule {}

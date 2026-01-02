@@ -1,8 +1,8 @@
 generator client {
-    provider     = "prisma-client"
-    output       = "../src/generated/prisma-client"
-    moduleFormat = "cjs"
-    // binaryTargets = ["native", "debian-openssl-1.1.x"]
+    provider      = "prisma-client"
+    output        = "../src/generated/prisma-client"
+    moduleFormat  = "cjs"
+    binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 generator json {
@@ -27,9 +27,9 @@ model ProductView {
     shipsFromId      String
     shipsFromAddress String
 
-    brandId   String
-    brandName String
-    brandLogo String
+    brandId   String?
+    brandName String?
+    brandLogo String?
 
     // Lưu mảng các Category ID để filter nhanh: WHERE categoryIds ?& ['cat_1']
     categoryIds String[]
@@ -96,8 +96,8 @@ model CategoryView {
     createdAt DateTime
     updatedAt DateTime
 
-    @@index([parentId])
     @@index([name])
+    @@index([parentId])
     @@index([level])
 }
 
@@ -122,11 +122,9 @@ model BrandView {
 }
 
 model AttributeView {
-    id          String   @id
-    name        String   @unique
-    categoryIds String[]
-    /// [Categories]
-    categories  Json
+    id   String  @id
+    name String  @unique
+    url  String?
 
     createdAt DateTime
     updatedAt DateTime

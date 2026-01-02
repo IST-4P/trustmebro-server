@@ -1,11 +1,12 @@
 import { CategorySchema } from '@common/schemas/product';
 import z from 'zod';
-import { PaginationQueryRequestSchema } from '../../common/pagination.model';
 
-export const GetManyCategoriesRequestSchema =
-  PaginationQueryRequestSchema.extend({
-    name: CategorySchema.shape.name.optional(),
-  });
+export const GetManyCategoriesRequestSchema = z
+  .object({
+    processId: z.uuid(),
+    parentCategoryId: z.uuid(),
+  })
+  .partial();
 
 export const GetCategoryRequestSchema = CategorySchema.pick({
   id: true,

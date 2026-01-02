@@ -1,14 +1,12 @@
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   CreateProductRequest,
-  GetManyProductsRequest,
-  GetProductRequest,
   ProductResponse,
   ValidateProductsRequest,
   ValidateProductsResponse,
 } from '@common/interfaces/models/product';
 import { KafkaService } from '@common/kafka/kafka.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ProductRepository } from '../repositories/product.repository';
 
 @Injectable()
@@ -18,21 +16,21 @@ export class ProductService {
     private readonly kafkaService: KafkaService
   ) {}
 
-  async list(data: GetManyProductsRequest) {
-    const products = await this.productRepository.list(data);
-    if (products.totalItems === 0) {
-      throw new NotFoundException('Error.NoProductsFound');
-    }
-    return products;
-  }
+  // async list(data: GetManyProductsRequest) {
+  //   const products = await this.productRepository.list(data);
+  //   if (products.totalItems === 0) {
+  //     throw new NotFoundException('Error.NoProductsFound');
+  //   }
+  //   return products;
+  // }
 
-  async findById(data: GetProductRequest) {
-    const product = await this.productRepository.findById(data);
-    if (!product) {
-      throw new NotFoundException('Error.ProductNotFound');
-    }
-    return product;
-  }
+  // async findById(data: GetProductRequest) {
+  //   const product = await this.productRepository.findById(data);
+  //   if (!product) {
+  //     throw new NotFoundException('Error.ProductNotFound');
+  //   }
+  //   return product;
+  // }
 
   async create({
     processId,

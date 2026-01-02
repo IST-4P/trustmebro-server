@@ -1,3 +1,4 @@
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   AttributeResponse,
@@ -32,7 +33,7 @@ export class AttributeService {
       );
       return createdAttribute;
     } catch (error) {
-      if (error.code === 'P2002') {
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
         throw new ConflictException('Error.AttributeAlreadyExists');
       }
       throw error;
@@ -51,7 +52,7 @@ export class AttributeService {
       );
       return updatedAttribute;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.AttributeNotFound');
       }
       throw error;
@@ -73,7 +74,7 @@ export class AttributeService {
       );
       return deletedAttribute;
     } catch (error) {
-      if (error.code === 'P2025') {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.AttributeNotFound');
       }
       throw error;

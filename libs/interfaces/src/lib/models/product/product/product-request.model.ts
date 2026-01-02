@@ -10,11 +10,11 @@ import {
 } from '@common/schemas/product';
 import { generateSKUs } from '@common/utils/generate-skus.util';
 import z from 'zod';
-import { PaginationQueryRequestSchema } from '../../common/pagination.model';
 
-export const GetManyProductsRequestSchema = PaginationQueryRequestSchema.extend(
-  {
+export const GetManyProductsRequestSchema = z
+  .object({
     name: z.string(),
+    status: ProductStatusEnums,
 
     brandIds: z.preprocess((value) => {
       if (typeof value === 'string') {
@@ -28,22 +28,25 @@ export const GetManyProductsRequestSchema = PaginationQueryRequestSchema.extend(
       }
       return value;
     }, z.array(z.uuid())),
-    status: ProductStatusEnums,
 
     minPrice: z.coerce.number().int().positive(),
     maxPrice: z.coerce.number().int().positive(),
-    createdById: z.uuid(),
-  }
-)
+    shopId: z.uuid(),
+  })
   .partial()
   .extend({
     orderBy: OrderByEnums,
     sortBy: SortByEnums,
+
+    processId: z.uuid().optional(),
+    page: z.coerce.number().int().positive().default(1),
+    limit: z.coerce.number().int().positive().default(10),
   });
 
 export const GetProductRequestSchema = z.object({
   id: z.uuid(),
   isHidden: z.boolean().optional(),
+  processId: z.uuid().optional(),
 });
 
 export const UpsertSKUBodySchema = SKUSchema.pick({
