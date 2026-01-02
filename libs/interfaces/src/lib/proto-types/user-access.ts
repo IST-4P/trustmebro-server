@@ -118,6 +118,54 @@ export interface CheckParticipantExistsResponse {
   count: number;
 }
 
+/** ==================== GetShop ====================// */
+export interface GetShopRequest {
+  processId?: string | undefined;
+  id: string;
+}
+
+export interface ShopResponse {
+  id: string;
+  name: string;
+  description: string;
+  ownerId: string;
+  logo?: string | undefined;
+  address?: string | undefined;
+  phone?: string | undefined;
+  rating: number;
+  isOpen: boolean;
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** ==================== CreateShop ====================// */
+export interface CreateShopRequest {
+  processId?: string | undefined;
+  name: string;
+  description: string;
+  ownerId: string;
+  logo?: string | undefined;
+  address?: string | undefined;
+  phone?: string | undefined;
+}
+
+/** ==================== UpdateShop ====================// */
+export interface UpdateShopRequest {
+  processId?: string | undefined;
+  id: string;
+  ownerId: string;
+  name?: string | undefined;
+  description?: string | undefined;
+  logo?: string | undefined;
+  address?: string | undefined;
+  phone?: string | undefined;
+  isOpen?: boolean | undefined;
+}
+
 export const USER_ACCESS_SERVICE_PACKAGE_NAME = "USER_ACCESS_SERVICE";
 
 export interface UserAccessServiceClient {
@@ -134,6 +182,12 @@ export interface UserAccessServiceClient {
   createUser(request: CreateUserRequest): Observable<UserResponse>;
 
   checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
+
+  getShop(request: GetShopRequest): Observable<ShopResponse>;
+
+  createShop(request: CreateShopRequest): Observable<ShopResponse>;
+
+  updateShop(request: UpdateShopRequest): Observable<ShopResponse>;
 }
 
 export interface UserAccessServiceController {
@@ -157,6 +211,12 @@ export interface UserAccessServiceController {
     | Promise<CheckParticipantExistsResponse>
     | Observable<CheckParticipantExistsResponse>
     | CheckParticipantExistsResponse;
+
+  getShop(request: GetShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
+
+  createShop(request: CreateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
+
+  updateShop(request: UpdateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 }
 
 export function UserAccessServiceControllerMethods() {
@@ -169,6 +229,9 @@ export function UserAccessServiceControllerMethods() {
       "verifyToken",
       "createUser",
       "checkParticipantExists",
+      "getShop",
+      "createShop",
+      "updateShop",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

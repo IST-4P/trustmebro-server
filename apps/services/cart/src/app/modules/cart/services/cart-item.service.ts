@@ -4,6 +4,8 @@ import {
   AddCartResponse,
   DeleteCartItemRequest,
   DeleteCartResponse,
+  GetManyCartItemsRequest,
+  GetManyCartItemsResponse,
   UpdateCartItemRequest,
   ValidateCartItemsRequest,
 } from '@common/interfaces/models/cart';
@@ -77,9 +79,20 @@ export class CartItemService implements OnModuleInit {
     const { product } = sku;
 
     //Kiểm tra xem sản phẩm bị xoá hay có publish không
-    if (product && product.deletedAt !== null) {
+    if (product && product.deletedAt) {
       throw new NotFoundException('Error.ProductNotFound');
     }
+  }
+
+  async list({
+    processId,
+    ...data
+  }: GetManyCartItemsRequest): Promise<GetManyCartItemsResponse> {
+    const cartItems = await this.cartItemRepository.list(data);
+    if (cartItems.totalItems === 0) {
+      throw new NotFoundException('Error.CartItemsNotFound');
+    }
+    return cartItems;
   }
 
   async add({

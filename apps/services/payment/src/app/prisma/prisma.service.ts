@@ -7,7 +7,7 @@ import { PrismaClient } from '../../generated/prisma-client/client';
 export class PrismaService extends PrismaClient {
   constructor() {
     const adapter = new PrismaPg({
-      connectionString: DatabaseConfiguration.ORDER_SERVICE_DATABASE_URL,
+      connectionString: DatabaseConfiguration.PAYMENT_SERVICE_DATABASE_URL,
     });
     super({ adapter });
   }

@@ -16,7 +16,11 @@ export class HealthService {
 
   checkReadiness() {
     return this.healthLibService.checkReadiness({
-      grpcServices: [GrpcService.PRODUCT_SERVICE, GrpcService.CART_SERVICE],
+      grpcServices: [
+        GrpcService.PRODUCT_SERVICE,
+        GrpcService.CART_SERVICE,
+        GrpcService.ORDER_SERVICE,
+      ],
       redis: null,
       prismaClient: this.prismaService,
     });

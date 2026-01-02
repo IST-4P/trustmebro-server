@@ -20,4 +20,18 @@ export const OrderStatusEnums = z.enum([
   OrderStatusValues.REFUNDED,
 ]);
 
+export const OrderPaymentStatusValues = {
+  PENDING: 'PENDING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED',
+} as const;
+
+export const OrderPaymentStatusEnums = z.enum([
+  OrderPaymentStatusValues.PENDING,
+  OrderPaymentStatusValues.SUCCESS,
+  OrderPaymentStatusValues.FAILED,
+  OrderPaymentStatusValues.REFUNDED,
+]);
+
 export type OrderStatus = z.infer<typeof OrderStatusEnums>;

@@ -71,6 +71,10 @@ enum OrderQueueTopics {
   CREATE_PAYMENT_BY_ORDER = 'create_payment_by_order',
 }
 
+enum PaymentQueueTopics {
+  CANCEL_ORDER_BY_PAYMENT = 'cancel_order_by_payment',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -81,4 +85,5 @@ export const QueueTopics = {
   NOTIFICATION: NotificationQueueTopics,
   CART: CartQueueTopics,
   ORDER: OrderQueueTopics,
+  PAYMENT: PaymentQueueTopics,
 } as const;

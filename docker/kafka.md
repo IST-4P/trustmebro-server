@@ -18,3 +18,5 @@ kafka-topics.sh --create \
  --bootstrap-server localhost:9092 \
  --if-not-exists
 done
+
+kafka-topics.sh --create --topic cancel_order_by_payment --bootstrap-server localhost:9092

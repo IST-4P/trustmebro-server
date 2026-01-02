@@ -14,6 +14,7 @@ export interface CreateOrderRequest {
   processId?: string | undefined;
   userId: string;
   shippingFee: number;
+  discount: number;
   paymentMethod: string;
   receiver: Receiver | undefined;
   orders: OrderGroup[];
@@ -34,12 +35,49 @@ export interface CreateOrderResponse {
   orders: Order[];
 }
 
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  productId: string;
+  skuId: string;
+  shopId: string;
+  productName: string;
+  skuValue: string;
+  quantity: number;
+  price: number;
+  total: number;
+  productImage: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Timeline {
+  status: string;
+  at: string;
+}
+
 export interface Order {
   id: string;
+  code: string;
   userId: string;
   shopId: string;
-  grandTotal: number;
   status: string;
+  itemTotal: number;
+  shippingFee: number;
+  discount: number;
+  grandTotal: number;
+  receiver: Receiver | undefined;
+  paymentMethod: string;
+  paymentStatus: string;
+  paymentId: string;
+  timeline: Timeline[];
+  items: OrderItem[];
+  createdById?: string | undefined;
+  updatedById?: string | undefined;
+  deletedById?: string | undefined;
+  deletedAt?: string | undefined;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const ORDER_SERVICE_PACKAGE_NAME = "ORDER_SERVICE";

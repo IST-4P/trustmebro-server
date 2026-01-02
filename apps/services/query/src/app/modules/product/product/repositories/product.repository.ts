@@ -4,7 +4,6 @@ import {
 } from '@common/constants/product.constant';
 import {
   GetManyProductsRequest,
-  GetManyProductsResponse,
   GetProductRequest,
 } from '@common/interfaces/models/product';
 import { Injectable } from '@nestjs/common';
@@ -15,7 +14,7 @@ import { PrismaService } from '../../../../prisma/prisma.service';
 export class ProductRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async list(data: GetManyProductsRequest): Promise<GetManyProductsResponse> {
+  async list(data: GetManyProductsRequest) {
     const skip = (data.page - 1) * data.limit;
     const take = data.limit;
     let where: Prisma.ProductViewWhereInput = {
@@ -75,6 +74,7 @@ export class ProductRepository {
         skip,
         take,
         select: {
+          id: true,
           name: true,
           basePrice: true,
           virtualPrice: true,

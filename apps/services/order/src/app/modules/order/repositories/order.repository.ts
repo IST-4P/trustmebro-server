@@ -1,13 +1,45 @@
 import { PaymentStatusValues } from '@common/constants/payment.constant';
-import { CreateOrderRepository } from '@common/interfaces/models/order';
+import {
+  CreateOrderRepository,
+  GetManyOrdersRequest,
+} from '@common/interfaces/models/order';
 import { generateCode } from '@common/utils/order-code.util';
 import { Injectable } from '@nestjs/common';
-import { OrderStatus } from '@prisma-client/order';
+import { OrderStatus, Prisma } from '@prisma-client/order';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async list(data: GetManyOrdersRequest) {
+    const skip = (data.page - 1) * data.limit;
+    const take = data.limit;
+
+    const where: Prisma.OrderWhereInput = {
+      paymentId: data.paymentId ? data.paymentId : undefined,
+      status: data.status ? data.status : undefined,
+      userId: data.userId ? data.userId : undefined,
+    };
+
+    const [totalItems, orders] = await Promise.all([
+      this.prismaService.order.count({ where }),
+      this.prismaService.order.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+
+    return {
+      orders,
+      page: data.page,
+      limit: data.limit,
+      totalItems,
+      totalPages: Math.ceil(totalItems / data.limit),
+    };
+  }
 
   async create(data: CreateOrderRepository) {
     const orders = await this.prismaService.$transaction(async (tx) => {
@@ -28,7 +60,9 @@ export class OrderRepository {
 
               shippingFee: data.shippingFee,
 
-              grandTotal: itemTotal + data.shippingFee,
+              discount: data.discount,
+
+              grandTotal: itemTotal + data.shippingFee + data.discount,
 
               receiver: data.receiver,
               paymentMethod: data.paymentMethod,
@@ -101,5 +135,17 @@ export class OrderRepository {
     });
 
     return orders;
+  }
+
+  async listCancel(data: { paymentId?: string }) {
+    return this.prismaService.order.findMany({
+      where: {
+        paymentId: data.paymentId ? data.paymentId : undefined,
+      },
+      select: {
+        id: true,
+        userId: true,
+      },
+    });
   }
 }

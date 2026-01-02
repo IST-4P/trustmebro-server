@@ -88,9 +88,9 @@ model Shop {
     rating      Float   @default(0)
     isOpen      Boolean @default(true)
 
-    createdById Int?
-    updatedById Int?
-    deletedById Int?
+    createdById String?
+    updatedById String?
+    deletedById String?
 
     deletedAt DateTime?
     createdAt DateTime  @default(now())

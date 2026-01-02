@@ -60,7 +60,7 @@ export class CartItemRepository {
     const pageGroups = sortedGroups.slice(skip, skip + take);
 
     return {
-      data: pageGroups,
+      cartItems: pageGroups,
       page: data.page,
       limit: data.limit,
       totalItems: totalGroups,

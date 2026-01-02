@@ -89,7 +89,7 @@ export class AuthService implements OnModuleInit {
         withInheritance: false,
       })
     );
-    await this.userService.createUser({
+    await this.userService.create({
       id: userId,
       firstName: data.firstName,
       lastName: data.lastName,

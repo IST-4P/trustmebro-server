@@ -1,6 +1,9 @@
 import { QueueTopics } from '@common/constants/queue.constant';
 import { OrderItemResponse } from '@common/interfaces/models/order';
-import { GetSKURequest } from '@common/interfaces/models/product';
+import {
+  GetSKURequest,
+  IncreaseStockRequest,
+} from '@common/interfaces/models/product';
 import { KafkaService } from '@common/kafka/kafka.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SKURepository } from '../repositories/sku.repository';
@@ -34,10 +37,29 @@ export class SKUService {
             skuId: item.skuId,
             userId: data.userId,
           });
+
+          const product = await this.sKURepository.getProduct({
+            id: item.productId,
+          });
+          this.kafkaService.emit(QueueTopics.PRODUCT.UPDATE_PRODUCT, product);
         })
       );
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async increaseStock(data: IncreaseStockRequest) {
+    try {
+      await this.sKURepository.increaseStock(data);
+      await Promise.all(
+        data.items.map(async (item) => {
+          const product = await this.sKURepository.getProduct({
+            id: item.productId,
+          });
+          this.kafkaService.emit(QueueTopics.PRODUCT.UPDATE_PRODUCT, product);
+        })
+      );
+    } catch (error) {}
   }
 }

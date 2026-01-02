@@ -1,9 +1,9 @@
-import {
-  PaymentMethodValues,
-  PaymentStatusValues,
-} from '@common/constants/payment.constant';
+import { PaymentStatusValues } from '@common/constants/payment.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
-import { CreateOrderRequest } from '@common/interfaces/models/order';
+import {
+  CancelOrderRequest,
+  CreateOrderRequest,
+} from '@common/interfaces/models/order';
 import {
   CART_SERVICE_NAME,
   CART_SERVICE_PACKAGE_NAME,
@@ -16,7 +16,12 @@ import {
 } from '@common/interfaces/proto-types/product';
 import { KafkaService } from '@common/kafka/kafka.service';
 import { generateCode } from '@common/utils/order-code.util';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -78,6 +83,7 @@ export class OrderService implements OnModuleInit {
       userId,
       receiver: data.receiver,
       shippingFee: data.shippingFee,
+      discount: data.discount,
       paymentMethod: data.paymentMethod,
       paymentId: paymentId,
       orders: data.orders.map((order) => ({
@@ -92,18 +98,16 @@ export class OrderService implements OnModuleInit {
 
     const createdOrders = await this.orderRepository.create(mergedData);
 
-    if (data.paymentMethod === PaymentMethodValues.ONLINE) {
-      this.kafkaService.emit(QueueTopics.ORDER.CREATE_PAYMENT_BY_ORDER, {
-        id: paymentId,
-        processId,
-        userId,
-        code: generateCode('PAYMENT'),
-        orderId: createdOrders.map((order) => order.id),
-        method: data.paymentMethod,
-        status: PaymentStatusValues.PENDING,
-        amount: createdOrders.reduce((sum, order) => sum + order.grandTotal, 0),
-      });
-    }
+    this.kafkaService.emit(QueueTopics.ORDER.CREATE_PAYMENT_BY_ORDER, {
+      id: paymentId,
+      processId,
+      userId,
+      code: generateCode('PAYMENT'),
+      orderId: createdOrders.map((order) => order.id),
+      method: data.paymentMethod,
+      status: PaymentStatusValues.PENDING,
+      amount: createdOrders.reduce((sum, order) => sum + order.grandTotal, 0),
+    });
 
     await Promise.all(
       createdOrders.map((order) =>
@@ -113,18 +117,50 @@ export class OrderService implements OnModuleInit {
         })
       )
     );
-    return createdOrders;
+    return { orders: createdOrders };
   }
 
-  async cancelOrders(orderIds: string[], userId: string, processId: string) {
+  async cancelOrdersByPayment(data: { paymentId: string }) {
+    const orders = await this.orderRepository.listCancel({
+      paymentId: data.paymentId,
+    });
+
+    if (orders.length === 0) {
+      throw new NotFoundException('Error.OrdersNotFound');
+    }
+
+    const orderIds = orders.map((order) => order.id);
+    const userId = orders[0].userId;
+
     const cancelledOrders = await this.orderRepository.cancel(orderIds, userId);
 
     await Promise.all(
       cancelledOrders.map((order) =>
         this.kafkaService.emit(QueueTopics.ORDER.CANCEL_ORDER, {
-          orderId: order.id,
-          items: order.items,
-          userId: order.userId,
+          items: order.items.map((item) => ({
+            skuId: item.skuId,
+            quantity: item.quantity,
+            productId: item.productId,
+          })),
+        })
+      )
+    );
+
+    return cancelledOrders;
+  }
+
+  async cancelOrder({ processId, ...data }: CancelOrderRequest) {
+    const orderIds = [data.orderId];
+    const userId = data.userId;
+    const cancelledOrders = await this.orderRepository.cancel(orderIds, userId);
+
+    await Promise.all(
+      cancelledOrders.map((order) =>
+        this.kafkaService.emit(QueueTopics.ORDER.CANCEL_ORDER, {
+          items: order.items.map((item) => ({
+            skuId: item.skuId,
+            quantity: item.quantity,
+          })),
         })
       )
     );

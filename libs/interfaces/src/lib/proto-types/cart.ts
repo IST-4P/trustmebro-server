@@ -20,7 +20,7 @@ export interface AddCartItemRequest {
   quantity: number;
   skuValue: string;
   productName: string;
-  productImage: string;
+  productImage?: string | undefined;
 }
 
 export interface CartItemResponse {
@@ -53,12 +53,35 @@ export interface ValidateCartItemsResponse {
   cartItems: CartItemResponse[];
 }
 
+/** ==================== GetManyCartItems ====================// */
+export interface GetManyCartItemsRequest {
+  processId?: string | undefined;
+  userId: string;
+  page: number;
+  limit: number;
+}
+
+export interface ShopCartItems {
+  shopId: string;
+  cartItems: CartItemResponse[];
+}
+
+export interface GetManyCartItemsResponse {
+  cartItems: ShopCartItems[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
 export const CART_SERVICE_PACKAGE_NAME = "CART_SERVICE";
 
 export interface CartServiceClient {
   addCartItem(request: AddCartItemRequest): Observable<AddCartItemResponse>;
 
   validateCartItems(request: ValidateCartItemsRequest): Observable<ValidateCartItemsResponse>;
+
+  getManyCartItems(request: GetManyCartItemsRequest): Observable<GetManyCartItemsResponse>;
 }
 
 export interface CartServiceController {
@@ -69,11 +92,15 @@ export interface CartServiceController {
   validateCartItems(
     request: ValidateCartItemsRequest,
   ): Promise<ValidateCartItemsResponse> | Observable<ValidateCartItemsResponse> | ValidateCartItemsResponse;
+
+  getManyCartItems(
+    request: GetManyCartItemsRequest,
+  ): Promise<GetManyCartItemsResponse> | Observable<GetManyCartItemsResponse> | GetManyCartItemsResponse;
 }
 
 export function CartServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["addCartItem", "validateCartItems"];
+    const grpcMethods: string[] = ["addCartItem", "validateCartItems", "getManyCartItems"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("CartService", method)(constructor.prototype[method], method, descriptor);

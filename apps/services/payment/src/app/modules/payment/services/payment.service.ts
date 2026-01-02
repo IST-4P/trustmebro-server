@@ -5,7 +5,6 @@ import {
   DeletePaymentRequest,
   PaymentResponse,
 } from '@common/interfaces/models/payment';
-import { KafkaService } from '@common/kafka/kafka.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentProducer } from '../producers/payment.producer';
 import { PaymentRepository } from '../repositories/payment.repository';
@@ -14,7 +13,6 @@ import { PaymentRepository } from '../repositories/payment.repository';
 export class PaymentService {
   constructor(
     private readonly paymentRepository: PaymentRepository,
-    private readonly kafkaService: KafkaService,
     private readonly paymentProducer: PaymentProducer
   ) {}
 
@@ -23,7 +21,6 @@ export class PaymentService {
     ...data
   }: CreatePaymentRequest): Promise<PaymentResponse> {
     const createdPayment = await this.paymentRepository.create(data);
-    // this.kafkaService.emit(QueueTopics.BRAND.CREATE_BRAND, createdPayment);
     if (data.method === PaymentMethodValues.ONLINE) {
       await this.paymentProducer.cancelPaymentJob(createdPayment.id);
     }
