@@ -46,7 +46,7 @@ Thumbs.db
 .env
 .env.production
 
-docker-compose.local.yaml
+# docker-compose.local.yaml
 
 scripts
 

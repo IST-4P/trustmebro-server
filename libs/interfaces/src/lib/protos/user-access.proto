@@ -11,6 +11,10 @@ service UserAccessService {
 
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
+
+  rpc GetShop(GetShopRequest) returns (ShopResponse);
+  rpc CreateShop(CreateShopRequest) returns (ShopResponse);
+  rpc UpdateShop(UpdateShopRequest) returns (ShopResponse);
 }
 
 //==================== Login ====================//
@@ -120,4 +124,52 @@ message CheckParticipantExistsRequest {
 
 message CheckParticipantExistsResponse {
   int32 count = 1;
+}
+
+//==================== GetShop ====================//
+message GetShopRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message ShopResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string ownerId = 4;
+  optional string logo = 5;
+  optional string address = 6;
+  optional string phone = 7;
+  double rating = 8;
+  bool isOpen = 9;
+  string createdById = 10;
+  string updatedById = 11;
+  string deletedById = 12;
+  string deletedAt = 13;
+  string createdAt = 14;
+  string updatedAt = 15;
+}
+
+//==================== CreateShop ====================//
+message CreateShopRequest {
+  optional string processId = 1;
+  string name = 2;
+  string description = 3;
+  string ownerId = 4;
+  optional string logo = 5;
+  optional string address = 6;
+  optional string phone = 7;
+}
+
+//==================== UpdateShop ====================//
+message UpdateShopRequest {
+  optional string processId = 1;
+  string id = 2;
+  string ownerId = 3;
+  optional string name = 4;
+  optional string description = 5;
+  optional string logo = 6;
+  optional string address = 7;
+  optional string phone = 8;
+  optional bool isOpen = 9;
 }

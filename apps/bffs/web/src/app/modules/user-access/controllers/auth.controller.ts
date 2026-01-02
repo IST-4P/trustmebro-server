@@ -4,7 +4,7 @@ import {
   LoginRequestDto,
   RegisterRequestDto,
   SendOtpRequestDto,
-} from '@common/interfaces/dtos/auth';
+} from '@common/interfaces/dtos/user-access';
 import {
   Body,
   Controller,
