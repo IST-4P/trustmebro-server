@@ -39,11 +39,11 @@ namespace Report.Api.Mappings
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ReporterId, opt => opt.MapFrom(src => src.ReporterId))
                 .ForMember(dest => dest.TargetId, opt => opt.MapFrom(src => src.TargetId))
-                .ForMember(dest => dest.TargetType, opt => opt.MapFrom(src => MapReportTargetType((GrpcReportTargetType)src.TargetType)))
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => MapReportCategory((GrpcReportCategory)src.Category)))
+                .ForMember(dest => dest.TargetType, opt => opt.MapFrom(src => src.TargetType))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => MapReportStatus((GrpcReportStatus)src.Status)))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.AssignedAdminId, opt => opt.MapFrom(src => src.AssignedAdminId))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("o")))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.ToString("o")));
@@ -67,9 +67,9 @@ namespace Report.Api.Mappings
             CreateMap<Domain.Entities.ReportHistory, Grpc.ReportHistory>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ReportId, opt => opt.MapFrom(src => src.ReportId))
-                .ForMember(dest => dest.OldStatus, opt => opt.MapFrom(src => MapReportStatus((Grpc.ReportStatus)src.OldStatus)))
-                .ForMember(dest => dest.NewStatus, opt => opt.MapFrom(src => MapReportStatus((Grpc.ReportStatus)src.NewStatus)))
-                .ForMember(dest => dest.AdminId, opt => opt.MapFrom(src => src.AdminId))
+                .ForMember(dest => dest.OldStatus, opt => opt.MapFrom(src => src.OldStatus))
+                .ForMember(dest => dest.NewStatus, opt => opt.MapFrom(src => src.NewStatus))
+                .ForMember(dest => dest.AdminId, opt => opt.MapFrom(src => src.AdminId)) 
                 .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note ?? string.Empty))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("o")));
 
@@ -81,12 +81,27 @@ namespace Report.Api.Mappings
                 .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason ?? string.Empty))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("o")));
 
+            // DTO -> gRPC
+            CreateMap<ReportClientResponseDtos, Grpc.Report>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ReporterId, opt => opt.MapFrom(src => src.ReporterId))
+                .ForMember(dest => dest.TargetId, opt => opt.MapFrom(src => src.TargetId))
+                .ForMember(dest => dest.TargetType, opt => opt.MapFrom(src => src.TargetType)) 
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category))  
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))    
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.AssignedAdminId, opt => opt.MapFrom(_ => ""))    
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("o")))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.ToString("o")));
+
+
             // gRPC request to DTO 
             CreateMap<CreateReportRequest, ReportClientRequestDtos>()
                 .ForMember(dest => dest.ReporterId, opt => opt.MapFrom(src => src.ReporterId))
                 .ForMember(dest => dest.TargetId, opt => opt.MapFrom(src => src.TargetId))
-                .ForMember(dest => dest.TargetType, opt => opt.MapFrom(src => MapReportTargetType(src.TargetType)))
-                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => MapReportCategory(src.Category)))
+                .ForMember(dest => dest.TargetType, opt => opt.MapFrom(src => src.TargetType))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => (src.Category)))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
 
@@ -104,13 +119,13 @@ namespace Report.Api.Mappings
 
             CreateMap<UpdateReportStatusRequest, UpdateReportStatusDtos>()
                 .ForMember(dest => dest.AdminId, opt => opt.MapFrom(src => src.AdminId))
-                .ForMember(dest => dest.NewStatus, opt => opt.MapFrom(src => MapReportStatus(src.NewStatus)))
+                .ForMember(dest => dest.NewStatus, opt => opt.MapFrom(src => src.NewStatus))
                 .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note));
 
             CreateMap<CreateReportActionRequest, ReportAdminActionRequestDtos>()
                 .ForMember(dest => dest.ReportId, opt => opt.MapFrom(src => src.ReportId))
                 .ForMember(dest => dest.AdminId, opt => opt.MapFrom(src => src.AdminId))
-                .ForMember(dest => dest.ActionType, opt => opt.MapFrom(src => MapReportActionType(src.ActionType)))
+                .ForMember(dest => dest.ActionType, opt => opt.MapFrom(src => src.ActionType))
                 .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Reason));
         }
 

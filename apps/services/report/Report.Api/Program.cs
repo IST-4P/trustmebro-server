@@ -4,14 +4,27 @@ using Microsoft.EntityFrameworkCore;
 using Report.Api.Services;
 using Report.Api.Mappings;
 using Report.Application.Service;
-
-DotNetEnv.Env.Load();
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var envPath = Path.GetFullPath(
+    Path.Combine(builder.Environment.ContentRootPath, "..", ".env")
+);
+
+if (File.Exists(envPath))
+{
+  Env.Load(envPath);
+  Console.WriteLine($".env loaded from: {envPath}");
+}
+else
+{
+  Console.WriteLine($".env NOT FOUND at: {envPath}");
+}
+
 builder.WebHost.ConfigureKestrel(options =>
 {
-  options.ListenAnyIP(5005, listenOptions =>
+  options.ListenAnyIP(5010, listenOptions =>
   {
     listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
   });
@@ -85,30 +98,13 @@ else
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-  using (var scope = app.Services.CreateScope())
-  {
-    try
-    {
-      var dbContext = scope.ServiceProvider.GetRequiredService<ReportDbContext>();
-      await dbContext.Database.MigrateAsync();
-      Console.WriteLine("Database migration completed successfully.");
-    }
-    catch (Exception ex)
-    {
-      var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-      logger.LogError(ex, "An error occurred while migrating the database.");
-    }
-  }
-}
 
 app.MapGrpcService<ReportGrpcService>();
 
 app.MapGet("/", () => "Report gRPC Service is running. Use a gRPC client to communicate.");
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", service = "report-service" }));
 
-Console.WriteLine("Report gRPC Service listening on port 5005");
+Console.WriteLine("Report gRPC Service listening on port 5010");
 Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
 
 app.Run();

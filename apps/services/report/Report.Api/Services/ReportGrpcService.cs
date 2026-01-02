@@ -4,10 +4,14 @@ using Report.Application.Dtos;
 using Report.Application.Exceptions;
 using Report.Application.Interfaces;
 using Report.Grpc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Report.Api.Services
 {
-    public class ReportGrpcService : ReportService.ReportServiceBase
+  [AllowAnonymous]
+
+  public class ReportGrpcService : ReportService.ReportServiceBase
     {
         private readonly IReportService _reportService;
         private readonly IMapper _mapper;
@@ -50,7 +54,7 @@ namespace Report.Api.Services
                 throw new RpcException(new Status(StatusCode.Internal, "An error occurred while creating the report"));
             }
         }
-
+      
         public override async Task<GetReportResponse> GetReport(GetReportRequest request, ServerCallContext context)
         {
             try
@@ -191,9 +195,7 @@ namespace Report.Api.Services
             }
         }
 
-        public override async Task<AddEvidenceResponse> AddEvidence(
-            AddEvidenceRequest request,
-            ServerCallContext context)
+        public override async Task<AddEvidenceResponse> AddEvidence(AddEvidenceRequest request, ServerCallContext context)
         {
             try
             {
@@ -225,9 +227,7 @@ namespace Report.Api.Services
             }
         }
 
-        public override async Task<AddCommentResponse> AddComment(
-            AddCommentRequest request,
-            ServerCallContext context)
+        public override async Task<AddCommentResponse> AddComment(AddCommentRequest request,ServerCallContext context)
         {
             try
             {
@@ -259,9 +259,7 @@ namespace Report.Api.Services
             }
         }
 
-        public override async Task<UpdateReportStatusResponse> UpdateReportStatus(
-            UpdateReportStatusRequest request,
-            ServerCallContext context)
+        public override async Task<UpdateReportStatusResponse> UpdateReportStatus(UpdateReportStatusRequest request,ServerCallContext context)
         {
             try
             {
@@ -303,9 +301,7 @@ namespace Report.Api.Services
             }
         }
 
-        public override async Task<CreateReportActionResponse> CreateReportAction(
-            CreateReportActionRequest request,
-            ServerCallContext context)
+        public override async Task<CreateReportActionResponse> CreateReportAction(CreateReportActionRequest request,ServerCallContext context)
         {
             try
             {
