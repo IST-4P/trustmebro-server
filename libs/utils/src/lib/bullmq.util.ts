@@ -3,5 +3,5 @@ export const generateCancelPaymentJobId = (paymentId: string) => {
 };
 
 export const generateProcessVideoJobId = (videoId: string) => {
-  return `video:${videoId}`;
+  return `video-${videoId}`;
 };
