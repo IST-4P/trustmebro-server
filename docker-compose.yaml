@@ -129,8 +129,6 @@ services:
   media:
     image: caophi562005/trustmebro-media
     pull_policy: always
-    mem_limit: 256m
-    memswap_limit: 512m
     env_file:
       - .env
     ports:
