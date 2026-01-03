@@ -2,6 +2,7 @@ import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
   CreateVideoRequest,
   DeleteVideoRequest,
+  GetVideoRequest,
   UpdateVideoRequest,
   VideoResponse,
 } from '@common/interfaces/models/media';
@@ -11,6 +12,17 @@ import { VideoRepository } from '../repositories/video.repository';
 @Injectable()
 export class VideoService {
   constructor(private readonly videoRepository: VideoRepository) {}
+
+  async findById({
+    processId,
+    ...data
+  }: GetVideoRequest): Promise<VideoResponse> {
+    const video = await this.videoRepository.findById(data);
+    if (!video) {
+      throw new NotFoundException('Error.VideoNotFound');
+    }
+    return video;
+  }
 
   async create({
     processId,

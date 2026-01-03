@@ -1,6 +1,12 @@
 import { VideoSchema } from '@common/schemas/media';
 import z from 'zod';
 
+export const GetVideoRequestSchema = z.object({
+  id: z.uuid(),
+  status: VideoSchema.shape.status.optional(),
+  processId: z.uuid().optional(),
+});
+
 export const CreateVideoRequestSchema = VideoSchema.pick({
   id: true,
   storageBucket: true,
@@ -35,6 +41,7 @@ export const ProcessVideoRequestSchema = z.object({
   userId: z.uuid(),
 });
 
+export type GetVideoRequest = z.infer<typeof GetVideoRequestSchema>;
 export type CreateVideoRequest = z.infer<typeof CreateVideoRequestSchema>;
 export type UpdateVideoRequest = z.infer<typeof UpdateVideoRequestSchema>;
 export type DeleteVideoRequest = z.infer<typeof DeleteVideoRequestSchema>;

@@ -12,6 +12,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
+import { VideoRepository } from '../repositories/video.repository';
 import { VideoService } from './video.service';
 
 @Injectable()
@@ -19,7 +20,10 @@ export class FfmpegService {
   private S3Client: S3Client;
   private bucket: string;
 
-  constructor(private readonly videoService: VideoService) {
+  constructor(
+    private readonly videoService: VideoService,
+    private readonly videoRepository: VideoRepository
+  ) {
     const { client, bucket } = MinioProvider(MinioBucket.VIDEO_BUCKET);
     this.S3Client = client;
     this.bucket = bucket;
@@ -49,11 +53,15 @@ export class FfmpegService {
   }
 
   async processVideo(data: ProcessVideoRequest) {
-    await this.videoService.update({
-      id: data.id,
-      processId: data.processId,
-      status: VideoStatusValues.PROCESSING,
+    const claimed = await this.videoRepository.updateMany({
+      where: { id: data.id, status: VideoStatusValues.UPLOADED },
+      data: {
+        status: VideoStatusValues.PROCESSING,
+        updatedAt: new Date(),
+      },
     });
+
+    if (claimed.count === 0) return; // đã bị worker khác claim, hoặc đã READY/FAILED
 
     const name = `${data.storageKey.replace(/^tus\//, '')}`;
     const baseTmpDir = path.join(

@@ -6,6 +6,12 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class VideoRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  findById(data: Prisma.VideoWhereUniqueInput) {
+    return this.prismaService.video.findUnique({
+      where: { id: data.id },
+    });
+  }
+
   create(data: Prisma.VideoCreateInput) {
     return this.prismaService.video.create({
       data: {
@@ -36,6 +42,16 @@ export class VideoRepository {
         throw error;
       }
     }
+  }
+
+  updateMany(data: {
+    where: Prisma.VideoWhereInput;
+    data: Prisma.VideoUpdateManyMutationInput;
+  }) {
+    return this.prismaService.video.updateMany({
+      where: data.where,
+      data: data.data,
+    });
   }
 
   delete(data: Prisma.VideoWhereInput, isHard?: boolean) {

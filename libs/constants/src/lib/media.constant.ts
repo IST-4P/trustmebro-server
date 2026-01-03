@@ -29,3 +29,7 @@ export const VideoStatusEnums = z.enum([
   VideoStatusValues.FAILED,
   VideoStatusValues.DELETED,
 ]);
+
+export const VIDEO_QUEUE_NAME = 'video';
+
+export const PROCESS_VIDEO_JOB_NAME = 'process-video';

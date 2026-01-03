@@ -3,16 +3,14 @@ import {
   CANCEL_PAYMENT_JOB_NAME,
   PAYMENT_QUEUE_NAME,
 } from '@common/constants/payment.constant';
-import { generateCancelPaymentJobId } from '@common/utils/cancel-payment.util';
+import { generateCancelPaymentJobId } from '@common/utils/bullmq.util';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
 
 @Injectable()
 export class PaymentProducer {
-  constructor(@InjectQueue(PAYMENT_QUEUE_NAME) private paymentQueue: Queue) {
-    // paymentQueue.getJobs().then((job) => console.log(job))
-  }
+  constructor(@InjectQueue(PAYMENT_QUEUE_NAME) private paymentQueue: Queue) {}
 
   async cancelPaymentJob(paymentId: string) {
     console.log('add queue');

@@ -20,9 +20,6 @@ export class PaymentQueue extends WorkerHost {
     switch (job.name) {
       case CANCEL_PAYMENT_JOB_NAME: {
         const { paymentId } = job.data;
-        // await this.natsClient.publish('journey.events.booking-expired', {
-        //   id: paymentId,
-        // });
         await this.paymentService.delete({ id: paymentId });
         this.kafkaService.emit(QueueTopics.PAYMENT.CANCEL_ORDER_BY_PAYMENT, {
           paymentId,
