@@ -34,6 +34,9 @@ RUN ffmpeg -version && ffprobe -version
 
 RUN npm install --omit=dev
 
+COPY --from=builder /workspace/node_modules/prisma ./node_modules/prisma
+COPY --from=builder /workspace/node_modules/@prisma ./node_modules/@prisma
+
 COPY --from=builder /workspace/dist ./dist
 
 CMD ["node", "dist/apps/services/media/main.js"]
