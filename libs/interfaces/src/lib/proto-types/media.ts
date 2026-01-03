@@ -21,21 +21,77 @@ export interface CreatePresignedUrlResponse {
   url: string;
 }
 
+/** ==================== CreateVideo ====================// */
+export interface CreateVideoRequest {
+  processId?: string | undefined;
+  id: string;
+  storageBucket: string;
+  storageKey: string;
+  size: number;
+  userId: string;
+  filename: string;
+  filetype: string;
+}
+
+export interface VideoResponse {
+  id: string;
+  storageBucket: string;
+  storageKey: string;
+  size: number;
+  userId: string;
+  filename: string;
+  filetype: string;
+  status: string;
+  createdById: string;
+  updatedById: string;
+  deletedById: string;
+  deletedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** ==================== UpdateVideo ====================// */
+export interface UpdateVideoRequest {
+  processId?: string | undefined;
+  id: string;
+  status: string;
+  updatedById?: string | undefined;
+}
+
+/** ==================== DeleteVideo ====================// */
+export interface DeleteVideoRequest {
+  processId?: string | undefined;
+  id: string;
+  deletedById?: string | undefined;
+}
+
 export const MEDIA_SERVICE_PACKAGE_NAME = "MEDIA_SERVICE";
 
 export interface MediaServiceClient {
   createPresignedUrl(request: CreatePresignedUrlRequest): Observable<CreatePresignedUrlResponse>;
+
+  createVideo(request: CreateVideoRequest): Observable<VideoResponse>;
+
+  updateVideo(request: UpdateVideoRequest): Observable<VideoResponse>;
+
+  deleteVideo(request: DeleteVideoRequest): Observable<VideoResponse>;
 }
 
 export interface MediaServiceController {
   createPresignedUrl(
     request: CreatePresignedUrlRequest,
   ): Promise<CreatePresignedUrlResponse> | Observable<CreatePresignedUrlResponse> | CreatePresignedUrlResponse;
+
+  createVideo(request: CreateVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
+
+  updateVideo(request: UpdateVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
+
+  deleteVideo(request: DeleteVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
 }
 
 export function MediaServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPresignedUrl"];
+    const grpcMethods: string[] = ["createPresignedUrl", "createVideo", "updateVideo", "deleteVideo"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("MediaService", method)(constructor.prototype[method], method, descriptor);

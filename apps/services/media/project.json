@@ -60,6 +60,39 @@
           "buildTarget": "media:build:production"
         }
       }
+    },
+    "generate-prisma": {
+      "command": "prisma generate",
+      "options": {
+        "cwd": "{projectRoot}",
+        "inputs": ["prisma/schema.prisma"]
+      },
+      "cache": true
+    },
+    "push-prisma": {
+      "dependsOn": ["generate-prisma"],
+      "command": "prisma db push",
+      "options": {
+        "cwd": "{projectRoot}",
+        "inputs": ["prisma/schema.prisma"]
+      },
+      "cache": true
+    },
+    "push-prisma-acl": {
+      "dependsOn": ["generate-prisma"],
+      "command": "prisma db push --accept-data-loss",
+      "options": {
+        "cwd": "{projectRoot}",
+        "inputs": ["prisma/schema.prisma"]
+      },
+      "cache": true
+    },
+    "migrate-prisma": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx prisma migrate dev --name {args.name}",
+        "cwd": "{projectRoot}"
+      }
     }
   }
 }

@@ -1,6 +1,8 @@
 FROM node:22-slim AS builder
 
-RUN apt-get update -y && apt-get install -y openssl
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
 
@@ -16,7 +18,9 @@ RUN npx nx build media
 
 FROM node:22-slim AS runner
 
-RUN apt-get update -y && apt-get install -y openssl
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl ffmpeg \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -25,6 +29,8 @@ COPY --from=builder /workspace/dist/apps/services/media/package.json ./
 # Copy Prisma Client đã được generate từ builder stage
 
 ENV NODE_ENV=production
+
+RUN ffmpeg -version && ffprobe -version
 
 RUN npm install --omit=dev
 

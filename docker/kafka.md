@@ -11,7 +11,8 @@ create_ships_from update_ships_from delete_ships_from \
 send_otp \
 create_notification read_notification delete_notification \
 add_cart update_cart delete_cart \
-create_order update_order cancel_order create_payment_by_order
+create_order update_order cancel_order create_payment_by_order cancel_order_by_payment \
+video_uploaded
 do
 kafka-topics.sh --create \
  --topic "$t" \
@@ -19,4 +20,4 @@ kafka-topics.sh --create \
  --if-not-exists
 done
 
-kafka-topics.sh --create --topic cancel_order_by_payment --bootstrap-server localhost:9092
+kafka-topics.sh --create --topic video_uploaded --bootstrap-server localhost:9092

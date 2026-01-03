@@ -100,6 +100,63 @@ services:
       retries: 5
       start_period: 30s
 
+  tusd:
+    image: tusproject/tusd:latest
+    container_name: tusd_server
+    depends_on:
+      - minio
+    ports:
+      - "1080:1080"
+    environment:
+      AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY}
+      AWS_REGION: ${MINIO_REGION}
+    networks:
+      - trustmebro-network
+    command: >
+      -port=1080
+      -base-path=/files/
+      -s3-bucket=videos
+      -s3-endpoint=http://minio:9000
+      -s3-object-prefix=tus/
+      -cors-allow-credentials=true
+      -cors-allow-headers=Cookie
+      -cors-allow-origin=https://tusd.hacmieu.xyz
+      -hooks-http=http://web:3100/api/v1/media/tusd
+      -hooks-enabled-events=pre-create,post-create,post-finish
+    volumes:
+      - tusd_data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:1080/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  minio:
+    image: "ghcr.io/coollabsio/minio:RELEASE.2025-10-15T17-29-55Z"
+    command: 'server /data --console-address ":9001"'
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_SERVER_URL=${MINIO_SERVER_URL}
+      - MINIO_BROWSER_REDIRECT_URL=${MINIO_BROWSER_REDIRECT_URL}
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    networks:
+      - trustmebro-network
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test:
+        - CMD
+        - mc
+        - ready
+        - local
+      interval: 5s
+      timeout: 20s
+      retries: 10
+
   user-access:
     image: caophi562005/trustmebro-user-access
     pull_policy: always
@@ -145,7 +202,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'node -e "fetch(''http://localhost:3001/api/v1/health/liveness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+          'node -e "fetch(''http://localhost:3001/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
         ]
       interval: 60s
       timeout: 20s
@@ -426,4 +483,8 @@ volumes:
   redis_data:
     driver: local
   grafana_data:
+    driver: local
+  tusd_data:
+    driver: local
+  minio_data:
     driver: local

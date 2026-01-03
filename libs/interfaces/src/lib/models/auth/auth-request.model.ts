@@ -1,4 +1,7 @@
-import { UserSchema, VerificationCodeSchema } from '@common/schemas/user';
+import {
+  UserSchema,
+  VerificationCodeSchema,
+} from '@common/schemas/user-access';
 import z from 'zod';
 
 export const LoginRequestSchema = UserSchema.pick({

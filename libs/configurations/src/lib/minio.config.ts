@@ -7,10 +7,16 @@ export const MinioConfigurationSchema = z.object({
   MINIO_ACCESS_KEY: z.string(),
   MINIO_SECRET_KEY: z.string(),
   MINIO_IMAGE_BUCKET: z.string(),
+  MINIO_VIDEO_BUCKET: z.string(),
+  MINIO_VIDEO_MAX_SIZE: z.coerce.number(),
+  MINIO_DOWNLOAD_VIDEO_FOLDER: z.string(),
+  MINIO_THUMBNAIL_NAME: z.string(),
+  MINIO_VIDEO_NAME: z.string(),
 });
 
 export enum MinioBucket {
   IMAGE_BUCKET = 'IMAGE_BUCKET',
+  VIDEO_BUCKET = 'VIDEO_BUCKET',
 }
 
 const configServer = MinioConfigurationSchema.safeParse(process.env);

@@ -6,7 +6,9 @@
 import { AppConfiguration } from '@common/configurations/app.config';
 import { BaseConfiguration } from '@common/configurations/base.config';
 import { GrpcServerOptions } from '@common/configurations/grpc.config';
+import { KafkaServerOptions } from '@common/configurations/kafka.config';
 import { GrpcService } from '@common/constants/grpc.constant';
+import { QueueGroups } from '@common/constants/queue.constant';
 import { PinoLogger } from '@common/observability/logger';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -24,6 +26,7 @@ async function bootstrap() {
   const port = AppConfiguration.MEDIA_SERVICE_PORT || 3001;
 
   app.connectMicroservice(GrpcServerOptions(GrpcService.MEDIA_SERVICE));
+  app.connectMicroservice(KafkaServerOptions(QueueGroups.MEDIA_GROUP));
   await app.startAllMicroservices();
 
   await app.listen(port);

@@ -1,5 +1,5 @@
-import { ShopSchema } from '@common/schemas/user';
-import { UserSchema } from '@common/schemas/user/user.schema';
+import { ShopSchema } from '@common/schemas/user-access';
+import { UserSchema } from '@common/schemas/user-access/user.schema';
 import z from 'zod';
 
 export const UserResponseSchema = UserSchema;

@@ -15,6 +15,7 @@ export enum QueueGroups {
   CART_GROUP = 'cart-group',
   ORDER_GROUP = 'order-group',
   PAYMENT_GROUP = 'payment-group',
+  MEDIA_GROUP = 'media-group',
 }
 
 enum CategoryQueueTopics {
@@ -75,6 +76,10 @@ enum PaymentQueueTopics {
   CANCEL_ORDER_BY_PAYMENT = 'cancel_order_by_payment',
 }
 
+enum MediaQueueTopics {
+  VIDEO_UPLOADED = 'video_uploaded',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -86,4 +91,5 @@ export const QueueTopics = {
   CART: CartQueueTopics,
   ORDER: OrderQueueTopics,
   PAYMENT: PaymentQueueTopics,
+  MEDIA: MediaQueueTopics,
 } as const;

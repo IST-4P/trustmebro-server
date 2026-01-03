@@ -12,11 +12,11 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@localhost:9093
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092,EXTERNAL://localhost:29092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       - ALLOW_PLAINTEXT_LISTENER=yes
     volumes:
-      - ./docker/docker_data/kafka_data/bitnami_data:/bitnami/kafka
+      - kafka_data:/bitnami/kafka
     restart: unless-stopped
     networks:
       - trustmebro-network
@@ -78,9 +78,66 @@ services:
     networks:
       - trustmebro-network
     volumes:
-      - ./docker/docker_data/grafana_data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
     depends_on:
       - loki
+
+  tusd:
+    image: tusproject/tusd:latest
+    container_name: tusd_server
+    depends_on:
+      - minio
+    ports:
+      - "1080:1080"
+    environment:
+      AWS_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_SECRET_KEY}
+      AWS_REGION: ${MINIO_REGION}
+    networks:
+      - trustmebro-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      -port=1080
+      -base-path=/files/
+      -s3-bucket=videos
+      -s3-endpoint=http://minio:9000
+      -s3-object-prefix=tus/
+      -cors-allow-credentials=true
+      -cors-allow-headers=Cookie
+      -cors-allow-origin=http://localhost:5173
+      -hooks-http=http://host.docker.internal:3100/api/v1/media/tusd
+      -hooks-enabled-events=pre-create,post-create,post-finish
+    volumes:
+      - ./docker/docker_data/tusd_data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:1080/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  minio:
+    image: "ghcr.io/coollabsio/minio:RELEASE.2025-10-15T17-29-55Z"
+    command: 'server /data --console-address ":9001"'
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    networks:
+      - trustmebro-network
+    volumes:
+      - ./docker/docker_data/minio-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - mc
+        - ready
+        - local
+      interval: 5s
+      timeout: 20s
+      retries: 10
 
   # prometheus:
   #   image: prom/prometheus:v3.8.0
@@ -95,7 +152,32 @@ services:
   #     - trustmebro-network
   #   restart: unless-stopped
 
+  media:
+    image: caophi562005/trustmebro-media:local
+    container_name: trustmebro-media
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - KAFKA_URL=kafka:9092
+      - MINIO_ENDPOINT=http://minio:9000
+    networks:
+      - trustmebro-network
+    depends_on:
+      - kafka
+      - redis
+      - minio
+    restart: unless-stopped
+
 networks:
   trustmebro-network:
     driver: bridge
     name: trustmebro-network
+
+volumes:
+  kafka_data:
+    driver: local
+  grafana_data:
+    driver: local
