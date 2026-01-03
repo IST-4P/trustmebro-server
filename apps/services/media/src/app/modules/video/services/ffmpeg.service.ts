@@ -8,7 +8,7 @@ import { VideoStatusValues } from '@common/constants/media.constant';
 import { ProcessVideoRequest } from '@common/interfaces/models/media';
 import { makeThumbnail, transcodeToHlsAbr } from '@common/utils/hls.util';
 import { downloadToFile, uploadDirectory } from '@common/utils/minio.utils';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -68,6 +68,9 @@ export class FfmpegService {
     try {
       // Download
       const inputPath = await this.downloadVideo(data.storageKey);
+      Logger.log(`==========> Downloaded video to ${inputPath}`);
+      Logger.log(`==========> Start processing video ID=${data.id}`);
+      Logger.log(`==========> Output dir: ${outDir}`);
 
       // Transcode HLS ABR
       await transcodeToHlsAbr(inputPath, outDir);
@@ -94,7 +97,7 @@ export class FfmpegService {
       });
     } finally {
       // Cleanup
-      await fs.promises.rm(baseTmpDir, { recursive: true, force: true });
+      // await fs.promises.rm(baseTmpDir, { recursive: true, force: true });
     }
   }
 }
