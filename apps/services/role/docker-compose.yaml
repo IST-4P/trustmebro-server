@@ -8,9 +8,9 @@ services:
       - .env
     # ports:
     #   - "3002:3002"
-    depends_on:
-      kafka:
-        condition: service_healthy
+    # depends_on:
+    #   kafka:
+    #     condition: service_healthy
     restart: unless-stopped
     networks:
       - trustmebro-network
