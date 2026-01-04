@@ -8,6 +8,7 @@ import {
 import {
   BadRequestException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
@@ -80,11 +81,15 @@ export class PlaybackService {
       });
 
       if (payload.videoId !== videoId) {
+        Logger.error(
+          `Token videoId ${payload.videoId} does not match requested videoId ${videoId}`
+        );
         throw new UnauthorizedException('Error.TokenVideoMismatch');
       }
 
       return payload; // OK
     } catch (error) {
+      Logger.error(`Playback token verification failed: ${error.message}`);
       throw new UnauthorizedException('Error.InvalidPlaybackToken');
     }
   }

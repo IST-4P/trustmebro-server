@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Headers,
+  Logger,
   Query,
   Res,
   UnauthorizedException,
@@ -20,6 +21,7 @@ export class PlaybackController {
     @Res() res: Response
   ) {
     if (!token) {
+      Logger.error('Missing authorization header in playback verification');
       throw new UnauthorizedException('Error.MissingAuthorizationHeader');
     }
     await this.playbackService.verifyToken(
