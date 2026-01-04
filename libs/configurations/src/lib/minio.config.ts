@@ -12,6 +12,8 @@ export const MinioConfigurationSchema = z.object({
   MINIO_DOWNLOAD_VIDEO_FOLDER: z.string(),
   MINIO_THUMBNAIL_NAME: z.string(),
   MINIO_VIDEO_NAME: z.string(),
+  MINIO_PLAYBACK_URL: z.string(),
+  MINIO_PLAYBACK_TOKEN_TTL: z.coerce.number(),
 });
 
 export enum MinioBucket {

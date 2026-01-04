@@ -29,7 +29,6 @@ export interface CreateVideoRequest {
   storageKey: string;
   size: number;
   userId: string;
-  filename: string;
   filetype: string;
 }
 
@@ -65,6 +64,20 @@ export interface DeleteVideoRequest {
   deletedById?: string | undefined;
 }
 
+/** ============================================= GetPlayback ============================================= */
+export interface GetPlaybackRequest {
+  processId?: string | undefined;
+  userId: string;
+  videoId: string;
+}
+
+export interface PlaybackResponse {
+  manifestUrl: string;
+  thumbnailUrl: string;
+  playbackToken: string;
+  expiresAt: number;
+}
+
 export const MEDIA_SERVICE_PACKAGE_NAME = "MEDIA_SERVICE";
 
 export interface MediaServiceClient {
@@ -75,6 +88,8 @@ export interface MediaServiceClient {
   updateVideo(request: UpdateVideoRequest): Observable<VideoResponse>;
 
   deleteVideo(request: DeleteVideoRequest): Observable<VideoResponse>;
+
+  getPlayback(request: GetPlaybackRequest): Observable<PlaybackResponse>;
 }
 
 export interface MediaServiceController {
@@ -87,11 +102,13 @@ export interface MediaServiceController {
   updateVideo(request: UpdateVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
 
   deleteVideo(request: DeleteVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
+
+  getPlayback(request: GetPlaybackRequest): Promise<PlaybackResponse> | Observable<PlaybackResponse> | PlaybackResponse;
 }
 
 export function MediaServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPresignedUrl", "createVideo", "updateVideo", "deleteVideo"];
+    const grpcMethods: string[] = ["createPresignedUrl", "createVideo", "updateVideo", "deleteVideo", "getPlayback"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("MediaService", method)(constructor.prototype[method], method, descriptor);

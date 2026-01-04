@@ -45,6 +45,9 @@ Thumbs.db
 
 .env
 .env.production
+playback_private_pkcs8.pem
+playback_private.pem
+playback_public.pem
 
 # docker-compose.local.yaml
 

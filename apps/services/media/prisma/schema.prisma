@@ -24,7 +24,6 @@ model Video {
     storageKey    String
     size          Int
     userId        String
-    filename      String
     filetype      String
     status        VideoStatus @default(UPLOADING)
 

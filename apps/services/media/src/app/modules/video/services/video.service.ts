@@ -17,7 +17,7 @@ export class VideoService {
     processId,
     ...data
   }: GetVideoRequest): Promise<VideoResponse> {
-    const video = await this.videoRepository.findById(data);
+    const video = await this.videoRepository.find(data);
     if (!video) {
       throw new NotFoundException('Error.VideoNotFound');
     }

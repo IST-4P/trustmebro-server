@@ -8,6 +8,8 @@ service MediaService {
   rpc CreateVideo(CreateVideoRequest) returns (VideoResponse);
   rpc UpdateVideo(UpdateVideoRequest) returns (VideoResponse);
   rpc DeleteVideo(DeleteVideoRequest) returns (VideoResponse);
+
+  rpc GetPlayback(GetPlaybackRequest) returns (PlaybackResponse);
 }
 
 //==================== CreatePresignedUrl ====================//
@@ -29,8 +31,7 @@ message CreateVideoRequest {
   string storageKey = 4;
   int32 size = 5;
   string userId = 6;
-  string filename = 7;
-  string filetype = 8;
+  string filetype = 7;
 }
 
 message VideoResponse {
@@ -65,3 +66,17 @@ message DeleteVideoRequest {
   optional string deletedById = 3;
 }
 
+
+//============================================= GetPlayback =============================================
+message GetPlaybackRequest {
+  optional string processId = 1;
+  string userId = 2;
+  string videoId = 3;
+}
+
+message PlaybackResponse {
+  string manifestUrl = 1;
+  string thumbnailUrl = 2;
+  string playbackToken = 3;
+  int32 expiresAt = 4;
+}

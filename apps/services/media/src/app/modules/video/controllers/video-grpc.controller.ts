@@ -12,20 +12,20 @@ import { VideoService } from '../services/video.service';
 @Controller()
 @UseInterceptors(GrpcLoggingInterceptor)
 export class VideoGrpcController {
-  constructor(private readonly brandService: VideoService) {}
+  constructor(private readonly videoService: VideoService) {}
 
   @GrpcMethod(GrpcServiceName.MEDIA_SERVICE, 'CreateVideo')
   createVideo(data: CreateVideoRequest) {
-    return this.brandService.create(data);
+    return this.videoService.create(data);
   }
 
   @GrpcMethod(GrpcServiceName.MEDIA_SERVICE, 'UpdateVideo')
   updateVideo(data: UpdateVideoRequest) {
-    return this.brandService.update(data);
+    return this.videoService.update(data);
   }
 
   @GrpcMethod(GrpcServiceName.MEDIA_SERVICE, 'DeleteVideo')
   deleteVideo(data: DeleteVideoRequest) {
-    return this.brandService.delete(data);
+    return this.videoService.delete(data);
   }
 }

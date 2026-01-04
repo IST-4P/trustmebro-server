@@ -6,9 +6,9 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class VideoRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  findById(data: Prisma.VideoWhereUniqueInput) {
+  find(data: Prisma.VideoWhereUniqueInput) {
     return this.prismaService.video.findUnique({
-      where: { id: data.id },
+      where: data,
     });
   }
 

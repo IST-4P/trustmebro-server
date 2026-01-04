@@ -13,7 +13,6 @@ export const CreateVideoRequestSchema = VideoSchema.pick({
   storageKey: true,
   size: true,
   userId: true,
-  filename: true,
   filetype: true,
 }).extend({
   processId: z.uuid().optional(),

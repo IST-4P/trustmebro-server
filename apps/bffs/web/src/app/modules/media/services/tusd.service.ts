@@ -99,14 +99,14 @@ export class TusdService {
     processId: string;
     userId: string;
   }) {
+    const id = body.Event.Upload.Storage.Key.replace(/^tus\//, '');
     return this.videoService.createVideo({
       processId,
       userId,
-      id: body.Event.Upload.ID,
+      id,
       storageBucket: body.Event.Upload.Storage.Bucket,
       storageKey: body.Event.Upload.Storage.Key,
       size: body.Event.Upload.Size,
-      filename: body.Event.Upload.MetaData.filename,
       filetype: body.Event.Upload.MetaData.filetype,
     });
   }
@@ -120,9 +120,10 @@ export class TusdService {
     processId: string;
     userId: string;
   }) {
+    const id = body.Event.Upload.Storage.Key.replace(/^tus\//, '');
     const updatedVideo = await this.videoService.updateVideo({
       processId,
-      id: body.Event.Upload.ID,
+      id,
       status: VideoStatusValues.UPLOADED,
       updatedById: userId,
     });
