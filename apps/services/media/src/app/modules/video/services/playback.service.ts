@@ -5,7 +5,11 @@ import {
   GetPlaybackRequest,
   GetPlaybackResponse,
 } from '@common/interfaces/models/media';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { SignJWT, importPKCS8, importSPKI, jwtVerify } from 'jose';
 import { VideoRepository } from '../repositories/video.repository';
 
@@ -76,12 +80,12 @@ export class PlaybackService {
       });
 
       if (payload.videoId !== videoId) {
-        throw new BadRequestException('Error.TokenVideoMismatch');
+        throw new UnauthorizedException('Error.TokenVideoMismatch');
       }
 
       return payload; // OK
     } catch (error) {
-      throw new BadRequestException('Error.InvalidPlaybackToken');
+      throw new UnauthorizedException('Error.InvalidPlaybackToken');
     }
   }
 }

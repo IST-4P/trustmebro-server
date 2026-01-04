@@ -3,8 +3,10 @@ import {
   Get,
   Headers,
   Query,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { PlaybackService } from '../services/playback.service';
 
 @Controller('playback')
@@ -14,14 +16,16 @@ export class PlaybackController {
   @Get('verify')
   async verifyPlayback(
     @Query() query: { videoId: string },
-    @Headers('authorization') token: string
+    @Headers('authorization') token: string,
+    @Res() res: Response
   ) {
     if (!token) {
       throw new UnauthorizedException('Error.MissingAuthorizationHeader');
     }
-    return this.playbackService.verifyToken(
+    await this.playbackService.verifyToken(
       token.replace('Bearer ', ''),
       query.videoId
     );
+    return res.status(200).send();
   }
 }
