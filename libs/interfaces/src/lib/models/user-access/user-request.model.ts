@@ -6,6 +6,7 @@ export const GetUserRequestSchema = z
   .object({
     id: z.uuid(),
     email: z.email(),
+    phoneNumber: z.string(),
   })
   .partial();
 

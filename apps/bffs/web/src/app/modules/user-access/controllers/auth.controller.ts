@@ -2,9 +2,10 @@ import { BaseConfiguration } from '@common/configurations/base.config';
 import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import {
+  ChangePasswordRequestDto,
   LoginRequestDto,
   RegisterRequestDto,
-  SendOtpRequestDto,
+  SendVerificationCodeRequestDto,
 } from '@common/interfaces/dtos/user-access';
 import {
   Body,
@@ -111,12 +112,21 @@ export class AuthController {
     return this.authService.register({ ...body, processId });
   }
 
+  @Post('change-password')
+  @IsPublic()
+  changePassword(
+    @Body() body: ChangePasswordRequestDto,
+    @ProcessId() processId: string
+  ) {
+    return this.authService.changePassword({ ...body, processId });
+  }
+
   @Post('send-otp')
   @IsPublic()
-  sendOtp(@Body() body: SendOtpRequestDto) {
-    this.authService.sendOtp(body);
+  sendVerificationCode(@Body() body: SendVerificationCodeRequestDto) {
+    this.authService.sendVerificationCode(body);
     return {
-      message: 'Message.SendOtpSuccessfully',
+      message: 'Message.SendVerificationCodeSuccessfully',
     };
   }
 }

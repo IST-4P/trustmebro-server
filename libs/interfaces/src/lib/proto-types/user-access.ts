@@ -51,6 +51,14 @@ export interface MessageResponse {
   message: string;
 }
 
+/** ==================== Change Password ====================// */
+export interface ChangePasswordRequest {
+  processId?: string | undefined;
+  email: string;
+  password: string;
+  code: string;
+}
+
 /** ==================== Verify Token ====================// */
 export interface VerifyTokenRequest {
   processId?: string | undefined;
@@ -179,6 +187,8 @@ export interface UserAccessServiceClient {
 
   verifyToken(request: VerifyTokenRequest): Observable<VerifyTokenResponse>;
 
+  changePassword(request: ChangePasswordRequest): Observable<MessageResponse>;
+
   createUser(request: CreateUserRequest): Observable<UserResponse>;
 
   checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
@@ -202,6 +212,10 @@ export interface UserAccessServiceController {
   verifyToken(
     request: VerifyTokenRequest,
   ): Promise<VerifyTokenResponse> | Observable<VerifyTokenResponse> | VerifyTokenResponse;
+
+  changePassword(
+    request: ChangePasswordRequest,
+  ): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
   createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
@@ -227,6 +241,7 @@ export function UserAccessServiceControllerMethods() {
       "logout",
       "register",
       "verifyToken",
+      "changePassword",
       "createUser",
       "checkParticipantExists",
       "getShop",

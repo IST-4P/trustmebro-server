@@ -67,7 +67,6 @@ export interface DeleteVideoRequest {
 /** ============================================= GetPlayback ============================================= */
 export interface GetPlaybackRequest {
   processId?: string | undefined;
-  userId: string;
   videoId: string;
 }
 

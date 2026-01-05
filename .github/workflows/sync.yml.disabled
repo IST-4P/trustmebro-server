@@ -79,3 +79,5 @@ jobs:
           bearerToken: ${{ secrets.COOLIFY_API_TOKEN }}
           contentType: application/json
           file: coolify.bulk.json
+          retry: 3
+          retryWait: 5000

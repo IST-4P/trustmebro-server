@@ -54,6 +54,7 @@ model User {
 
     @@unique([email, deletedAt])
     @@unique([username, deletedAt])
+    @@unique([phoneNumber])
     @@index([deletedAt])
     @@index([email])
     @@index([username])
@@ -117,5 +118,5 @@ model VerificationCode {
 
 enum VerificationCodeType {
     REGISTER
-    FORGOT_PASSWORD
+    CHANGE_PASSWORD
 }

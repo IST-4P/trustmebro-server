@@ -1,6 +1,7 @@
 import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
+  ChangePasswordRequest,
   LoginRequest,
   LoginResponse,
   LogoutRequest,
@@ -50,6 +51,11 @@ export class AuthGrpcController {
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'Logout')
   async logout(data: LogoutRequest): Promise<MessageResponse> {
     return this.authService.logout(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'ChangePassword')
+  async changePassword(data: ChangePasswordRequest): Promise<MessageResponse> {
+    return this.authService.changePassword(data);
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'VerifyToken')

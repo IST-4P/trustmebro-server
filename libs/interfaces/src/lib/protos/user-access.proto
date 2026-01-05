@@ -8,6 +8,7 @@ service UserAccessService {
   rpc Logout(LogoutRequest) returns (MessageResponse);
   rpc Register(RegisterRequest) returns (MessageResponse);
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (MessageResponse);
 
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
@@ -58,6 +59,14 @@ message RegisterRequest {
 
 message MessageResponse {
   string message = 1;
+}
+
+// ==================== Change Password ====================//
+message ChangePasswordRequest {
+  optional string processId = 1;
+  string email = 2;
+  string password = 3;
+  string code = 4;
 }
 
 // ==================== Verify Token ====================//

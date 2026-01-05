@@ -19,10 +19,7 @@ export class PlaybackService {
   constructor(private readonly videoRepository: VideoRepository) {}
 
   async getPlayback(data: GetPlaybackRequest): Promise<GetPlaybackResponse> {
-    const token = await this.createToken({
-      userId: data.userId,
-      videoId: data.videoId,
-    });
+    const token = await this.createToken(data.videoId);
 
     const video = await this.videoRepository.find({
       id: data.videoId,
@@ -41,7 +38,7 @@ export class PlaybackService {
     };
   }
 
-  async createToken({ userId, videoId }) {
+  async createToken(videoId: string) {
     const now = Math.floor(Date.now() / 1000);
 
     const privateKey = await importPKCS8(
@@ -55,7 +52,6 @@ export class PlaybackService {
       videoId,
     })
       .setProtectedHeader({ alg: 'RS256' })
-      .setSubject(userId)
       .setIssuer('playback-service')
       .setAudience('cdn')
       .setIssuedAt(now)

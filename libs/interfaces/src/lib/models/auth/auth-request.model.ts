@@ -24,6 +24,8 @@ export const RegisterRequestSchema = UserSchema.pick({
   phoneNumber: true,
   gender: true,
 }).extend({
+  processId: z.uuid().optional(),
+  code: z.string(),
   password: z.string(),
 });
 
@@ -33,9 +35,30 @@ export const VerifyTokenRequestSchema = z.object({
   withPermissions: z.boolean().optional(),
 });
 
-export const SendOtpRequestSchema = VerificationCodeSchema.pick({
+export const SendVerificationCodeRequestSchema = VerificationCodeSchema.pick({
   email: true,
   type: true,
+});
+
+export const ValidateVerificationCodeRequestSchema =
+  VerificationCodeSchema.pick({
+    email: true,
+    type: true,
+    code: true,
+  });
+
+export const DeleteVerificationCodeRequestSchema = VerificationCodeSchema.pick({
+  email: true,
+  type: true,
+});
+
+export const ChangePasswordRequestSchema = UserSchema.pick({
+  email: true,
+})
+.extend({
+  password: z.string(),
+  code: z.string(),
+  processId: z.uuid().optional(),
 });
 
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
@@ -43,4 +66,13 @@ export type RefreshTokenRequest = z.infer<typeof RefreshTokenRequestSchema>;
 export type LogoutRequest = z.infer<typeof LogoutRequestSchema>;
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
 export type VerifyTokenRequest = z.infer<typeof VerifyTokenRequestSchema>;
-export type SendOtpRequest = z.infer<typeof SendOtpRequestSchema>;
+export type SendVerificationCodeRequest = z.infer<
+  typeof SendVerificationCodeRequestSchema
+>;
+export type ValidateVerificationCodeRequest = z.infer<
+  typeof ValidateVerificationCodeRequestSchema
+>;
+export type DeleteVerificationCodeRequest = z.infer<
+  typeof DeleteVerificationCodeRequestSchema
+>;
+export type ChangePasswordRequest = z.infer<typeof ChangePasswordRequestSchema>;

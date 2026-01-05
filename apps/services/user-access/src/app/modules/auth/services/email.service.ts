@@ -17,7 +17,7 @@ export class EmailService {
     this.otpTemplate = fs.readFileSync(templatePath, 'utf-8');
   }
 
-  sendOTP(body: { email: string; code: string }) {
+  sendVerificationCode(body: { email: string; code: string }) {
     return this.resend.emails.send({
       from: 'HacMieu TrustMeBro <no-reply@hacmieu.xyz>',
       to: [body.email],

@@ -165,4 +165,28 @@ export class KeycloakHttpService {
       }
     );
   }
+
+  async changePassword(data: {
+    userId: string;
+    newPassword: string;
+  }): Promise<void> {
+    const { access_token: accessToken } = await this.exchangeClientToken();
+    try {
+      await this.axiosInstance.post(
+        `/admin/realms/${this.realm}/users/${data.userId}/reset-password`,
+        {
+          type: 'password',
+          value: data.newPassword,
+          temporary: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw new InternalServerErrorException('Error.CannotChangePassword');
+    }
+  }
 }
