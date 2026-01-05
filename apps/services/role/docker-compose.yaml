@@ -14,7 +14,7 @@ services:
     environment:
       ENV_FILE: ${ENV_FILE}
     command: >
-      sh -lc 'echo "$ENV_FILE" | base64 -d > .env && set -a && . ./.env && set +a && node dist/apps/services/role/main.js'
+      sh -lc 'echo "$ENV_FILE" | base64 -d | sed "s/\r$//" > .env && set -a && . ./.env && set +a && exec node dist/apps/services/role/main.js'
     restart: unless-stopped
     networks:
       - trustmebro-network
