@@ -1,4 +1,4 @@
-name: CI/CD - Detect Affected Apps
+name: CI/CD - Detect Affected Apps (Nx 19+)
 
 on:
   push:
@@ -53,21 +53,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # ⭐ STEP 7: DETECT AFFECTED APPS
-      - name: Detect affected apps
+      # ⭐ STEP 7: DETECT AFFECTED APPS (Nx 19+ Fix)
+      - name: Detect affected apps using Nx 19+
         id: affected
         run: |
-          # Try Nx first (if using Nx)
-          AFFECTED=$(npx nx print-affected --base=origin/sauvole565 -t build --select=projects --plain 2>/dev/null || echo "")
+          # Nx 19+ command: Use 'nx show projects --affected'
+          # This replaces the old 'nx print-affected' command
+          AFFECTED=""
 
-          # Fallback to git diff
+          # Try Nx command first
+          if npx nx --version >/dev/null 2>&1; then
+            echo "✓ Nx detected, using 'nx show projects --affected'"
+            AFFECTED=$(npx nx show projects --affected --base=origin/sauvole565 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+          fi
+
+          # If Nx failed or not available, fallback to git diff
           if [ -z "$AFFECTED" ]; then
-            # Get changed files in apps/services and apps/bffs
+            echo "⚠️  Falling back to git diff method"
+            # Get changed files in apps/services and apps/bffs directories
             APPS=$(git diff --name-only origin/sauvole565...HEAD | grep -E '^apps/(services|bffs)/' | awk -F'/' '{print $3}' | sort -u)
             AFFECTED=$(echo "$APPS" | paste -sd, -)
           fi
 
           echo "apps=$AFFECTED" >> $GITHUB_OUTPUT
+          echo "Detected apps: [$AFFECTED]"
 
       # ⭐ STEP 8: LOG AFFECTED APPS (MAIN PURPOSE)
       - name: Log affected apps
@@ -86,7 +95,7 @@ jobs:
             echo "❌ No apps affected"
             echo "   Only config/docs/CI files changed"
           else
-            TOTAL=$(echo "$AFFECTED" | tr ',' '\n' | wc -l)
+            TOTAL=$(echo "$AFFECTED" | tr ',' '\n' | grep -v '^$' | wc -l)
             echo "✅ $TOTAL app(s) affected:"
             echo ""
             echo "$AFFECTED" | tr ',' '\n' | while read -r app; do
@@ -105,15 +114,16 @@ jobs:
           AFFECTED="${{ steps.affected.outputs.apps }}"
 
           if [ -z "$AFFECTED" ]; then
+            echo ""
             echo "⏭️  Skipping: No apps to build"
           else
             echo ""
             echo "📊 DETAILED REPORT"
             echo ""
             echo "Affected Apps:"
-            echo "$AFFECTED" | tr ',' '\n' | nl
+            echo "$AFFECTED" | tr ',' '\n' | grep -v '^$' | nl
             echo ""
-            echo "Count: $(echo "$AFFECTED" | tr ',' '\n' | wc -l)"
+            echo "Total Count: $(echo "$AFFECTED" | tr ',' '\n' | grep -v '^$' | wc -l)"
           fi
 
       # ⭐ STEP 10: Show git diff for reference
