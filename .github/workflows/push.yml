@@ -12,10 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+
       - name: Install coolify-cli
         run: |
-          go install github.com/coollabsio/coolify-cli/coolify@latest
-          echo "$HOME/go/bin" >> $GITHUB_PATH
+          go env GOPATH
+          go install github.com/coollabsio/coolify-cli/coolify@v1.4.0
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+          which coolify
           coolify version
 
       - name: Configure Coolify context
