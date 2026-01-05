@@ -18,7 +18,7 @@ jobs:
 
       - name: Configure Coolify context
         run: |
-          coolify context add -d prod ${{ secrets.COOLIFY_URL }} ${{ secrets.COOLIFY_API_TOKEN }}
+          coolify context add -d prod "${{ secrets.COOLIFY_URL }}" "${{ secrets.COOLIFY_API_TOKEN }}"
           coolify context use prod
 
       - name: Prepare env mapping file
