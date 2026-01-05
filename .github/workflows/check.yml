@@ -1,0 +1,40 @@
+name: Check affected
+
+on:
+  push:
+    branches: [sauvole565]
+  pull_request:
+
+jobs:
+  detect-affected:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Show affected apps
+        run: |
+          echo "🔍 Checking affected apps..."
+          echo "Comparing with previous commit (HEAD~1)"
+          echo ""
+
+          AFFECTED=$(pnpm nx show projects --affected --base=HEAD~1 --head=HEAD --type=app)
+            echo "✅ No apps affected"
+          else
+            echo "📦 Affected apps:"
+            echo "$AFFECTED"
+          fi

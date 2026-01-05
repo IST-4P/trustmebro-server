@@ -1,5 +1,5 @@
-import { KeyConfiguration } from '@common/configurations/key.config';
 import { MinioConfiguration } from '@common/configurations/minio.config';
+import { PlaybackConfiguration } from '@common/configurations/playback.config';
 import { VideoStatusValues } from '@common/constants/media.constant';
 import {
   GetPlaybackRequest,
@@ -45,7 +45,7 @@ export class PlaybackService {
     const now = Math.floor(Date.now() / 1000);
 
     const privateKey = await importPKCS8(
-      KeyConfiguration.PLAYBACK_PRIVATE_KEY,
+      PlaybackConfiguration.PLAYBACK_PRIVATE_KEY,
       'RS256'
     );
 
@@ -70,7 +70,7 @@ export class PlaybackService {
 
   async verifyToken(token: string, videoId: string) {
     const publicKey = await importSPKI(
-      KeyConfiguration.PLAYBACK_PUBLIC_KEY,
+      PlaybackConfiguration.PLAYBACK_PUBLIC_KEY,
       'RS256'
     );
 
