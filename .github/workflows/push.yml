@@ -1,0 +1,35 @@
+name: Sync Coolify env mappings
+
+on:
+  push:
+    branches:
+      - sauvole565
+  pull_request:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install coolify-cli
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/coollabsio/coolify-cli/main/scripts/install.sh | bash
+
+      - name: Configure Coolify instance
+        run: |
+          coolify instances add -d prod ${{ secrets.COOLIFY_URL }} ${{ secrets.COOLIFY_API_TOKEN }}
+          coolify instances set default prod
+
+      - name: Prepare env mapping file
+        run: |
+          sed 's/\r$//' .env.example > coolify.shared.env
+
+      - name: Sync to all apps
+        env:
+          COOLIFY_APP_UUIDS: dks88cs0k8cgogko8o488ogg # "uuid1 uuid2 uuid3 ..."
+        run: |
+          set -euo pipefail
+          for uuid in $COOLIFY_APP_UUIDS; do
+            coolify app env sync "$uuid" --file coolify.shared.env
+          done
