@@ -69,7 +69,21 @@ jobs:
           echo "Using BASE=$BASE HEAD=$HEAD"
 
           # 2) affected apps
-          AFFECTED_LINES=$(pnpm nx show projects --affected --base="$BASE" --head="$HEAD" --type=app || true)
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT "$BASE" "$HEAD" || true)
+
+          FILTERED_FILES=$(printf '%s\n' "$CHANGED_FILES" \
+            | grep -Ev '^(package\.json|pnpm-lock\.yaml)$' \
+            | paste -sd, -)
+
+          # nếu sau khi lọc không còn file nào, coi như không affected
+          if [ -z "$FILTERED_FILES" ]; then
+            echo "Only package.json / pnpm-lock.yaml changed (or no relevant files)."
+            echo 'affected_apps=[]' >> "$GITHUB_OUTPUT"
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          AFFECTED_LINES=$(pnpm nx show projects --affected --files="$FILTERED_FILES" --type=app || true)
 
           if [ -z "$AFFECTED_LINES" ]; then
             echo "No affected apps."
