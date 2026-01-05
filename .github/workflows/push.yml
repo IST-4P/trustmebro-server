@@ -12,61 +12,72 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.22"
-
-      - name: Install coolify-cli
-        run: |
-          set -euo pipefail
-          go install github.com/coollabsio/coolify-cli/coolify@v1.4.0
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
-          echo "coolify path: $(go env GOPATH)/bin/coolify"
-          "$(go env GOPATH)/bin/coolify" version
-
-      - name: Configure Coolify context
-        run: |
-          set -euo pipefail
-          coolify context add -d prod "${{ secrets.COOLIFY_URL }}" "${{ secrets.COOLIFY_API_TOKEN }}"
-          coolify context use prod
-
       - name: Prepare env mapping file
         run: |
           set -euo pipefail
           sed 's/\r$//' .env.example > coolify.shared.env
 
-      - name: Debug Coolify API (raw response)
+      - name: Build bulk env JSON payload
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, re
+
+          path = "coolify.shared.env"
+          data = []
+          with open(path, "r", encoding="utf-8") as f:
+            for raw in f.read().splitlines():
+              line = raw.strip()
+              if not line or line.startswith("#"):
+                continue
+              if "=" not in line:
+                continue
+
+              key, value = line.split("=", 1)
+
+              # strip optional "export "
+              key = re.sub(r"^export\s+", "", key).strip()
+
+              # keep value as-is (no unquoting); Coolify handles literal values
+              is_multiline = "\n" in value
+
+              data.append({
+                "key": key,
+                "value": value,
+                "is_preview": False,
+                "is_literal": True,
+                "is_multiline": is_multiline,
+                "is_shown_once": False
+              })
+
+          payload = {"data": data}
+          with open("coolify.bulk.json", "w", encoding="utf-8") as out:
+            json.dump(payload, out, ensure_ascii=False)
+
+          print(f"Prepared {len(data)} envs -> coolify.bulk.json")
+          PY
+
+      - name: Sync to all apps (via Coolify API)
         env:
           COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
           COOLIFY_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
-          UUID: dks88cs0k8cgogko8o488ogg
-        run: |
-          set -euo pipefail
-
-          base="${COOLIFY_URL%/}/api/v1"
-
-          echo "== GET /api/v1/version =="
-          curl -sS -i \
-            -H "Authorization: Bearer $COOLIFY_TOKEN" \
-            "$base/version" || true
-
-          echo
-          echo "== PATCH /api/v1/applications/$UUID/envs/bulk (test 1 var) =="
-
-          body='{"data":[{"key":"__COOLIFY_CI_TEST","value":"1","is_preview":false,"is_literal":true,"is_multiline":false,"is_shown_once":false}]}'
-
-          curl -sS -i -X PATCH \
-            -H "Authorization: Bearer $COOLIFY_TOKEN" \
-            -H "Content-Type: application/json" \
-            --data "$body" \
-            "$base/applications/$UUID/envs/bulk" || true
-
-      - name: Sync to all apps
-        env:
           COOLIFY_APP_UUIDS: dks88cs0k8cgogko8o488ogg # "uuid1 uuid2 uuid3 ..."
         run: |
           set -euo pipefail
+          base="${COOLIFY_URL%/}/api/v1"
+
+          # optional: show server version
+          echo "Coolify version:"
+          curl -sS -H "Authorization: Bearer $COOLIFY_TOKEN" "$base/version" || true
+          echo
+
           for uuid in $COOLIFY_APP_UUIDS; do
-            echo "Syncing envs for app: $uuid"
-            coolify app env sync "$uuid" --file coolify.shared.env
+            echo "Bulk syncing envs for app: $uuid"
+            curl -sS -i -X PATCH \
+              -H "Authorization: Bearer $COOLIFY_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data @coolify.bulk.json \
+              "$base/applications/$uuid/envs/bulk" \
+              | sed -n '1,25p'
+            echo
           done
