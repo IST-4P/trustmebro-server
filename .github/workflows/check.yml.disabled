@@ -29,14 +29,14 @@ jobs:
       - name: Show affected apps
         run: |
           echo "🔍 Checking affected apps..."
-          echo "Comparing with previous commit (HEAD~1)"
+          echo "Comparing current commit with previous commit in branch"
           echo ""
 
           AFFECTED=$(pnpm nx show projects --affected --base=HEAD~1 --head=HEAD --type=app)
 
           if [ -z "$AFFECTED" ]; then
-            echo "✅ No apps affected"
+            echo "✅ No apps affected in this commit"
           else
-            echo "📦 Affected apps:"
+            echo "📦 Affected apps in this commit:"
             echo "$AFFECTED"
           fi
