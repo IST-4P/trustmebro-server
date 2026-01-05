@@ -60,7 +60,7 @@ jobs:
                 "key": key,
                 "value": value,
                 "is_preview": False,
-                "is_literal": True,
+                "is_literal": False,
                 "is_multiline": False,
                 "is_shown_once": False
               })
