@@ -14,7 +14,9 @@ jobs:
 
       - name: Install coolify-cli
         run: |
-          curl -fsSL https://raw.githubusercontent.com/coollabsio/coolify-cli/main/scripts/install.sh | bash
+          go install github.com/coollabsio/coolify-cli/coolify@latest
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+          coolify version
 
       - name: Configure Coolify context
         run: |
