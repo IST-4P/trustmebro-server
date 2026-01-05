@@ -53,12 +53,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v4
-        with:
-          name: node_modules
-          path: node_modules
-
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -68,17 +62,16 @@ jobs:
         with:
           node-version: 22
 
+      - name: Download node_modules
+        uses: actions/download-artifact@v4
+        with:
+          name: node_modules
+          path: node_modules
+
       - name: Show affected apps
         run: |
           echo "🔍 Checking affected apps..."
           echo "Comparing with previous commit (HEAD~1)"
           echo ""
 
-          AFFECTED=$(pnpm nx show projects --affected --base=HEAD~1 --head=HEAD --type=app)
-
-          if [ -z "$AFFECTED" ]; then
-            echo "✅ No apps affected"
-          else
-            echo "📦 Affected apps:"
-            echo "$AFFECTED"
-          fi
+          npx nx show projects --affected --base=HEAD~1 --head=HEAD --type=app || echo "✅ No apps affected"
