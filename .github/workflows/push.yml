@@ -7,8 +7,41 @@ on:
   pull_request:
 
 jobs:
-  sync:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          cat <<'EOF' > matrix.json
+          {
+            "service": [
+              {"name": "admin", "uuid": "${{ secrets.COOLIFY_APP_ADMIN }}"},
+              {"name": "web", "uuid": "${{ secrets.COOLIFY_APP_WEB }}"},
+              {"name": "cart", "uuid": "${{ secrets.COOLIFY_APP_CART }}"},
+              {"name": "chat", "uuid": "${{ secrets.COOLIFY_APP_CHAT }}"},
+              {"name": "media", "uuid": "${{ secrets.COOLIFY_APP_MEDIA }}"},
+              {"name": "notification", "uuid": "${{ secrets.COOLIFY_APP_NOTIFICATION }}"},
+              {"name": "order", "uuid": "${{ secrets.COOLIFY_APP_ORDER }}"},
+              {"name": "payment", "uuid": "${{ secrets.COOLIFY_APP_PAYMENT }}"},
+              {"name": "product", "uuid": "${{ secrets.COOLIFY_APP_PRODUCT }}"},
+              {"name": "query", "uuid": "${{ secrets.COOLIFY_APP_QUERY }}"},
+              {"name": "role", "uuid": "${{ secrets.COOLIFY_APP_ROLE }}"},
+              {"name": "user-access", "uuid": "${{ secrets.COOLIFY_APP_USER_ACCESS }}"}
+            ]
+          }
+          EOF
+
+          # Filter out services with empty UUID
+          matrix=$(cat matrix.json | jq '{service: [.service[] | select(.uuid != "")]}')
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+  sync:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -58,26 +91,10 @@ jobs:
           PY
 
       - name: Sync to all apps (via Coolify API)
-        env:
-          COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
-          COOLIFY_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
-          COOLIFY_APP_UUIDS: dks88cs0k8cgogko8o488ogg # "uuid1 uuid2 uuid3 ..."
-        run: |
-          set -euo pipefail
-          base="${COOLIFY_URL%/}/api/v1"
-
-          # optional: show server version
-          echo "Coolify version:"
-          curl -sS -H "Authorization: Bearer $COOLIFY_TOKEN" "$base/version" || true
-          echo
-
-          for uuid in $COOLIFY_APP_UUIDS; do
-            echo "Bulk syncing envs for app: $uuid"
-            curl -sS -i -X PATCH \
-              -H "Authorization: Bearer $COOLIFY_TOKEN" \
-              -H "Content-Type: application/json" \
-              --data @coolify.bulk.json \
-              "$base/applications/$uuid/envs/bulk" \
-              | sed -n '1,25p'
-            echo
-          done
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.COOLIFY_URL }}/api/v1/applications/${{ matrix.service.uuid }}/envs/bulk
+          method: PATCH
+          bearerToken: ${{ secrets.COOLIFY_API_TOKEN }}
+          contentType: application/json
+          file: coolify.bulk.json
