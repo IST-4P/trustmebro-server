@@ -2,6 +2,7 @@ import { RedisConfiguration } from '@common/configurations/redis.config';
 import { LoggerModule } from '@common/observability/logger';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
+import { RemoveVideoCronJob } from './cornjobs/remove-video.cronjob';
 import { HealthModule } from './modules/health/health.module';
 import { ImageModule } from './modules/image/image.module';
 import { VideoModule } from './modules/video/video.module';
@@ -20,5 +21,6 @@ import { PrismaModule } from './prisma/prisma.module';
     ImageModule,
     VideoModule,
   ],
+  providers: [RemoveVideoCronJob],
 })
 export class AppModule {}

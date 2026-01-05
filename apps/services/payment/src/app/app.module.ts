@@ -4,6 +4,8 @@ import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerModule } from '@common/observability/logger';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
+import { RemovePaymentCronJob } from './cornjobs/remove-payment.cronjob';
+import { RemoveRefundCronJob } from './cornjobs/remove-refund.cronjob';
 import { HealthModule } from './modules/health/health.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -21,5 +23,6 @@ import { PrismaModule } from './prisma/prisma.module';
     HealthModule,
     PaymentModule,
   ],
+  providers: [RemovePaymentCronJob, RemoveRefundCronJob],
 })
 export class AppModule {}

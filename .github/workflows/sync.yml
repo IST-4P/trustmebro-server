@@ -23,13 +23,13 @@ jobs:
       - name: Check if .env.example modified
         id: check-env
         run: |
-          echo "🔍 Checking if .env.example was modified..."
+          echo "Checking if .env.example was modified..."
 
           if git diff origin/sauvole565...HEAD --name-only | grep -q "^\.env\.example$"; then
-            echo "✅ .env.example WAS MODIFIED - Will sync all apps"
+            echo ".env.example WAS MODIFIED - Will sync all apps"
             echo "env_modified=true" >> $GITHUB_OUTPUT
           else
-            echo "⏭️  .env.example NOT modified - Skipping sync"
+            echo ".env.example NOT modified - Skipping sync"
             echo "env_modified=false" >> $GITHUB_OUTPUT
           fi
 

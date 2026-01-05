@@ -2,7 +2,6 @@ import { GrpcClientProvider } from '@common/configurations/grpc.config';
 import { GrpcService } from '@common/constants/grpc.constant';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
-import { RemoveVerificationCodeCronJob } from '../../cornjobs/remove-verification-code.cronjob';
 import { AuthConsumerController } from './controllers/auth-consumer.controller';
 import { AuthGrpcController } from './controllers/auth-grpc.controller';
 import { VerificationCodeRepository } from './repositories/verification-code.repository';
@@ -22,7 +21,6 @@ import { VerificationCodeService } from './services/verification-code.service';
     VerificationCodeRepository,
     AuthService,
     VerificationCodeService,
-    RemoveVerificationCodeCronJob,
   ],
 })
 export class AuthModule {}

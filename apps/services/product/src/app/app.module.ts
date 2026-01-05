@@ -2,6 +2,11 @@ import { QueueService } from '@common/constants/queue.constant';
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerModule } from '@common/observability/logger';
 import { Module } from '@nestjs/common';
+import { RemoveBrandCronJob } from './cornjobs/remove-brand.cronjob';
+import { RemoveCategoryCronJob } from './cornjobs/remove-category.cronjob';
+import { RemoveProductCronJob } from './cornjobs/remove-product.cronjob';
+import { RemoveShipsFromCronJob } from './cornjobs/remove-ships-from.cronjob';
+import { RemoveSkuCronJob } from './cornjobs/remove-sku.cronjob';
 import { AttributeModule } from './modules/attribute/attribute.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { CategoryModule } from './modules/category/category.module';
@@ -23,6 +28,13 @@ import { PrismaModule } from './prisma/prisma.module';
     ProductModule,
     ShipsFromModule,
     SKUModule,
+  ],
+  providers: [
+    RemoveBrandCronJob,
+    RemoveCategoryCronJob,
+    RemoveProductCronJob,
+    RemoveShipsFromCronJob,
+    RemoveSkuCronJob,
   ],
 })
 export class AppModule {}
