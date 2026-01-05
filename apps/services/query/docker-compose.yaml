@@ -6,6 +6,8 @@ services:
     memswap_limit: 512m
     env_file:
       - .env
+    environment:
+      - QUERY_SERVICE_GRPC_URL=0.0.0.0:5004
     # ports:
     #   - "3004:3004"
     # depends_on:

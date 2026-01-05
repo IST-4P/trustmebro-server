@@ -6,6 +6,8 @@ services:
     memswap_limit: 512m
     env_file:
       - .env
+    environment:
+      - CHAT_SERVICE_GRPC_URL=0.0.0.0:5006
     # ports:
     #   - "3006:3006"
     # depends_on:

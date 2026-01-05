@@ -6,6 +6,8 @@ services:
     memswap_limit: 512m
     env_file:
       - .env
+    environment:
+      - ROLE_SERVICE_GRPC_URL=0.0.0.0:5002
     # ports:
     #   - "3002:3002"
     # depends_on:

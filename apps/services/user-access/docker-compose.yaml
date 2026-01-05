@@ -6,6 +6,8 @@ services:
     memswap_limit: 512m
     env_file:
       - .env
+    environment:
+      - USER_ACCESS_SERVICE_GRPC_URL=0.0.0.0:5000
     # ports:
     #   - "3000:3000"
     # depends_on:

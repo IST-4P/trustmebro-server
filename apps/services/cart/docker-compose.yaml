@@ -6,6 +6,8 @@ services:
     memswap_limit: 512m
     env_file:
       - .env
+    environment:
+      - CART_SERVICE_GRPC_URL=0.0.0.0:5007
     # ports:
     #   - "3007:3007"
     # depends_on:
