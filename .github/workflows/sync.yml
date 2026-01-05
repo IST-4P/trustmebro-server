@@ -1,18 +1,54 @@
-name: Sync Coolify env mappings
+name: Sync Coolify env mappings (Only if .env.example changed)
 
 on:
   push:
     branches: [sauvole565]
   pull_request:
+    branches: [sauvole565]
+
+permissions:
+  actions: read
+  contents: read
 
 jobs:
+  check-env-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      env_modified: ${{ steps.check-env.outputs.env_modified }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if .env.example modified
+        id: check-env
+        run: |
+          echo "Checking if .env.example was modified...
+          echo ""
+
+          if git diff origin/sauvole565...HEAD --name-only | grep -q "^\.env\.example$"; then
+            echo "env_modified=true" >> $GITHUB_OUTPUT
+          else
+            echo "env_modified=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo ""
+          echo "Changed files (for reference):"
+          echo "==============================="
+          git diff origin/sauvole565...HEAD --name-only | head -10
+          echo "==============================="
+
   sync:
     runs-on: ubuntu-latest
+    needs: check-env-changes
+
+    if: needs.check-env-changes.outputs.env_modified == 'true'
+
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: admin # service name
+          - name: admin
             secret: COOLIFY_APP_ADMIN
           - name: web
             secret: COOLIFY_APP_WEB
@@ -39,7 +75,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Build bulk env JSON payload
         run: |
           python3 - <<'PY'
@@ -51,6 +86,7 @@ jobs:
           with open(src, "r", encoding="utf-8", newline="") as f:
             for raw in f:
               line = raw.strip()
+              # Skip empty lines and comments
               if not line or line.startswith("#") or "=" not in line:
                 continue
               key, value = line.split("=", 1)
@@ -67,8 +103,6 @@ jobs:
 
           with open("coolify.bulk.json", "w", encoding="utf-8") as out:
             json.dump({"data": data}, out, ensure_ascii=False)
-
-          print(f"Prepared {len(data)} envs -> coolify.bulk.json")
           PY
 
       - name: Sync to app (Coolify API bulk)
