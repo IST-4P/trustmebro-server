@@ -11,6 +11,10 @@ services:
     # depends_on:
     #   kafka:
     #     condition: service_healthy
+    environment:
+      ENV_FILE: ${ENV_FILE}
+    command: >
+      sh -lc 'echo "$ENV_FILE" | base64 -d > .env && node dist/apps/services/role/main.js'
     restart: unless-stopped
     networks:
       - trustmebro-network
