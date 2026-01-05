@@ -4,8 +4,8 @@ services:
     pull_policy: always
     mem_limit: 256m
     memswap_limit: 512m
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     # ports:
     #   - "3002:3002"
     # depends_on:
