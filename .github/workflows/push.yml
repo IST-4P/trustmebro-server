@@ -14,27 +14,35 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          cat <<'EOF' > matrix.json
-          {
-            "service": [
-              {"name": "admin", "uuid": "${{ secrets.COOLIFY_APP_ADMIN }}"},
-              {"name": "web", "uuid": "${{ secrets.COOLIFY_APP_WEB }}"},
-              {"name": "cart", "uuid": "${{ secrets.COOLIFY_APP_CART }}"},
-              {"name": "chat", "uuid": "${{ secrets.COOLIFY_APP_CHAT }}"},
-              {"name": "media", "uuid": "${{ secrets.COOLIFY_APP_MEDIA }}"},
-              {"name": "notification", "uuid": "${{ secrets.COOLIFY_APP_NOTIFICATION }}"},
-              {"name": "order", "uuid": "${{ secrets.COOLIFY_APP_ORDER }}"},
-              {"name": "payment", "uuid": "${{ secrets.COOLIFY_APP_PAYMENT }}"},
-              {"name": "product", "uuid": "${{ secrets.COOLIFY_APP_PRODUCT }}"},
-              {"name": "query", "uuid": "${{ secrets.COOLIFY_APP_QUERY }}"},
-              {"name": "role", "uuid": "${{ secrets.COOLIFY_APP_ROLE }}"},
-              {"name": "user-access", "uuid": "${{ secrets.COOLIFY_APP_USER_ACCESS }}"}
-            ]
-          }
-          EOF
-
-          # Filter out services with empty UUID
-          matrix=$(cat matrix.json | jq '{service: [.service[] | select(.uuid != "")]}')
+          matrix=$(jq -n \
+            --arg admin "${{ secrets.COOLIFY_APP_ADMIN }}" \
+            --arg web "${{ secrets.COOLIFY_APP_WEB }}" \
+            --arg cart "${{ secrets.COOLIFY_APP_CART }}" \
+            --arg chat "${{ secrets.COOLIFY_APP_CHAT }}" \
+            --arg media "${{ secrets.COOLIFY_APP_MEDIA }}" \
+            --arg notification "${{ secrets.COOLIFY_APP_NOTIFICATION }}" \
+            --arg order "${{ secrets.COOLIFY_APP_ORDER }}" \
+            --arg payment "${{ secrets.COOLIFY_APP_PAYMENT }}" \
+            --arg product "${{ secrets.COOLIFY_APP_PRODUCT }}" \
+            --arg query "${{ secrets.COOLIFY_APP_QUERY }}" \
+            --arg role "${{ secrets.COOLIFY_APP_ROLE }}" \
+            --arg useraccess "${{ secrets.COOLIFY_APP_USER_ACCESS }}" \
+            '{
+              service: [
+                {name: "admin", uuid: $admin},
+                {name: "web", uuid: $web},
+                {name: "cart", uuid: $cart},
+                {name: "chat", uuid: $chat},
+                {name: "media", uuid: $media},
+                {name: "notification", uuid: $notification},
+                {name: "order", uuid: $order},
+                {name: "payment", uuid: $payment},
+                {name: "product", uuid: $product},
+                {name: "query", uuid: $query},
+                {name: "role", uuid: $role},
+                {name: "user-access", uuid: $useraccess}
+              ] | map(select(.uuid != ""))
+            }')
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   sync:
