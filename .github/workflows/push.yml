@@ -16,10 +16,10 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/coollabsio/coolify-cli/main/scripts/install.sh | bash
 
-      - name: Configure Coolify instance
+      - name: Configure Coolify context
         run: |
-          coolify instances add -d prod ${{ secrets.COOLIFY_URL }} ${{ secrets.COOLIFY_API_TOKEN }}
-          coolify instances set default prod
+          coolify context add -d prod ${{ secrets.COOLIFY_URL }} ${{ secrets.COOLIFY_API_TOKEN }}
+          coolify context use prod
 
       - name: Prepare env mapping file
         run: |
