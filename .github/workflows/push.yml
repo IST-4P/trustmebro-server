@@ -18,20 +18,48 @@ jobs:
 
       - name: Install coolify-cli
         run: |
-          go env GOPATH
+          set -euo pipefail
           go install github.com/coollabsio/coolify-cli/coolify@v1.4.0
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-          which coolify
-          coolify version
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          echo "coolify path: $(go env GOPATH)/bin/coolify"
+          "$(go env GOPATH)/bin/coolify" version
 
       - name: Configure Coolify context
         run: |
+          set -euo pipefail
           coolify context add -d prod "${{ secrets.COOLIFY_URL }}" "${{ secrets.COOLIFY_API_TOKEN }}"
           coolify context use prod
 
       - name: Prepare env mapping file
         run: |
+          set -euo pipefail
           sed 's/\r$//' .env.example > coolify.shared.env
+
+      - name: Debug Coolify API (raw response)
+        env:
+          COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+          UUID: dks88cs0k8cgogko8o488ogg
+        run: |
+          set -euo pipefail
+
+          base="${COOLIFY_URL%/}/api/v1"
+
+          echo "== GET /api/v1/version =="
+          curl -sS -i \
+            -H "Authorization: Bearer $COOLIFY_TOKEN" \
+            "$base/version" || true
+
+          echo
+          echo "== PATCH /api/v1/applications/$UUID/envs/bulk (test 1 var) =="
+
+          body='{"data":[{"key":"__COOLIFY_CI_TEST","value":"1","is_preview":false,"is_literal":true,"is_multiline":false,"is_shown_once":false}]}'
+
+          curl -sS -i -X PATCH \
+            -H "Authorization: Bearer $COOLIFY_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "$body" \
+            "$base/applications/$UUID/envs/bulk" || true
 
       - name: Sync to all apps
         env:
@@ -39,5 +67,6 @@ jobs:
         run: |
           set -euo pipefail
           for uuid in $COOLIFY_APP_UUIDS; do
+            echo "Syncing envs for app: $uuid"
             coolify app env sync "$uuid" --file coolify.shared.env
           done
