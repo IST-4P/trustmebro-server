@@ -6,48 +6,8 @@ on:
   pull_request:
 
 jobs:
-  install:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Configure Git protocol
-        run: git config --global url."https://github.com/".insteadOf git://github.com/
-
-      # Cache pnpm store
-      - name: Cache pnpm store
-        id: cache-pnpm-store
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pnpm-store
-            node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # Upload node_modules
-      - name: Upload node_modules
-        uses: actions/upload-artifact@v4
-        with:
-          name: node_modules
-          path: node_modules
-          retention-days: 1
-
   detect-affected:
     runs-on: ubuntu-latest
-    needs: install
     steps:
       - uses: actions/checkout@v4
         with:
@@ -61,12 +21,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: "pnpm"
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v4
-        with:
-          name: node_modules
-          path: node_modules
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Show affected apps
         run: |
@@ -74,4 +32,11 @@ jobs:
           echo "Comparing with previous commit (HEAD~1)"
           echo ""
 
-          npx nx show projects --affected --base=HEAD~1 --head=HEAD --type=app || echo "✅ No apps affected"
+          AFFECTED=$(pnpm nx show projects --affected --base=HEAD~1 --head=HEAD --type=app)
+
+          if [ -z "$AFFECTED" ]; then
+            echo "✅ No apps affected"
+          else
+            echo "📦 Affected apps:"
+            echo "$AFFECTED"
+          fi
