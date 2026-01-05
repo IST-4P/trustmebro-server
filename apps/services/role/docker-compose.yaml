@@ -4,17 +4,13 @@ services:
     pull_policy: always
     mem_limit: 256m
     memswap_limit: 512m
-    # env_file:
-    #   - .env
+    env_file:
+      - .env
     # ports:
     #   - "3002:3002"
     # depends_on:
     #   kafka:
     #     condition: service_healthy
-    environment:
-      ENV_FILE: ${ENV_FILE}
-    command: >
-      sh -lc 'echo "$ENV_FILE" | base64 -d | sed "s/\r$//" > .env && set -a && . ./.env && set +a && exec node dist/apps/services/role/main.js'
     restart: unless-stopped
     networks:
       - trustmebro-network
