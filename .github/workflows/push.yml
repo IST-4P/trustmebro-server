@@ -6,63 +6,36 @@ on:
   pull_request:
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.mk.outputs.matrix }}
-    steps:
-      - id: mk
-        env:
-          COOLIFY_APP_ADMIN: ${{ secrets.COOLIFY_APP_ADMIN }}
-          COOLIFY_APP_WEB: ${{ secrets.COOLIFY_APP_WEB }}
-          COOLIFY_APP_CART: ${{ secrets.COOLIFY_APP_CART }}
-          COOLIFY_APP_CHAT: ${{ secrets.COOLIFY_APP_CHAT }}
-          COOLIFY_APP_MEDIA: ${{ secrets.COOLIFY_APP_MEDIA }}
-          COOLIFY_APP_NOTIFICATION: ${{ secrets.COOLIFY_APP_NOTIFICATION }}
-          COOLIFY_APP_ORDER: ${{ secrets.COOLIFY_APP_ORDER }}
-          COOLIFY_APP_PAYMENT: ${{ secrets.COOLIFY_APP_PAYMENT }}
-          COOLIFY_APP_PRODUCT: ${{ secrets.COOLIFY_APP_PRODUCT }}
-          COOLIFY_APP_QUERY: ${{ secrets.COOLIFY_APP_QUERY }}
-          COOLIFY_APP_ROLE: ${{ secrets.COOLIFY_APP_ROLE }}
-          COOLIFY_APP_USER_ACCESS: ${{ secrets.COOLIFY_APP_USER_ACCESS }}
-        run: |
-          python3 - <<'PY'
-          import os, json
-
-          services = [
-            ("admin", "COOLIFY_APP_ADMIN"),
-            ("web", "COOLIFY_APP_WEB"),
-            ("cart", "COOLIFY_APP_CART"),
-            ("chat", "COOLIFY_APP_CHAT"),
-            ("media", "COOLIFY_APP_MEDIA"),
-            ("notification", "COOLIFY_APP_NOTIFICATION"),
-            ("order", "COOLIFY_APP_ORDER"),
-            ("payment", "COOLIFY_APP_PAYMENT"),
-            ("product", "COOLIFY_APP_PRODUCT"),
-            ("query", "COOLIFY_APP_QUERY"),
-            ("role", "COOLIFY_APP_ROLE"),
-            ("user-access", "COOLIFY_APP_USER_ACCESS"),
-          ]
-
-          include = []
-          for name, key in services:
-            uuid = (os.getenv(key) or "").strip()
-            if uuid:
-              include.append({"name": name, "uuid": uuid})
-
-          matrix = {"include": include}
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
-            f.write("matrix=" + json.dumps(matrix, ensure_ascii=False) + "\n")
-
-          print(f"Prepared matrix include: {len(include)} apps")
-          PY
-
   sync:
-    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      matrix:
+        include:
+          - name: admin # service name
+            secret: COOLIFY_APP_ADMIN
+          - name: web
+            secret: COOLIFY_APP_WEB
+          - name: cart
+            secret: COOLIFY_APP_CART
+          - name: chat
+            secret: COOLIFY_APP_CHAT
+          - name: media
+            secret: COOLIFY_APP_MEDIA
+          - name: notification
+            secret: COOLIFY_APP_NOTIFICATION
+          - name: order
+            secret: COOLIFY_APP_ORDER
+          - name: payment
+            secret: COOLIFY_APP_PAYMENT
+          - name: product
+            secret: COOLIFY_APP_PRODUCT
+          - name: query
+            secret: COOLIFY_APP_QUERY
+          - name: role
+            secret: COOLIFY_APP_ROLE
+          - name: user-access
+            secret: COOLIFY_APP_USER_ACCESS
 
     steps:
       - uses: actions/checkout@v4
@@ -80,23 +53,20 @@ jobs:
               line = raw.strip()
               if not line or line.startswith("#") or "=" not in line:
                 continue
-
               key, value = line.split("=", 1)
               key = re.sub(r"^export\s+", "", key).strip()
 
-              # giữ nguyên value; không unquote
               data.append({
                 "key": key,
                 "value": value,
                 "is_preview": False,
                 "is_literal": True,
-                "is_multiline": False,   # .env.example thường 1 dòng / biến
+                "is_multiline": False,
                 "is_shown_once": False
               })
 
-          payload = {"data": data}
           with open("coolify.bulk.json", "w", encoding="utf-8") as out:
-            json.dump(payload, out, ensure_ascii=False)
+            json.dump({"data": data}, out, ensure_ascii=False)
 
           print(f"Prepared {len(data)} envs -> coolify.bulk.json")
           PY
@@ -104,7 +74,7 @@ jobs:
       - name: Sync to app (Coolify API bulk)
         uses: fjogeleit/http-request-action@v1
         with:
-          url: ${{ secrets.COOLIFY_URL }}/api/v1/applications/${{ matrix.uuid }}/envs/bulk
+          url: ${{ secrets.COOLIFY_URL }}/api/v1/applications/${{ secrets[matrix.secret] }}/envs/bulk
           method: PATCH
           bearerToken: ${{ secrets.COOLIFY_API_TOKEN }}
           contentType: application/json
