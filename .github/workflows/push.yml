@@ -2,77 +2,95 @@ name: Sync Coolify env mappings
 
 on:
   push:
-    branches:
-      - sauvole565
+    branches: [sauvole565]
   pull_request:
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.mk.outputs.matrix }}
     steps:
-      - id: set-matrix
+      - id: mk
+        env:
+          COOLIFY_APP_ADMIN: ${{ secrets.COOLIFY_APP_ADMIN }}
+          COOLIFY_APP_WEB: ${{ secrets.COOLIFY_APP_WEB }}
+          COOLIFY_APP_CART: ${{ secrets.COOLIFY_APP_CART }}
+          COOLIFY_APP_CHAT: ${{ secrets.COOLIFY_APP_CHAT }}
+          COOLIFY_APP_MEDIA: ${{ secrets.COOLIFY_APP_MEDIA }}
+          COOLIFY_APP_NOTIFICATION: ${{ secrets.COOLIFY_APP_NOTIFICATION }}
+          COOLIFY_APP_ORDER: ${{ secrets.COOLIFY_APP_ORDER }}
+          COOLIFY_APP_PAYMENT: ${{ secrets.COOLIFY_APP_PAYMENT }}
+          COOLIFY_APP_PRODUCT: ${{ secrets.COOLIFY_APP_PRODUCT }}
+          COOLIFY_APP_QUERY: ${{ secrets.COOLIFY_APP_QUERY }}
+          COOLIFY_APP_ROLE: ${{ secrets.COOLIFY_APP_ROLE }}
+          COOLIFY_APP_USER_ACCESS: ${{ secrets.COOLIFY_APP_USER_ACCESS }}
         run: |
-          matrix=$(jq -n -c \
-            --arg admin "${{ secrets.COOLIFY_APP_ADMIN }}" \
-            --arg web "${{ secrets.COOLIFY_APP_WEB }}" \
-            --arg cart "${{ secrets.COOLIFY_APP_CART }}" \
-            --arg chat "${{ secrets.COOLIFY_APP_CHAT }}" \
-            --arg media "${{ secrets.COOLIFY_APP_MEDIA }}" \
-            --arg notification "${{ secrets.COOLIFY_APP_NOTIFICATION }}" \
-            --arg order "${{ secrets.COOLIFY_APP_ORDER }}" \
-            --arg payment "${{ secrets.COOLIFY_APP_PAYMENT }}" \
-            --arg product "${{ secrets.COOLIFY_APP_PRODUCT }}" \
-            --arg query "${{ secrets.COOLIFY_APP_QUERY }}" \
-            --arg role "${{ secrets.COOLIFY_APP_ROLE }}" \
-            --arg useraccess "${{ secrets.COOLIFY_APP_USER_ACCESS }}" \
-            '{service: [{name: "admin", uuid: $admin}, {name: "web", uuid: $web}, {name: "cart", uuid: $cart}, {name: "chat", uuid: $chat}, {name: "media", uuid: $media}, {name: "notification", uuid: $notification}, {name: "order", uuid: $order}, {name: "payment", uuid: $payment}, {name: "product", uuid: $product}, {name: "query", uuid: $query}, {name: "role", uuid: $role}, {name: "user-access", uuid: $useraccess}] | map(select(.uuid != ""))}')
-          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+          python3 - <<'PY'
+          import os, json
+
+          services = [
+            ("admin", "COOLIFY_APP_ADMIN"),
+            ("web", "COOLIFY_APP_WEB"),
+            ("cart", "COOLIFY_APP_CART"),
+            ("chat", "COOLIFY_APP_CHAT"),
+            ("media", "COOLIFY_APP_MEDIA"),
+            ("notification", "COOLIFY_APP_NOTIFICATION"),
+            ("order", "COOLIFY_APP_ORDER"),
+            ("payment", "COOLIFY_APP_PAYMENT"),
+            ("product", "COOLIFY_APP_PRODUCT"),
+            ("query", "COOLIFY_APP_QUERY"),
+            ("role", "COOLIFY_APP_ROLE"),
+            ("user-access", "COOLIFY_APP_USER_ACCESS"),
+          ]
+
+          include = []
+          for name, key in services:
+            uuid = (os.getenv(key) or "").strip()
+            if uuid:
+              include.append({"name": name, "uuid": uuid})
+
+          matrix = {"include": include}
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as f:
+            f.write("matrix=" + json.dumps(matrix, ensure_ascii=False) + "\n")
+
+          print(f"Prepared matrix include: {len(include)} apps")
+          PY
 
   sync:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prepare env mapping file
-        run: |
-          set -euo pipefail
-          sed 's/\r$//' .env.example > coolify.shared.env
-
       - name: Build bulk env JSON payload
         run: |
-          set -euo pipefail
           python3 - <<'PY'
           import json, re
 
-          path = "coolify.shared.env"
+          src = ".env.example"
           data = []
-          with open(path, "r", encoding="utf-8") as f:
-            for raw in f.read().splitlines():
+
+          with open(src, "r", encoding="utf-8", newline="") as f:
+            for raw in f:
               line = raw.strip()
-              if not line or line.startswith("#"):
-                continue
-              if "=" not in line:
+              if not line or line.startswith("#") or "=" not in line:
                 continue
 
               key, value = line.split("=", 1)
-
-              # strip optional "export "
               key = re.sub(r"^export\s+", "", key).strip()
 
-              # keep value as-is (no unquoting); Coolify handles literal values
-              is_multiline = "\n" in value
-
+              # giữ nguyên value; không unquote
               data.append({
                 "key": key,
                 "value": value,
                 "is_preview": False,
                 "is_literal": True,
-                "is_multiline": is_multiline,
+                "is_multiline": False,   # .env.example thường 1 dòng / biến
                 "is_shown_once": False
               })
 
@@ -83,10 +101,10 @@ jobs:
           print(f"Prepared {len(data)} envs -> coolify.bulk.json")
           PY
 
-      - name: Sync to all apps (via Coolify API)
+      - name: Sync to app (Coolify API bulk)
         uses: fjogeleit/http-request-action@v1
         with:
-          url: ${{ secrets.COOLIFY_URL }}/api/v1/applications/${{ matrix.service.uuid }}/envs/bulk
+          url: ${{ secrets.COOLIFY_URL }}/api/v1/applications/${{ matrix.uuid }}/envs/bulk
           method: PATCH
           bearerToken: ${{ secrets.COOLIFY_API_TOKEN }}
           contentType: application/json
