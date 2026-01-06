@@ -1,6 +1,5 @@
 import { GrpcClientProvider } from '@common/configurations/grpc.config';
 import { GrpcService } from '@common/constants/grpc.constant';
-import { NotificationGateway } from '@common/redis/gateway/notification.gateway';
 import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { NotificationSseController } from './controllers/notification-sse.controller';
@@ -20,7 +19,6 @@ import { NotificationSubscriber } from './subscribers/notification.subscriber';
   providers: [
     NotificationWriteService,
     NotificationReadService,
-    NotificationGateway,
     NotificationSubscriber,
   ],
 })

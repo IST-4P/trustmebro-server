@@ -1,19 +1,20 @@
-import { Controller, Sse } from '@nestjs/common';
-import { interval, map, Observable } from 'rxjs';
-
-interface MessageEvent {
-  data: string | object;
-  id?: string;
-  type?: string;
-  retry?: number;
-}
+import { UserData } from '@common/decorators/user-data.decorator';
+import { Controller, MessageEvent, Sse } from '@nestjs/common';
+import { Observable, filter, map } from 'rxjs';
+import { NotificationSubscriber } from '../subscribers/notification.subscriber';
 
 @Controller('notification')
 export class NotificationSseController {
-  constructor() {}
+  constructor(private readonly sub: NotificationSubscriber) {}
 
   @Sse('sse')
-  sse(): Observable<MessageEvent> {
-    return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } })));
+  handle(@UserData('userId') userId: string): Observable<MessageEvent> {
+    return this.sub.stream().pipe(
+      filter((evt) => evt.data?.userId === userId),
+      map((evt) => ({
+        ...evt,
+        data: evt.data,
+      }))
+    );
   }
 }
