@@ -1,12 +1,15 @@
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   CreateProductRequest,
+  DeleteProductRequest,
   ProductResponse,
+  UpdateProductRequest,
   ValidateProductsRequest,
   ValidateProductsResponse,
 } from '@common/interfaces/models/product';
 import { KafkaService } from '@common/kafka/kafka.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductRepository } from '../repositories/product.repository';
 
 @Injectable()
@@ -39,6 +42,43 @@ export class ProductService {
     const createdProduct = await this.productRepository.create(data);
     this.kafkaService.emit(QueueTopics.PRODUCT.CREATE_PRODUCT, createdProduct);
     return createdProduct;
+  }
+
+  async update({
+    processId,
+    ...data
+  }: UpdateProductRequest): Promise<ProductResponse> {
+    try {
+      const updatedProduct = await this.productRepository.update(data);
+      this.kafkaService.emit(
+        QueueTopics.PRODUCT.UPDATE_PRODUCT,
+        updatedProduct
+      );
+      return updatedProduct;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.ProductNotFound');
+      }
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new NotFoundException('Error.ProductAlreadyExists');
+      }
+      throw error;
+    }
+  }
+
+  async delete({ processId, ...data }: DeleteProductRequest) {
+    try {
+      const deletedProduct = await this.productRepository.delete(data, false);
+      this.kafkaService.emit(QueueTopics.PRODUCT.DELETE_PRODUCT, {
+        id: deletedProduct.id,
+      });
+      return deletedProduct;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.ProductNotFound');
+      }
+      throw error;
+    }
   }
 
   async validateProducts(

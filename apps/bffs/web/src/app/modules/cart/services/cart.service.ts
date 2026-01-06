@@ -1,11 +1,13 @@
 import {
   AddCartItemRequest,
-  AddCartItemResponse,
   CART_SERVICE_NAME,
   CART_SERVICE_PACKAGE_NAME,
+  CartResponse,
   CartServiceClient,
+  DeleteCartItemRequest,
   GetManyCartItemsRequest,
   GetManyCartItemsResponse,
+  UpdateCartItemRequest,
 } from '@common/interfaces/proto-types/cart';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -31,7 +33,15 @@ export class CartService implements OnModuleInit {
     return firstValueFrom(this.cartService.getManyCartItems(data));
   }
 
-  addCartItem(data: AddCartItemRequest): Promise<AddCartItemResponse> {
+  addCartItem(data: AddCartItemRequest): Promise<CartResponse> {
     return firstValueFrom(this.cartService.addCartItem(data));
+  }
+
+  updateCartItem(data: UpdateCartItemRequest): Promise<CartResponse> {
+    return firstValueFrom(this.cartService.updateCartItem(data));
+  }
+
+  deleteCartItem(data: DeleteCartItemRequest): Promise<CartResponse> {
+    return firstValueFrom(this.cartService.deleteCartItem(data));
   }
 }

@@ -18,6 +18,50 @@ enum VideoStatus {
     DELETED // user hoặc hệ thống xoá
 }
 
+enum CommentStatus {
+    ACTIVE
+    HIDDEN
+    DELETED
+}
+
+model Comment {
+    id      String @id @default(uuid())
+    videoId String
+    userId  String
+
+    content String @db.Text
+
+    parentId String?
+    parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+    replies  Comment[] @relation("CommentReplies")
+
+    status CommentStatus @default(ACTIVE)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+    @@index([videoId, createdAt])
+    @@index([userId, createdAt])
+    @@index([parentId])
+    @@index([deletedAt])
+}
+
+model Like {
+    id        String   @id @default(uuid())
+    videoId   String
+    userId    String
+    createdAt DateTime @default(now())
+
+    video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+    @@unique([videoId, userId])
+    @@index([userId, createdAt])
+    @@index([videoId, createdAt])
+}
+
 model Video {
     id            String      @id
     storageBucket String
@@ -26,6 +70,18 @@ model Video {
     userId        String
     filetype      String
     status        VideoStatus @default(UPLOADING)
+
+    duration Int @default(0)
+    width    Int @default(0)
+    height   Int @default(0)
+
+    title String @default("")
+
+    likeCount Int    @default(0)
+    likes     Like[]
+
+    commentCount Int       @default(0)
+    comments     Comment[]
 
     createdById String?
     updatedById String?

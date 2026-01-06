@@ -37,9 +37,29 @@ export interface CartItemResponse {
   updatedAt: string;
 }
 
-export interface AddCartItemResponse {
+export interface CartResponse {
   cartItem: CartItemResponse | undefined;
   cartCount: number;
+}
+
+/** ==================== UpdateCartItem ====================// */
+export interface UpdateCartItemRequest {
+  processId?: string | undefined;
+  userId: string;
+  productId: string;
+  skuId: string;
+  shopId: string;
+  quantity: number;
+  skuValue: string;
+  productName: string;
+  productImage?: string | undefined;
+}
+
+/** ==================== DeleteCartItem ====================// */
+export interface DeleteCartItemRequest {
+  processId?: string | undefined;
+  userId: string;
+  cartItemId: string;
 }
 
 /** ==================== ValidateCartItems ====================// */
@@ -77,7 +97,11 @@ export interface GetManyCartItemsResponse {
 export const CART_SERVICE_PACKAGE_NAME = "CART_SERVICE";
 
 export interface CartServiceClient {
-  addCartItem(request: AddCartItemRequest): Observable<AddCartItemResponse>;
+  addCartItem(request: AddCartItemRequest): Observable<CartResponse>;
+
+  updateCartItem(request: UpdateCartItemRequest): Observable<CartResponse>;
+
+  deleteCartItem(request: DeleteCartItemRequest): Observable<CartResponse>;
 
   validateCartItems(request: ValidateCartItemsRequest): Observable<ValidateCartItemsResponse>;
 
@@ -85,9 +109,11 @@ export interface CartServiceClient {
 }
 
 export interface CartServiceController {
-  addCartItem(
-    request: AddCartItemRequest,
-  ): Promise<AddCartItemResponse> | Observable<AddCartItemResponse> | AddCartItemResponse;
+  addCartItem(request: AddCartItemRequest): Promise<CartResponse> | Observable<CartResponse> | CartResponse;
+
+  updateCartItem(request: UpdateCartItemRequest): Promise<CartResponse> | Observable<CartResponse> | CartResponse;
+
+  deleteCartItem(request: DeleteCartItemRequest): Promise<CartResponse> | Observable<CartResponse> | CartResponse;
 
   validateCartItems(
     request: ValidateCartItemsRequest,
@@ -100,7 +126,13 @@ export interface CartServiceController {
 
 export function CartServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["addCartItem", "validateCartItems", "getManyCartItems"];
+    const grpcMethods: string[] = [
+      "addCartItem",
+      "updateCartItem",
+      "deleteCartItem",
+      "validateCartItems",
+      "getManyCartItems",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("CartService", method)(constructor.prototype[method], method, descriptor);

@@ -41,7 +41,7 @@ export class AttributeService {
     return this.attributeRepository.update(AttributeMapper(data));
   }
 
-  delete(data: AttributeResponse) {
+  delete(data: { id: string }) {
     return this.attributeRepository.delete({ id: data.id });
   }
 }

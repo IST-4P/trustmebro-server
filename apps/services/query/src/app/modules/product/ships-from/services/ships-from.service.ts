@@ -60,7 +60,7 @@ export class ShipsFromService {
     return this.shipsFromRepository.update(ShipsFromMapper(data));
   }
 
-  delete(data: ShipsFromResponse) {
+  delete(data: { id: string }) {
     return this.shipsFromRepository.delete({ id: data.id });
   }
 }

@@ -1,5 +1,7 @@
+import { BaseConfiguration } from '@common/configurations/base.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import ms, { StringValue } from 'ms';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -13,7 +15,9 @@ export class RemoveNotificationCronJob {
     const count = await this.prismaService.notification.deleteMany({
       where: {
         deletedAt: {
-          lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Xoá notification đã bị xoá hơn 30 ngày
+          lt: new Date(
+            Date.now() - ms(BaseConfiguration.SOFT_DELETE_TTL as StringValue)
+          ), // Xoá notification đã bị xoá hơn 30 ngày
         },
       },
     });

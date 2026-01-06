@@ -28,4 +28,30 @@ export class ConversationReadService implements OnModuleInit {
   ): Promise<GetManyConversationsResponse> {
     return firstValueFrom(this.chatService.getManyConversations(data));
   }
+
+  async refreshConversation(participantIds: string[]) {
+    if (!participantIds[0] || !participantIds[1]) {
+      throw new Error('Invalid participantIds');
+    }
+
+    const userA$ = firstValueFrom(
+      this.chatService.getManyConversations({
+        limit: 10,
+        page: 1,
+        userId: participantIds[0],
+      })
+    );
+    const userB$ = firstValueFrom(
+      this.chatService.getManyConversations({
+        limit: 10,
+        page: 1,
+        userId: participantIds[1],
+      })
+    );
+    const [userA, userB] = await Promise.all([userA$, userB$]);
+    return {
+      [participantIds[0]]: userA,
+      [participantIds[1]]: userB,
+    };
+  }
 }

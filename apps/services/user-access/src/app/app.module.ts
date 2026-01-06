@@ -1,6 +1,7 @@
 import { LoggerModule } from '@common/observability/logger';
 import { Module } from '@nestjs/common';
 import { RemoveVerificationCodeCronJob } from './cornjobs/remove-verification-code.cronjob';
+import { AddressModule } from './modules/address/address.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { ShopModule } from './modules/shop/shop.module';
@@ -15,6 +16,7 @@ import { PrismaModule } from './prisma/prisma.module';
     AuthModule,
     UserModule,
     ShopModule,
+    AddressModule,
   ],
   providers: [RemoveVerificationCodeCronJob],
 })

@@ -43,7 +43,7 @@ export class ProductService {
     return this.productRepository.update(ProductMapper(data));
   }
 
-  delete(data: ProductResponse) {
+  delete(data: { id: string }) {
     return this.productRepository.delete({ id: data.id });
   }
 }

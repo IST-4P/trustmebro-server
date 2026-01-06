@@ -14,17 +14,24 @@ export const CreateVideoRequestSchema = VideoSchema.pick({
   size: true,
   userId: true,
   filetype: true,
+  title: true,
 }).extend({
   processId: z.uuid().optional(),
 });
 
 export const UpdateVideoRequestSchema = VideoSchema.pick({
-  id: true,
   status: true,
   updatedById: true,
-}).extend({
-  processId: z.uuid().optional(),
-});
+  duration: true,
+  width: true,
+  height: true,
+  title: true,
+})
+  .partial()
+  .extend({
+    id: z.uuid(),
+    processId: z.uuid().optional(),
+  });
 
 export const DeleteVideoRequestSchema = VideoSchema.pick({
   id: true,

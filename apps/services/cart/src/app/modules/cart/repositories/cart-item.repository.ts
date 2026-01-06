@@ -225,11 +225,8 @@ export class CartItemRepository {
       // Xóa CartItem
       await tx.cartItem.delete({
         where: {
-          cartId_productId_skuId: {
-            cartId: cart.id,
-            productId: data.productId,
-            skuId: data.skuId,
-          },
+          id: data.cartItemId,
+          cartId: cart.id,
         },
       });
 

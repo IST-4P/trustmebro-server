@@ -80,6 +80,14 @@ export interface Permissions {
   method: string;
 }
 
+/** ==================== GetUser ====================// */
+export interface GetUserRequest {
+  processId?: string | undefined;
+  id?: string | undefined;
+  email?: string | undefined;
+  phoneNumber?: string | undefined;
+}
+
 /** ==================== CreateUser ====================// */
 export interface CreateUserRequest {
   processId?: string | undefined;
@@ -174,6 +182,52 @@ export interface UpdateShopRequest {
   isOpen?: boolean | undefined;
 }
 
+/** ==================== CreateAddress ====================// */
+export interface CreateAddressRequest {
+  processId?: string | undefined;
+  userId: string;
+  name: string;
+  address: string;
+  ward?: string | undefined;
+  district?: string | undefined;
+  province?: string | undefined;
+  isDefault: boolean;
+}
+
+/** ==================== UpdateAddress ====================// */
+export interface UpdateAddressRequest {
+  processId?: string | undefined;
+  id: string;
+  userId?: string | undefined;
+  name?: string | undefined;
+  address?: string | undefined;
+  ward?: string | undefined;
+  district?: string | undefined;
+  province?: string | undefined;
+  isDefault?: boolean | undefined;
+}
+
+/** ==================== DeleteAddress ====================// */
+export interface DeleteAddressRequest {
+  processId?: string | undefined;
+  id: string;
+  userId: string;
+}
+
+/** ==================== AddressResponse ====================// */
+export interface AddressResponse {
+  id: string;
+  userId: string;
+  name: string;
+  address: string;
+  ward: string;
+  district: string;
+  province: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const USER_ACCESS_SERVICE_PACKAGE_NAME = "USER_ACCESS_SERVICE";
 
 export interface UserAccessServiceClient {
@@ -189,6 +243,8 @@ export interface UserAccessServiceClient {
 
   changePassword(request: ChangePasswordRequest): Observable<MessageResponse>;
 
+  getUser(request: GetUserRequest): Observable<UserResponse>;
+
   createUser(request: CreateUserRequest): Observable<UserResponse>;
 
   checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
@@ -198,6 +254,12 @@ export interface UserAccessServiceClient {
   createShop(request: CreateShopRequest): Observable<ShopResponse>;
 
   updateShop(request: UpdateShopRequest): Observable<ShopResponse>;
+
+  createAddress(request: CreateAddressRequest): Observable<AddressResponse>;
+
+  updateAddress(request: UpdateAddressRequest): Observable<AddressResponse>;
+
+  deleteAddress(request: DeleteAddressRequest): Observable<AddressResponse>;
 }
 
 export interface UserAccessServiceController {
@@ -217,6 +279,8 @@ export interface UserAccessServiceController {
     request: ChangePasswordRequest,
   ): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
+  getUser(request: GetUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+
   createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
   checkParticipantExists(
@@ -231,6 +295,18 @@ export interface UserAccessServiceController {
   createShop(request: CreateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 
   updateShop(request: UpdateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
+
+  createAddress(
+    request: CreateAddressRequest,
+  ): Promise<AddressResponse> | Observable<AddressResponse> | AddressResponse;
+
+  updateAddress(
+    request: UpdateAddressRequest,
+  ): Promise<AddressResponse> | Observable<AddressResponse> | AddressResponse;
+
+  deleteAddress(
+    request: DeleteAddressRequest,
+  ): Promise<AddressResponse> | Observable<AddressResponse> | AddressResponse;
 }
 
 export function UserAccessServiceControllerMethods() {
@@ -242,11 +318,15 @@ export function UserAccessServiceControllerMethods() {
       "register",
       "verifyToken",
       "changePassword",
+      "getUser",
       "createUser",
       "checkParticipantExists",
       "getShop",
       "createShop",
       "updateShop",
+      "createAddress",
+      "updateAddress",
+      "deleteAddress",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

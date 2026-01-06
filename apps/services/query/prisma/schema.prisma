@@ -13,6 +13,8 @@ datasource db {
     provider = "postgresql"
 }
 
+// =================================================================================================
+
 enum ProductStatus {
     ACTIVE
     INACTIVE
@@ -139,6 +141,8 @@ model ShipsFromView {
     updatedAt DateTime
 }
 
+// =================================================================================================
+
 enum NotificationType {
     ORDER_UPDATE
     PROMOTION
@@ -170,4 +174,55 @@ model NotificationView {
     @@index([userId, isRead])
     //(Optional) Nếu có tính năng lọc theo loại (Tab Khuyến mãi, Tab Đơn hàng...)
     @@index([userId, type, createdAt(sort: Desc)])
+}
+
+// =================================================================================================
+
+enum VideoStatus {
+    UPLOADING
+    UPLOADED
+    PROCESSING
+    READY
+    FAILED
+    DELETED
+}
+
+model VideoView {
+    id            String      @id
+    storageBucket String
+    storageKey    String
+    filetype      String
+    size          Int
+    status        VideoStatus
+    duration      Int         @default(0)
+    width         Int         @default(0)
+    height        Int         @default(0)
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    title String @default("")
+
+    likeCount    Int @default(0)
+    commentCount Int @default(0)
+
+    authorId       String
+    authorUsername String? @db.VarChar(200)
+    authorAvatar   String? @db.VarChar(1000)
+
+    @@index([status, createdAt])
+    @@index([authorId, createdAt])
+    @@index([storageKey])
+}
+
+model VideoViewerLike {
+    id        String   @id @default(uuid())
+    videoId   String
+    userId    String
+    liked     Boolean  @default(true)
+    updatedAt DateTime @updatedAt
+
+    @@unique([videoId, userId])
+    @@index([userId, updatedAt])
+    @@index([videoId])
 }

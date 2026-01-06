@@ -104,6 +104,7 @@ export class TusdService {
       processId,
       userId,
       id,
+      title: body.Event.Upload.MetaData.filename,
       storageBucket: body.Event.Upload.Storage.Bucket,
       storageKey: body.Event.Upload.Storage.Key,
       size: body.Event.Upload.Size,

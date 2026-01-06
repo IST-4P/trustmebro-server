@@ -6,6 +6,7 @@ export const BaseConfigurationSchema = z
     GLOBAL_PREFIX: z.string().min(1).default('api/v1'),
     AVATAR_DEFAULT_URL: z.string(),
     OTP_EXPIRES: z.string().default('10m'),
+    SOFT_DELETE_TTL: z.string().default('30d'),
   })
   .transform((data) => ({
     ...data,

@@ -60,7 +60,7 @@ export class CategoryService {
     return this.categoryRepository.update(CategoryMapper(data));
   }
 
-  delete(data: CategoryResponse) {
+  delete(data: { id: string }) {
     return this.categoryRepository.delete({ id: data.id });
   }
 }

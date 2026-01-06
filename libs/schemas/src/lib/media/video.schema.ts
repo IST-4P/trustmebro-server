@@ -9,4 +9,10 @@ export const VideoSchema = BaseSchema.extend({
   userId: z.uuid(),
   filetype: z.string(),
   status: VideoStatusEnums,
+  duration: z.number().int().default(0),
+  width: z.number().int().default(0),
+  height: z.number().int().default(0),
+  title: z.string().default(''),
+  likeCount: z.number().int().default(0),
+  commentCount: z.number().int().default(0),
 });

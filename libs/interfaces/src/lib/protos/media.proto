@@ -32,6 +32,7 @@ message CreateVideoRequest {
   int32 size = 5;
   string userId = 6;
   string filetype = 7;
+  string title = 8;
 }
 
 message VideoResponse {

@@ -2,7 +2,9 @@ import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   AddCartItemRequest,
+  DeleteCartItemRequest,
   GetManyCartItemsRequest,
+  UpdateCartItemRequest,
   ValidateCartItemsRequest,
 } from '@common/interfaces/models/cart';
 import { Controller, UseInterceptors } from '@nestjs/common';
@@ -22,6 +24,16 @@ export class CartGrpcController {
   @GrpcMethod(GrpcServiceName.CART_SERVICE, 'AddCartItem')
   addCartItem(data: AddCartItemRequest) {
     return this.cartItemService.add(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.CART_SERVICE, 'UpdateCartItem')
+  updateCartItem(data: UpdateCartItemRequest) {
+    return this.cartItemService.update(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.CART_SERVICE, 'DeleteCartItem')
+  deleteCartItem(data: DeleteCartItemRequest) {
+    return this.cartItemService.delete(data);
   }
 
   @GrpcMethod(GrpcServiceName.CART_SERVICE, 'ValidateCartItems')

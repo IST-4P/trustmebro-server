@@ -6,9 +6,13 @@ import {
 } from '@common/configurations/minio.config';
 import { VideoStatusValues } from '@common/constants/media.constant';
 import { ProcessVideoRequest } from '@common/interfaces/models/media';
-import { makeThumbnail, transcodeToHlsAbr } from '@common/utils/hls.util';
+import {
+  ffprobeJson,
+  makeThumbnail,
+  transcodeToHlsAbr,
+} from '@common/utils/hls.util';
 import { downloadToFile, uploadDirectory } from '@common/utils/minio.utils';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
@@ -52,6 +56,23 @@ export class FfmpegService {
     return inputPath;
   }
 
+  async getVideoMetaData(inputPath: string) {
+    const j = await ffprobeJson(inputPath);
+
+    const v0 = j?.streams?.find((s: any) => s.codec_type === 'video');
+    const duration = Number(j?.format?.duration ?? v0?.duration);
+
+    if (!Number.isFinite(duration) || duration <= 0) {
+      throw new BadRequestException('Cannot determine duration from ffprobe');
+    }
+
+    return {
+      durationSeconds: duration,
+      width: Number(v0?.width ?? 0),
+      height: Number(v0?.height ?? 0),
+    };
+  }
+
   async processVideo(data: ProcessVideoRequest) {
     const claimed = await this.videoRepository.updateMany({
       where: { id: data.id, status: VideoStatusValues.UPLOADED },
@@ -77,6 +98,9 @@ export class FfmpegService {
       // Download
       const inputPath = await this.downloadVideo(data.storageKey);
 
+      // Get Metadata
+      const meta = await this.getVideoMetaData(inputPath);
+
       // Transcode HLS ABR
       await transcodeToHlsAbr(inputPath, outDir);
 
@@ -99,6 +123,9 @@ export class FfmpegService {
         id: data.id,
         processId: data.processId,
         status: VideoStatusValues.READY,
+        duration: Math.round(meta.durationSeconds),
+        width: meta.width,
+        height: meta.height,
       });
     } finally {
       // Cleanup

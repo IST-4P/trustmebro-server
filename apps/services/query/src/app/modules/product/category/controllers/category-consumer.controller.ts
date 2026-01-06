@@ -19,7 +19,7 @@ export class CategoryConsumerController {
   }
 
   @EventPattern(QueueTopics.CATEGORY.DELETE_CATEGORY)
-  deleteCategory(@Payload() payload: CategoryResponse) {
+  deleteCategory(@Payload() payload: { id: string }) {
     return this.categoryService.delete(payload);
   }
 }

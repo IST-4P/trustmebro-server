@@ -30,6 +30,7 @@ export interface CreateVideoRequest {
   size: number;
   userId: string;
   filetype: string;
+  title: string;
 }
 
 export interface VideoResponse {

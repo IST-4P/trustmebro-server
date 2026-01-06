@@ -160,6 +160,7 @@ export class OrderService implements OnModuleInit {
           items: order.items.map((item) => ({
             skuId: item.skuId,
             quantity: item.quantity,
+            productId: item.productId,
           })),
         })
       )
