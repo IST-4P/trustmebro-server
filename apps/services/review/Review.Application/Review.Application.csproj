@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\libs\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\Review.Domain\Review.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

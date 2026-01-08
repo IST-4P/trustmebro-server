@@ -11,10 +11,12 @@ namespace Report.Application.Service
   public class ReportService : IReportService
   {
     private readonly IReportRepository _repo;
+    private readonly IKafkaProducer _kafka;
 
-    public ReportService(IReportRepository repo)
+    public ReportService(IReportRepository repo, IKafkaProducer kafka)
     {
       _repo = repo;
+      _kafka = kafka;
     }
 
     #region READ Methods
@@ -143,6 +145,21 @@ namespace Report.Application.Service
       };
 
       var created = await _repo.CreateAsync(report);
+
+        await _kafka.EmitAsync(
+        ReportTopics.ReportCreated,
+        new ReportCreatedEvent(
+          created.Id.ToString(),
+          created.ReporterId,
+          created.TargetId,
+          (int)created.TargetType,
+          (int)created.Category,
+          created.Title,
+          created.Description,
+          created.Status.ToString(),
+          created.CreatedAt
+      )
+
       return MapToDetailResponse(created);
     }
 
@@ -233,6 +250,17 @@ namespace Report.Application.Service
 
       await _repo.AddHistoryAsync(history);
       await _repo.UpdateStatusAsync(reportId, dto.NewStatus);
+
+      await _kafka.EmitAsync(
+        ReportTopics.ReportStatusUpdated,
+        new ReportStatusUpdatedEvent(
+            reportId,
+            oldStatus.ToString(),
+            dto.NewStatus.ToString(),
+            dto.AdminId,
+            dto.Note,
+            DateTime.UtcNow
+        )
 
       var updatedReport = await _repo.GetReportByIdAsync(reportId);
       return MapToDetailResponse(updatedReport!);

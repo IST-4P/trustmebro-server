@@ -1,10 +1,11 @@
-using Report.Application.Interfaces;
-using Report.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Report.Api.Services;
-using Report.Api.Mappings;
-using Report.Application.Service;
 using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Report.Api.Mappings;
+using Report.Api.Services;
+using Report.Application.Interfaces;
+using Report.Application.Service;
+using Report.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,10 @@ if (string.IsNullOrEmpty(connectionString))
   throw new InvalidOperationException("Database connection string not found.");
 }
 
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => HealthCheckResult.Healthy())
+    .AddDbContextCheck<ReportDbContext>("db");
+
 builder.Services.AddGrpc(options =>
 {
   options.EnableDetailedErrors = builder.Environment.IsDevelopment();
@@ -79,6 +84,7 @@ builder.Services.AddDbContext<ReportDbContext>(options =>
   }
 });
 
+builder.Services.AddKafka(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(ReportMappingProfile));
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
@@ -102,7 +108,8 @@ var app = builder.Build();
 app.MapGrpcService<ReportGrpcService>();
 
 app.MapGet("/", () => "Report gRPC Service is running. Use a gRPC client to communicate.");
-app.MapGet("/health", () => Results.Ok(new { status = "healthy", service = "report-service" }));
+
+app.MapHealthChecks("/health/"); 
 
 Console.WriteLine("Report gRPC Service listening on port 5010");
 Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");

@@ -5,7 +5,7 @@ using Report.Application.Exceptions;
 using Report.Application.Interfaces;
 using Report.Grpc;
 using Microsoft.AspNetCore.Authorization;
-
+ 
 
 namespace Report.Api.Services
 {
@@ -61,7 +61,6 @@ namespace Report.Api.Services
             {
                 _logger.LogInformation("Getting report {ReportId}", request.Id);
 
-                // Extract userId and role from metadata (if using authentication)
                 var userId = context.RequestHeaders.GetValue("user_id") ?? "anonymous";
                 var role = context.RequestHeaders.GetValue("user_role") ?? "user";
 
@@ -339,13 +338,5 @@ namespace Report.Api.Services
         }
     }
 
-    // Extension helper
-    public static class MetadataExtensions
-    {
-        public static string? GetValue(this Metadata headers, string key)
-        {
-            var entry = headers.FirstOrDefault(e => e.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
-            return entry?.Value;
-        }
-    }
+
 }
