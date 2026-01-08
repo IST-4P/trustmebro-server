@@ -4,6 +4,8 @@ import {
   GetShopRequest,
   ShopResponse,
   UpdateShopRequest,
+  ValidateShopsRequest,
+  ValidateShopsResponse,
 } from '@common/interfaces/models/user-access';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ShopRepository } from '../repositories/shop.repository';
@@ -49,5 +51,16 @@ export class ShopService {
 
       throw error;
     }
+  }
+
+  async validateShops({
+    processId,
+    ...data
+  }: ValidateShopsRequest): Promise<ValidateShopsResponse> {
+    const shops = await this.shopRepository.validateShops(data);
+    if (shops.length !== data.shopIds.length) {
+      throw new NotFoundException('Error.SomeShopsNotFound');
+    }
+    return { shops };
   }
 }

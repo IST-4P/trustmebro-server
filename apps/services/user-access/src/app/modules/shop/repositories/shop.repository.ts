@@ -2,6 +2,7 @@ import {
   CreateShopRequest,
   GetShopRequest,
   UpdateShopRequest,
+  ValidateShopsRequest,
 } from '@common/interfaces/models/user-access';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -33,6 +34,18 @@ export class ShopRepository {
     return this.prismaService.shop.update({
       where: { id, ownerId },
       data,
+    });
+  }
+
+  validateShops(data: ValidateShopsRequest) {
+    return this.prismaService.shop.findMany({
+      where: {
+        id: { in: data.shopIds },
+      },
+      select: {
+        id: true,
+        name: true,
+      },
     });
   }
 }

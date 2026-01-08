@@ -4,8 +4,9 @@ import {
   CreateShopRequest,
   GetShopRequest,
   UpdateShopRequest,
+  ValidateShopsRequest,
 } from '@common/interfaces/models/user-access';
-import { Body, Controller, UseInterceptors } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { ShopService } from '../services/shop.service';
 
@@ -15,17 +16,22 @@ export class ShopGrpcController {
   constructor(private readonly shopService: ShopService) {}
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetShop')
-  getShop(@Body() body: GetShopRequest) {
-    return this.shopService.find(body);
+  getShop(data: GetShopRequest) {
+    return this.shopService.find(data);
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'CreateShop')
-  createShop(@Body() body: CreateShopRequest) {
-    return this.shopService.create(body);
+  createShop(data: CreateShopRequest) {
+    return this.shopService.create(data);
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'UpdateShop')
-  updateShop(@Body() body: UpdateShopRequest) {
-    return this.shopService.update(body);
+  updateShop(data: UpdateShopRequest) {
+    return this.shopService.update(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'ValidateShops')
+  validateShops(data: ValidateShopsRequest) {
+    return this.shopService.validateShops(data);
   }
 }

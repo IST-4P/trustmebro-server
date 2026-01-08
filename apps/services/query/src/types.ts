@@ -1,3 +1,4 @@
+import { OrderItemResponse } from '@common/interfaces/models/order';
 import { Metadata as MetadataType } from '@common/schemas/notification';
 import {
   AttributesProduct as AttributesProductType,
@@ -16,5 +17,14 @@ declare global {
     type Attributes = AttributesProductType;
     type Skus = Pick<SkuType, 'id' | 'value' | 'price' | 'stock' | 'image'>[];
     type Metadata = MetadataType;
+    type OrderItems = Pick<
+      OrderItemResponse,
+      | 'productName'
+      | 'productImage'
+      | 'skuValue'
+      | 'quantity'
+      | 'price'
+      | 'productId'
+    >[];
   }
 }

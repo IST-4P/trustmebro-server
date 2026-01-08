@@ -1,3 +1,4 @@
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   AddCartItemRequest,
@@ -119,9 +120,15 @@ export class CartItemService implements OnModuleInit {
     processId,
     ...data
   }: DeleteCartItemRequest): Promise<DeleteCartResponse> {
-    const deleteCartItem = await this.cartItemRepository.delete(data);
-    this.kafkaService.emit(QueueTopics.CART.DELETE_CART, deleteCartItem);
-    return deleteCartItem;
+    try {
+      const deleteCartItem = await this.cartItemRepository.delete(data);
+      this.kafkaService.emit(QueueTopics.CART.DELETE_CART, deleteCartItem);
+      return deleteCartItem;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.CartItemNotFound');
+      }
+    }
   }
 
   async validateCartItems({ processId, ...data }: ValidateCartItemsRequest) {

@@ -182,6 +182,21 @@ export interface UpdateShopRequest {
   isOpen?: boolean | undefined;
 }
 
+/** ==================== ValidateShops ====================// */
+export interface ValidateShopsRequest {
+  processId?: string | undefined;
+  shopIds: string[];
+}
+
+export interface ValidateShop {
+  id: string;
+  name: string;
+}
+
+export interface ValidateShopsResponse {
+  shops: ValidateShop[];
+}
+
 /** ==================== CreateAddress ====================// */
 export interface CreateAddressRequest {
   processId?: string | undefined;
@@ -255,6 +270,8 @@ export interface UserAccessServiceClient {
 
   updateShop(request: UpdateShopRequest): Observable<ShopResponse>;
 
+  validateShops(request: ValidateShopsRequest): Observable<ValidateShopsResponse>;
+
   createAddress(request: CreateAddressRequest): Observable<AddressResponse>;
 
   updateAddress(request: UpdateAddressRequest): Observable<AddressResponse>;
@@ -296,6 +313,10 @@ export interface UserAccessServiceController {
 
   updateShop(request: UpdateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 
+  validateShops(
+    request: ValidateShopsRequest,
+  ): Promise<ValidateShopsResponse> | Observable<ValidateShopsResponse> | ValidateShopsResponse;
+
   createAddress(
     request: CreateAddressRequest,
   ): Promise<AddressResponse> | Observable<AddressResponse> | AddressResponse;
@@ -324,6 +345,7 @@ export function UserAccessServiceControllerMethods() {
       "getShop",
       "createShop",
       "updateShop",
+      "validateShops",
       "createAddress",
       "updateAddress",
       "deleteAddress",

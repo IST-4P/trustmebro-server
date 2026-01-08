@@ -71,6 +71,7 @@ enum OrderQueueTopics {
   UPDATE_ORDER = 'update_order',
   CANCEL_ORDER = 'cancel_order',
   CREATE_PAYMENT_BY_ORDER = 'create_payment_by_order',
+  PAID_ORDER = 'paid_order',
 }
 
 enum PaymentQueueTopics {

@@ -49,9 +49,9 @@ export class CartController {
     return this.cartService.updateCartItem({ ...body, processId, userId });
   }
 
-  @Delete(':id')
+  @Delete(':cartItemId')
   async deleteCartItem(
-    @Param() params: Omit<DeleteCartItemRequestDto, 'userId' | 'processId'>,
+    @Param() params: Omit<DeleteCartItemRequestDto, 'userId'>,
     @ProcessId() processId: string,
     @UserData('userId') userId: string
   ) {

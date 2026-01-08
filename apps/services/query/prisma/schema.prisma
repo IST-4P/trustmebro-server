@@ -226,3 +226,72 @@ model VideoViewerLike {
     @@index([userId, updatedAt])
     @@index([videoId])
 }
+
+// =================================================================================================
+enum OrderStatus {
+    CREATING // đang tạo đơn
+    PENDING // chờ xác nhận
+    CONFIRMED // đã xác nhận, đang chuẩn bị
+    SHIPPING // đang giao
+    COMPLETED // đã giao
+    CANCELLED // đã hủy
+    REFUNDED // đã hoàn tiền
+}
+
+enum PaymentMethod {
+    COD
+    WALLET
+    ONLINE
+}
+
+enum PaymentStatus {
+    PENDING
+    SUCCESS
+    FAILED
+    REFUNDED
+}
+
+model OrderView {
+    id   String @id
+    code String @unique
+
+    userId   String
+    shopId   String
+    shopName String
+
+    status        OrderStatus   @default(PENDING)
+    paymentMethod PaymentMethod
+    paymentStatus PaymentStatus @default(PENDING)
+    paymentId     String?
+
+    itemTotal   Int @default(0)
+    shippingFee Int @default(0)
+    discount    Int @default(0)
+    grandTotal  Int @default(0)
+
+    /// [Receiver]
+    receiver        Json
+    receiverName    String
+    receiverPhone   String
+    receiverAddress String
+
+    /// [Timeline]
+    timeline Json
+
+    /// [OrderItems]
+    itemsSnapshot Json?
+
+    firstProductName  String
+    firstProductImage String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId, createdAt(sort: Desc)])
+    @@index([shopId, createdAt(sort: Desc)])
+    @@index([status, createdAt(sort: Desc)])
+    @@index([paymentStatus, createdAt(sort: Desc)])
+    @@index([userId, status, createdAt(sort: Desc)])
+    @@index([shopId, status, createdAt(sort: Desc)])
+    @@index([status])
+}

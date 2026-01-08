@@ -41,6 +41,8 @@ export const UpdateCartItemRequestSchema = AddCartItemRequestSchema;
 export const DeleteCartItemRequestSchema = z.object({
   userId: z.uuid(),
   cartItemId: z.uuid(),
+  productId: z.uuid().optional(),
+  skuId: z.uuid().optional(),
   processId: z.uuid().optional(),
 });
 

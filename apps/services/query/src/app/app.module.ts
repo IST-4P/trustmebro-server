@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { HealthModule } from './modules/health/health.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { OrderModule } from './modules/order/order.module';
 import { ProductCoreModule } from './modules/product/product-core.module';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -14,6 +15,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ProductCoreModule,
     NotificationModule,
     MediaModule,
+    OrderModule,
   ],
 })
 export class AppModule {}

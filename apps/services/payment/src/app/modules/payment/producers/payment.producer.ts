@@ -7,6 +7,7 @@ import { generateCancelPaymentJobId } from '@common/utils/bullmq.util';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { Queue } from 'bullmq';
+import ms, { StringValue } from 'ms';
 
 @Injectable()
 export class PaymentProducer {
@@ -18,7 +19,7 @@ export class PaymentProducer {
       CANCEL_PAYMENT_JOB_NAME,
       { paymentId },
       {
-        delay: RedisConfiguration.PAYMENT_TTL,
+        delay: ms(RedisConfiguration.PAYMENT_TTL as StringValue),
         jobId: generateCancelPaymentJobId(paymentId),
         removeOnComplete: true,
         removeOnFail: true,

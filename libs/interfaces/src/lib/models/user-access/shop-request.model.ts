@@ -35,6 +35,12 @@ export const UpdateShopRequestSchema = ShopSchema.pick({
   })
   .strict();
 
+export const ValidateShopsRequestSchema = z.object({
+  processId: z.uuid().optional(),
+  shopIds: z.array(z.uuid()),
+});
+
 export type CreateShopRequest = z.infer<typeof CreateShopRequestSchema>;
 export type UpdateShopRequest = z.infer<typeof UpdateShopRequestSchema>;
 export type GetShopRequest = z.infer<typeof GetShopRequestSchema>;
+export type ValidateShopsRequest = z.infer<typeof ValidateShopsRequestSchema>;

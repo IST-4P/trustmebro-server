@@ -11,4 +11,9 @@ export class OrderConsumerController {
   cancelOrders(@Payload() payload: { paymentId: string }) {
     return this.orderService.cancelOrdersByPayment(payload);
   }
+
+  @EventPattern(QueueTopics.ORDER.PAID_ORDER)
+  paidOrder(@Payload() payload: { paymentId: string }) {
+    return this.orderService.paid(payload);
+  }
 }

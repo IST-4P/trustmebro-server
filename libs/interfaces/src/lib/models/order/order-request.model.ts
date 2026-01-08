@@ -46,7 +46,13 @@ export const GetManyOrdersRequestSchema = PaginationQueryRequestSchema.extend({
   userId: z.uuid().optional(),
 });
 
+export const GetOrderRequestSchema = z.object({
+  orderId: z.uuid(),
+  userId: z.uuid().optional(),
+});
+
 export type CreateOrderRequest = z.infer<typeof CreateOrderRequestSchema>;
 export type CreateOrderRepository = z.infer<typeof CreateOrderRepositorySchema>;
 export type CancelOrderRequest = z.infer<typeof CancelOrderRequestSchema>;
 export type GetManyOrdersRequest = z.infer<typeof GetManyOrdersRequestSchema>;
+export type GetOrderRequest = z.infer<typeof GetOrderRequestSchema>;

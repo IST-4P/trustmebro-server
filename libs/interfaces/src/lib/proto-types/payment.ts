@@ -10,6 +10,29 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "PAYMENT_SERVICE";
 
+/** =========================================== Receiver ===========================================// */
+export interface WebhookTransactionRequest {
+  id: number;
+  gateway: string;
+  transactionDate: string;
+  accountNumber?: string | undefined;
+  code?: string | undefined;
+  content?: string | undefined;
+  transferType: string;
+  transferAmount: number;
+  accumulated: number;
+  subAccount?: string | undefined;
+  referenceCode?: string | undefined;
+  description: string;
+}
+
+export interface WebhookTransactionResponse {
+  message: string;
+  paymentCode: string;
+  userId: string;
+  paymentId: string;
+}
+
 /** ==================== CreatePayment ====================// */
 export interface CreatePaymentRequest {
   processId?: string | undefined;
@@ -41,10 +64,16 @@ export interface PaymentResponse {
 export const PAYMENT_SERVICE_PACKAGE_NAME = "PAYMENT_SERVICE";
 
 export interface PaymentServiceClient {
+  receiver(request: WebhookTransactionRequest): Observable<WebhookTransactionResponse>;
+
   createPayment(request: CreatePaymentRequest): Observable<PaymentResponse>;
 }
 
 export interface PaymentServiceController {
+  receiver(
+    request: WebhookTransactionRequest,
+  ): Promise<WebhookTransactionResponse> | Observable<WebhookTransactionResponse> | WebhookTransactionResponse;
+
   createPayment(
     request: CreatePaymentRequest,
   ): Promise<PaymentResponse> | Observable<PaymentResponse> | PaymentResponse;
@@ -52,7 +81,7 @@ export interface PaymentServiceController {
 
 export function PaymentServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPayment"];
+    const grpcMethods: string[] = ["receiver", "createPayment"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentService", method)(constructor.prototype[method], method, descriptor);

@@ -8,6 +8,7 @@ import { RemovePaymentCronJob } from './cornjobs/remove-payment.cronjob';
 import { RemoveRefundCronJob } from './cornjobs/remove-refund.cronjob';
 import { HealthModule } from './modules/health/health.module';
 import { PaymentModule } from './modules/payment/payment.module';
+import { TransactionModule } from './modules/transaction/transaction.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     HealthModule,
     PaymentModule,
+    TransactionModule,
   ],
   providers: [RemovePaymentCronJob, RemoveRefundCronJob],
 })

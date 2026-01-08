@@ -17,6 +17,7 @@ service UserAccessService {
   rpc GetShop(GetShopRequest) returns (ShopResponse);
   rpc CreateShop(CreateShopRequest) returns (ShopResponse);
   rpc UpdateShop(UpdateShopRequest) returns (ShopResponse);
+  rpc ValidateShops(ValidateShopsRequest) returns (ValidateShopsResponse);
 
   rpc CreateAddress(CreateAddressRequest) returns (AddressResponse);
   rpc UpdateAddress(UpdateAddressRequest) returns (AddressResponse);
@@ -194,6 +195,21 @@ message UpdateShopRequest {
   optional string address = 7;
   optional string phone = 8;
   optional bool isOpen = 9;
+}
+
+//==================== ValidateShops ====================//
+message ValidateShopsRequest {
+  optional string processId = 1;
+  repeated string shopIds = 2;
+}
+
+message ValidateShop {
+  string id = 1;
+  string name = 2;
+}
+
+message ValidateShopsResponse {
+  repeated ValidateShop shops = 1;
 }
 
 //==================== CreateAddress ====================//
