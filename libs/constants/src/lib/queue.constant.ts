@@ -78,8 +78,7 @@ enum PaymentQueueTopics {
 }
 
 enum MediaQueueTopics {
-  CREATE_VIDEO = 'create_video',
-  UPDATE_VIDEO = 'update_video',
+  UPSERT_VIDEO = 'upsert_video',
   DELETE_VIDEO = 'delete_video',
   VIDEO_UPLOADED = 'video_uploaded',
 }

@@ -14,6 +14,7 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_DELETE_TOPIC_ENABLE=true
       - ALLOW_PLAINTEXT_LISTENER=yes
     volumes:
       - kafka_data:/bitnami/kafka
@@ -35,52 +36,52 @@ services:
     networks:
       - trustmebro-network
 
-  loki:
-    image: grafana/loki:3.0.0
-    container_name: loki
-    ports:
-      - "3501:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-    networks:
-      - trustmebro-network
+  # loki:
+  #   image: grafana/loki:3.0.0
+  #   container_name: loki
+  #   ports:
+  #     - "3501:3100"
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   networks:
+  #     - trustmebro-network
 
-  promtail:
-    image: grafana/promtail:3.0.0
-    container_name: promtail
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./docker/promtail-config.yaml:/etc/promtail/config.yaml
-    command: -config.file=/etc/promtail/config.yaml
-    networks:
-      - trustmebro-network
-    depends_on:
-      - loki
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "test -e /proc/1/cmdline && grep -q promtail /proc/1/cmdline",
-        ]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+  # promtail:
+  #   image: grafana/promtail:3.0.0
+  #   container_name: promtail
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./docker/promtail-config.yaml:/etc/promtail/config.yaml
+  #   command: -config.file=/etc/promtail/config.yaml
+  #   networks:
+  #     - trustmebro-network
+  #   depends_on:
+  #     - loki
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "test -e /proc/1/cmdline && grep -q promtail /proc/1/cmdline",
+  #       ]
+  #     interval: 30s
+  #     timeout: 5s
+  #     retries: 3
+  #     start_period: 10s
 
-  grafana:
-    image: grafana/grafana:10.2.0
-    container_name: grafana
-    ports:
-      - "3500:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_USERS_ALLOW_SIGN_UP=false
-    networks:
-      - trustmebro-network
-    volumes:
-      - grafana_data:/var/lib/grafana
-    depends_on:
-      - loki
+  # grafana:
+  #   image: grafana/grafana:10.2.0
+  #   container_name: grafana
+  #   ports:
+  #     - "3500:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #     - GF_USERS_ALLOW_SIGN_UP=false
+  #   networks:
+  #     - trustmebro-network
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   depends_on:
+  #     - loki
 
   tusd:
     image: tusproject/tusd:latest

@@ -4,26 +4,19 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { VideoService } from '../services/video.service';
 
+type VideoPayload = VideoResponse & { username: string; avatar: string };
+
 @Controller()
 export class VideoConsumerController {
   constructor(private readonly videoService: VideoService) {}
 
-  @EventPattern(QueueTopics.MEDIA.CREATE_VIDEO)
-  createVideo(
-    @Payload() payload: VideoResponse & { username: string; avatar: string }
-  ) {
-    return this.videoService.create(payload);
-  }
-
-  @EventPattern(QueueTopics.MEDIA.UPDATE_VIDEO)
-  updateVideo(
-    @Payload() payload: VideoResponse & { username: string; avatar: string }
-  ) {
-    return this.videoService.update(payload);
+  @EventPattern(QueueTopics.MEDIA.UPSERT_VIDEO)
+  async upsertVideo(@Payload() payload: VideoPayload) {
+    return this.videoService.upsert(payload);
   }
 
   @EventPattern(QueueTopics.MEDIA.DELETE_VIDEO)
-  deleteVideo(@Payload() payload: { id: string }) {
+  async deleteVideo(@Payload() payload: { id: string }) {
     return this.videoService.delete(payload);
   }
 }

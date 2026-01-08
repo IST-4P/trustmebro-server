@@ -1,4 +1,8 @@
-import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from '@aws-sdk/client-s3';
 import { createReadStream, createWriteStream, promises } from 'fs';
 import path from 'path';
 import { pipeline } from 'stream/promises';
@@ -55,4 +59,17 @@ export const downloadToFile = async (data: {
   );
   // @ts-ignore
   await pipeline(res.Body, createWriteStream(data.destPath));
+};
+
+export const deleteFile = async (data: {
+  key: string;
+  bucket: string;
+  s3: any;
+}) => {
+  await data.s3.send(
+    new DeleteObjectCommand({
+      Bucket: data.bucket,
+      Key: data.key,
+    })
+  );
 };

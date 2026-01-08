@@ -65,7 +65,7 @@ export class VideoService implements OnModuleInit {
       const createdVideo = await this.videoRepository.create(data);
       const user = await this.getUser({ id: data.userId, processId });
 
-      this.kafkaService.emit(QueueTopics.MEDIA.CREATE_VIDEO, {
+      this.kafkaService.emit(QueueTopics.MEDIA.UPSERT_VIDEO, {
         ...createdVideo,
         username: user.username,
         avatar: user.avatar,
@@ -85,7 +85,7 @@ export class VideoService implements OnModuleInit {
   }: UpdateVideoRequest): Promise<VideoResponse> {
     try {
       const updatedVideo = await this.videoRepository.update(data);
-      this.kafkaService.emit(QueueTopics.MEDIA.UPDATE_VIDEO, updatedVideo);
+      this.kafkaService.emit(QueueTopics.MEDIA.UPSERT_VIDEO, updatedVideo);
       return updatedVideo;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {

@@ -5,13 +5,19 @@ import {
   MinioProvider,
 } from '@common/configurations/minio.config';
 import { VideoStatusValues } from '@common/constants/media.constant';
+import { QueueTopics } from '@common/constants/queue.constant';
 import { ProcessVideoRequest } from '@common/interfaces/models/media';
+import { KafkaService } from '@common/kafka/kafka.service';
 import {
   ffprobeJson,
   makeThumbnail,
   transcodeToHlsAbr,
 } from '@common/utils/hls.util';
-import { downloadToFile, uploadDirectory } from '@common/utils/minio.utils';
+import {
+  deleteFile,
+  downloadToFile,
+  uploadDirectory,
+} from '@common/utils/minio.utils';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import fs from 'fs';
 import os from 'os';
@@ -26,7 +32,8 @@ export class FfmpegService {
 
   constructor(
     private readonly videoService: VideoService,
-    private readonly videoRepository: VideoRepository
+    private readonly videoRepository: VideoRepository,
+    private readonly kafkaService: KafkaService
   ) {
     const { client, bucket } = MinioProvider(MinioBucket.VIDEO_BUCKET);
     this.S3Client = client;
@@ -84,6 +91,9 @@ export class FfmpegService {
 
     if (claimed.count === 0) return; // đã bị worker khác claim, hoặc đã READY/FAILED
 
+    const video = await this.videoRepository.find({ id: data.id });
+    this.kafkaService.emit(QueueTopics.MEDIA.UPSERT_VIDEO, video);
+
     const name = `${data.storageKey.replace(/^tus\//, '')}`;
     const baseTmpDir = path.join(
       os.tmpdir(),
@@ -129,7 +139,20 @@ export class FfmpegService {
       });
     } finally {
       // Cleanup
-      await fs.promises.rm(baseTmpDir, { recursive: true, force: true });
+      await Promise.all([
+        deleteFile({
+          bucket: this.bucket,
+          key: data.storageKey,
+          s3: this.S3Client,
+        }),
+        deleteFile({
+          bucket: this.bucket,
+          // Xoá .info
+          key: `${data.storageKey}.info`,
+          s3: this.S3Client,
+        }),
+        fs.promises.rm(baseTmpDir, { recursive: true, force: true }),
+      ]);
     }
   }
 }

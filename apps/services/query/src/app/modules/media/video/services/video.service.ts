@@ -7,12 +7,8 @@ import { VideoRepository } from '../repositories/video.repository';
 export class VideoService {
   constructor(private readonly videoRepository: VideoRepository) {}
 
-  create(data: VideoResponse & { username: string; avatar: string }) {
-    return this.videoRepository.create(VideoMapper(data));
-  }
-
-  update(data: VideoResponse & { username: string; avatar: string }) {
-    return this.videoRepository.update(VideoMapper(data));
+  upsert(data: VideoResponse & { username: string; avatar: string }) {
+    return this.videoRepository.upsert(VideoMapper(data));
   }
 
   delete(data: { id: string }) {
