@@ -1,5 +1,6 @@
 import {
   ChangePasswordRequestSchema,
+  LoginPostmanResponseSchema,
   LoginRequestSchema,
   LoginResponseSchema,
   LogoutRequestSchema,
@@ -32,4 +33,8 @@ export class RegisterRequestDto extends createZodDto(RegisterRequestSchema) {}
 
 export class ChangePasswordRequestDto extends createZodDto(
   ChangePasswordRequestSchema
+) {}
+
+export class LoginPostmanResponseDto extends createZodDto(
+  LoginPostmanResponseSchema
 ) {}

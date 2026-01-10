@@ -2,6 +2,9 @@ import {
   AddressResponse,
   CreateAddressRequest,
   DeleteAddressRequest,
+  GetAddressRequest,
+  GetManyAddressesRequest,
+  GetManyAddressesResponse,
   UpdateAddressRequest,
   USER_ACCESS_SERVICE_NAME,
   USER_ACCESS_SERVICE_PACKAGE_NAME,
@@ -25,6 +28,16 @@ export class AddressService implements OnModuleInit {
       this.userAccessClient.getService<UserAccessServiceClient>(
         USER_ACCESS_SERVICE_NAME
       );
+  }
+
+  async getManyAddresses(
+    data: GetManyAddressesRequest
+  ): Promise<GetManyAddressesResponse> {
+    return firstValueFrom(this.userAccessService.getManyAddresses(data));
+  }
+
+  async getAddress(data: GetAddressRequest): Promise<AddressResponse> {
+    return firstValueFrom(this.userAccessService.getAddress(data));
   }
 
   async createAddress(data: CreateAddressRequest): Promise<AddressResponse> {

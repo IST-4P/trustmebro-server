@@ -1,8 +1,8 @@
 import { OrderStatusValues } from '@common/constants/order.constant';
 import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
-  GetManyOrderResponse,
   GetManyOrdersRequest,
+  GetManyOrdersResponse,
   GetOrderRequest,
   GetOrderResponse,
   OrderResponse,
@@ -15,7 +15,7 @@ import { OrderRepository } from '../repositories/order.repository';
 export class OrderService {
   constructor(private readonly orderRepository: OrderRepository) {}
 
-  async list(data: GetManyOrdersRequest): Promise<GetManyOrderResponse> {
+  async list(data: GetManyOrdersRequest): Promise<GetManyOrdersResponse> {
     const orders = await this.orderRepository.list(data);
     if (orders.totalItems === 0) {
       throw new NotFoundException('Error.OrdersNotFound');

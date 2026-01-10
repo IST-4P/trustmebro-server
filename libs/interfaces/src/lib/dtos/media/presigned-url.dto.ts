@@ -1,3 +1,4 @@
+import { ResponseSchema } from '@common/interfaces/models/common/response.model';
 import {
   CreatePresignedUrlRequestSchema,
   CreatePresignedUrlResponseSchema,
@@ -9,5 +10,5 @@ export class CreatePresignedUrlRequestDto extends createZodDto(
 ) {}
 
 export class CreatePresignedUrlResponseDto extends createZodDto(
-  CreatePresignedUrlResponseSchema
+  ResponseSchema(CreatePresignedUrlResponseSchema)
 ) {}

@@ -3,6 +3,7 @@ import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import {
   ChangePasswordRequestDto,
+  LoginPostmanResponseDto,
   LoginRequestDto,
   RegisterRequestDto,
   SendVerificationCodeRequestDto,
@@ -15,6 +16,7 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { parse } from 'cookie';
 import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
@@ -30,10 +32,12 @@ const cookieOptions: CookieOptions = {
 };
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login-postman')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   async loginDirectAccessGrants(
     @Body() body: LoginRequestDto,
@@ -59,6 +63,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   async refreshToken(
     @Req() req: Request,
@@ -91,6 +96,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   logout(
     @Req() req: Request,
@@ -107,12 +113,14 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   register(@Body() body: RegisterRequestDto, @ProcessId() processId: string) {
     return this.authService.register({ ...body, processId });
   }
 
   @Post('change-password')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   changePassword(
     @Body() body: ChangePasswordRequestDto,
@@ -122,6 +130,7 @@ export class AuthController {
   }
 
   @Post('send-otp')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   sendVerificationCode(@Body() body: SendVerificationCodeRequestDto) {
     this.authService.sendVerificationCode(body);

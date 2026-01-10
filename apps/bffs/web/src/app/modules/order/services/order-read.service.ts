@@ -1,8 +1,8 @@
 import {
-  GetAttributeRequest,
-  GetAttributeResponse,
-  GetManyAttributesRequest,
-  GetManyAttributesResponse,
+  GetManyOrdersRequest,
+  GetManyOrdersResponse,
+  GetOrderRequest,
+  GetOrderResponse,
   QUERY_SERVICE_NAME,
   QUERY_SERVICE_PACKAGE_NAME,
   QueryServiceClient,
@@ -12,7 +12,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class AttributeReadService implements OnModuleInit {
+export class OrderReadService implements OnModuleInit {
   private queryService!: QueryServiceClient;
 
   constructor(
@@ -25,13 +25,13 @@ export class AttributeReadService implements OnModuleInit {
       this.queryClient.getService<QueryServiceClient>(QUERY_SERVICE_NAME);
   }
 
-  async getManyAttributes(
-    data: GetManyAttributesRequest
-  ): Promise<GetManyAttributesResponse> {
-    return firstValueFrom(this.queryService.getManyAttributes(data));
+  async getManyOrders(
+    data: GetManyOrdersRequest
+  ): Promise<GetManyOrdersResponse> {
+    return firstValueFrom(this.queryService.getManyOrders(data));
   }
 
-  async getAttribute(data: GetAttributeRequest): Promise<GetAttributeResponse> {
-    return firstValueFrom(this.queryService.getAttribute(data));
+  async getOrder(data: GetOrderRequest): Promise<GetOrderResponse> {
+    return firstValueFrom(this.queryService.getOrder(data));
   }
 }

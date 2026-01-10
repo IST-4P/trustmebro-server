@@ -19,6 +19,7 @@ declare global {
     type Metadata = MetadataType;
     type OrderItems = Pick<
       OrderItemResponse,
+      | 'id'
       | 'productName'
       | 'productImage'
       | 'skuValue'

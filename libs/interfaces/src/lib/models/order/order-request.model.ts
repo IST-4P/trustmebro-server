@@ -44,11 +44,13 @@ export const GetManyOrdersRequestSchema = PaginationQueryRequestSchema.extend({
   paymentId: z.uuid().optional(),
   status: OrderSchema.shape.status.optional(),
   userId: z.uuid().optional(),
+  processId: z.uuid().optional(),
 });
 
 export const GetOrderRequestSchema = z.object({
   orderId: z.uuid(),
-  userId: z.uuid().optional(),
+  userId: z.uuid(),
+  processId: z.uuid().optional(),
 });
 
 export type CreateOrderRequest = z.infer<typeof CreateOrderRequestSchema>;

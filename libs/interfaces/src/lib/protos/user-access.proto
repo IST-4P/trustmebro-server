@@ -19,6 +19,8 @@ service UserAccessService {
   rpc UpdateShop(UpdateShopRequest) returns (ShopResponse);
   rpc ValidateShops(ValidateShopsRequest) returns (ValidateShopsResponse);
 
+  rpc GetManyAddresses(GetManyAddressesRequest) returns (GetManyAddressesResponse);
+  rpc GetAddress(GetAddressRequest) returns (AddressResponse);
   rpc CreateAddress(CreateAddressRequest) returns (AddressResponse);
   rpc UpdateAddress(UpdateAddressRequest) returns (AddressResponse);
   rpc DeleteAddress(DeleteAddressRequest) returns (AddressResponse);
@@ -61,6 +63,7 @@ message RegisterRequest {
   string password = 6;
   string phoneNumber = 7;
   string gender = 8;
+  string code = 9;
 }
 
 message MessageResponse {
@@ -152,7 +155,8 @@ message CheckParticipantExistsResponse {
 //==================== GetShop ====================//
 message GetShopRequest {
   optional string processId = 1;
-  string id = 2;
+  optional string id = 2;
+  optional string userId = 3;
 }
 
 message ShopResponse {
@@ -210,6 +214,29 @@ message ValidateShop {
 
 message ValidateShopsResponse {
   repeated ValidateShop shops = 1;
+}
+
+//==================== GetManyAddresses ====================//
+message GetManyAddressesRequest {
+  optional string processId = 1;
+  string userId = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message GetManyAddressesResponse {
+  repeated AddressResponse addresses = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//==================== GetAddress ====================//
+message GetAddressRequest {
+  optional string processId = 1;
+  string id = 2;
+  string userId = 3;
 }
 
 //==================== CreateAddress ====================//

@@ -15,15 +15,12 @@ export class ShopService {
   constructor(private readonly shopRepository: ShopRepository) {}
 
   async find(data: GetShopRequest): Promise<ShopResponse> {
-    try {
-      const shop = await this.shopRepository.find(data);
-      return shop;
-    } catch (error) {
-      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
-        throw new NotFoundException('Error.ShopNotFound');
-      }
-      throw error;
+    const shop = await this.shopRepository.find(data);
+    if (!shop) {
+      throw new NotFoundException('Error.ShopNotFound');
     }
+    console.log(shop);
+    return shop;
   }
 
   async create({

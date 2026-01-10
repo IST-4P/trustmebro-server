@@ -39,6 +39,7 @@ export const GetOrderResponseSchema = OrderSchema.pick({
   receiverAddress: z.string(),
   itemsSnapshot: z.array(
     OrderItemResponseSchema.pick({
+      id: true,
       productId: true,
       productImage: true,
       productName: true,
@@ -51,23 +52,25 @@ export const GetOrderResponseSchema = OrderSchema.pick({
   firstProductImage: z.string(),
 });
 
-export const GetManyOrderResponseSchema = PaginationQueryResponseSchema.extend({
-  orders: z.array(
-    z.object({
-      id: z.uuid(),
-      shopId: z.uuid(),
-      shopName: z.string(),
-      status: z.string(),
-      itemTotal: z.number(),
-      grandTotal: z.number(),
-      firstProductImage: z.string(),
-      firstProductName: z.string(),
-    })
-  ),
-});
+export const GetManyOrdersResponseSchema = PaginationQueryResponseSchema.extend(
+  {
+    orders: z.array(
+      z.object({
+        id: z.uuid(),
+        shopId: z.uuid(),
+        shopName: z.string(),
+        status: z.string(),
+        itemTotal: z.number(),
+        grandTotal: z.number(),
+        firstProductImage: z.string(),
+        firstProductName: z.string(),
+      })
+    ),
+  }
+);
 
 export type OrderItemResponse = z.infer<typeof OrderItemResponseSchema>;
 export type OrderResponse = z.infer<typeof OrderResponseSchema>;
-export type GetManyOrderResponse = z.infer<typeof GetManyOrderResponseSchema>;
+export type GetManyOrdersResponse = z.infer<typeof GetManyOrdersResponseSchema>;
 export type GetOrderResponse = z.infer<typeof GetOrderResponseSchema>;
 export type CreateOrderResponse = z.infer<typeof CreateOrderResponseSchema>;

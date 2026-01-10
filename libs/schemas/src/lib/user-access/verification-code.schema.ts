@@ -6,6 +6,6 @@ export const VerificationCodeSchema = z.object({
   email: z.email(),
   code: z.string().length(6),
   type: VerificationCodeEnums,
-  expiresAt: z.date(),
-  createdAt: z.date(),
+  expiresAt: z.any(),
+  createdAt: z.any(),
 });

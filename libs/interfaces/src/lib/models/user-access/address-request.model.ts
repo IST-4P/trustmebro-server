@@ -5,12 +5,17 @@ import { PaginationQueryRequestSchema } from '../common/pagination.model';
 export const GetManyAddressesRequestSchema =
   PaginationQueryRequestSchema.extend({
     userId: z.uuid(),
-  });
+    processId: z.uuid().optional(),
+  }).strict();
 
 export const GetAddressRequestSchema = AddressSchema.pick({
   id: true,
   userId: true,
-}).strict();
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const CreateAddressRequestSchema = AddressSchema.pick({
   userId: true,

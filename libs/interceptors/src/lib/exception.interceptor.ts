@@ -9,6 +9,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ZodSerializationException } from 'nestjs-zod';
 import { catchError, map, Observable } from 'rxjs';
 
 export interface StandardResponse<T = any> {
@@ -78,6 +79,35 @@ export class ExceptionInterceptor implements NestInterceptor {
       }),
       catchError((error) => {
         const durationMs = Date.now() - startTime;
+
+        // Handle ZodSerializationException
+        if (error instanceof ZodSerializationException) {
+          const zodError: any = error.getZodError();
+          Logger.error(
+            `ZodSerializationException in process '${processId}': ${
+              zodError?.message || 'Unknown error'
+            }`
+          );
+          Logger.error('Zod validation errors:', zodError?.errors);
+
+          throw new HttpException(
+            {
+              data: null,
+              message: 'Error.ResponseSerializationFailed',
+              errors:
+                zodError?.errors?.map((err: any) => ({
+                  path: err.path?.join('.') || '',
+                  message: err.message,
+                  code: err.code,
+                })) || [],
+              statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+              duration: `${durationMs} ms`,
+              processId,
+            },
+            HttpStatus.INTERNAL_SERVER_ERROR
+          );
+        }
+
         const message =
           error?.details ||
           error?.response?.message ||

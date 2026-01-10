@@ -1,10 +1,13 @@
 import { ShopSchema } from '@common/schemas/user-access';
 import z from 'zod';
 
-export const GetShopRequestSchema = z.object({
-  id: z.uuid(),
-  processId: z.uuid().optional(),
-});
+export const GetShopRequestSchema = z
+  .object({
+    id: z.uuid().optional(),
+    userId: z.uuid().optional(),
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const CreateShopRequestSchema = ShopSchema.pick({
   ownerId: true,

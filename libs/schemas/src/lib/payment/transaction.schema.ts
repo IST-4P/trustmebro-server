@@ -13,5 +13,5 @@ export const TransactionSchema = z.object({
   transactionContent: z.string().optional(),
   referenceNumber: z.string().optional(),
   body: z.string().optional(),
-  createdAt: z.date(),
+  createdAt: z.any(),
 });

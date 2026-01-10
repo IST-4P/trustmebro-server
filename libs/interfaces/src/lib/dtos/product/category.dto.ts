@@ -1,3 +1,4 @@
+import { ResponseSchema } from '@common/interfaces/models/common/response.model';
 import {
   CreateCategoryRequestSchema,
   DeleteCategoryRequestSchema,
@@ -32,9 +33,9 @@ export class DeleteCategoryRequestDto extends createZodDto(
 //=================================================Response DTOs=================================================
 
 export class GetManyCategoriesResponseDto extends createZodDto(
-  GetManyCategoriesResponseSchema
+  ResponseSchema(GetManyCategoriesResponseSchema)
 ) {}
 
 export class GetCategoryResponseDto extends createZodDto(
-  GetCategoryResponseSchema
+  ResponseSchema(GetCategoryResponseSchema)
 ) {}

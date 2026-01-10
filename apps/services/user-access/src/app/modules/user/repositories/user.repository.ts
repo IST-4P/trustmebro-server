@@ -1,3 +1,4 @@
+import { GetUserRequest } from '@common/interfaces/models/user-access';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/user-access';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -6,10 +7,12 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async find(data: { id?: string; email?: string }) {
-    const where: Prisma.UserWhereUniqueInput = data.id
-      ? { id: data.id }
-      : { email: data.email! };
+  async find(data: GetUserRequest) {
+    const where: Prisma.UserWhereUniqueInput = {
+      id: data?.id || undefined,
+      email: data?.email || undefined,
+      phoneNumber: data?.phoneNumber || undefined,
+    };
     return this.prismaService.user.findUnique({
       where,
     });

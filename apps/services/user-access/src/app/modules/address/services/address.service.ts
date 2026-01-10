@@ -3,6 +3,9 @@ import {
   AddressResponse,
   CreateAddressRequest,
   DeleteAddressRequest,
+  GetAddressRequest,
+  GetManyAddressesRequest,
+  GetManyAddressesResponse,
   UpdateAddressRequest,
 } from '@common/interfaces/models/user-access';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -11,6 +14,22 @@ import { AddressRepository } from '../repositories/address.repository';
 @Injectable()
 export class AddressService {
   constructor(private readonly addressRepository: AddressRepository) {}
+
+  async list(data: GetManyAddressesRequest): Promise<GetManyAddressesResponse> {
+    const addresses = await this.addressRepository.list(data);
+    if (addresses.totalItems === 0) {
+      throw new NotFoundException('Error.AddressNotFound');
+    }
+    return addresses;
+  }
+
+  async findById(data: GetAddressRequest): Promise<AddressResponse> {
+    const address = await this.addressRepository.findById(data);
+    if (!address) {
+      throw new NotFoundException('Error.AddressNotFound');
+    }
+    return address;
+  }
 
   async create({
     processId,

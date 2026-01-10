@@ -11,7 +11,7 @@ create_ships_from update_ships_from delete_ships_from \
 send_otp \
 create_notification read_notification delete_notification \
 add_cart update_cart delete_cart \
-create_order update_order cancel_order create_payment_by_order cancel_order_by_payment \
+create_order update_order cancel_order create_payment_by_order cancel_order_by_payment paid_order \
 video_uploaded upsert_video delete_video
 do
 kafka-topics.sh --create \

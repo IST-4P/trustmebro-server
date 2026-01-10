@@ -5,9 +5,11 @@ import {
   GetManyBrandsRequestDto,
 } from '@common/interfaces/dtos/product';
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { BrandReadService } from '../services/brand-read.service';
 
 @Controller('brand')
+@ApiTags('Product')
 export class BrandController {
   constructor(private readonly brandReadService: BrandReadService) {}
 

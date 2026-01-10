@@ -11,9 +11,10 @@ import { ExceptionInterceptor } from '@common/interceptors/exception.interceptor
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
 import { LoggerModule } from '@common/observability/logger';
+import CustomZodValidationPipe from '@common/pipes/zod-validation.pipe';
 import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
 import { CartModule } from './modules/cart/cart.module';
 import { ChatModule } from './modules/chat/chat.module';
@@ -49,6 +50,10 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     WebSocketService,
     AccessTokenGuard,
     PaymentAPIKeyGuard,
+    {
+      provide: APP_PIPE,
+      useClass: CustomZodValidationPipe,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: ExceptionInterceptor,

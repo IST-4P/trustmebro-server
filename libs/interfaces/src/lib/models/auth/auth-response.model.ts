@@ -1,4 +1,5 @@
 import z from 'zod';
+import { ResponseSchema } from '../common/response.model';
 
 export const LoginResponseSchema = z.object({
   accessToken: z.string(),
@@ -26,6 +27,8 @@ export const VerifyTokenResponseSchema = z.object({
     })
   ),
 });
+
+export const LoginPostmanResponseSchema = ResponseSchema(z.object({}));
 
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 export type RefreshTokenResponse = z.infer<typeof RefreshTokenResponseSchema>;

@@ -172,7 +172,7 @@ export class KeycloakHttpService {
   }): Promise<void> {
     const { access_token: accessToken } = await this.exchangeClientToken();
     try {
-      await this.axiosInstance.post(
+      await this.axiosInstance.put(
         `/admin/realms/${this.realm}/users/${data.userId}/reset-password`,
         {
           type: 'password',
@@ -186,6 +186,7 @@ export class KeycloakHttpService {
         }
       );
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException('Error.CannotChangePassword');
     }
   }

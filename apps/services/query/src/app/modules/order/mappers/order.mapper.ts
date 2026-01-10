@@ -30,6 +30,7 @@ export const OrderMapper = (
     timeline: data.timeline,
 
     itemsSnapshot: data.items.map((item) => ({
+      id: item.id,
       productId: item.productId,
       productName: item.productName,
       productImage: item.productImage,

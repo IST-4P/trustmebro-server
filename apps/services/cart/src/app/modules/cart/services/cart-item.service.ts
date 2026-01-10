@@ -2,9 +2,9 @@ import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   AddCartItemRequest,
-  AddCartResponse,
+  AddCartItemResponse,
   DeleteCartItemRequest,
-  DeleteCartResponse,
+  DeleteCartItemResponse,
   GetManyCartItemsRequest,
   GetManyCartItemsResponse,
   UpdateCartItemRequest,
@@ -99,7 +99,7 @@ export class CartItemService implements OnModuleInit {
   async add({
     processId,
     ...data
-  }: AddCartItemRequest): Promise<AddCartResponse> {
+  }: AddCartItemRequest): Promise<AddCartItemResponse> {
     await this.validateSKU(data);
     const addCartItem = await this.cartItemRepository.add(data);
     this.kafkaService.emit(QueueTopics.CART.ADD_CART, addCartItem);
@@ -109,7 +109,7 @@ export class CartItemService implements OnModuleInit {
   async update({
     processId,
     ...data
-  }: UpdateCartItemRequest): Promise<AddCartResponse> {
+  }: UpdateCartItemRequest): Promise<AddCartItemResponse> {
     await this.validateSKU(data);
     const updateCartItem = await this.cartItemRepository.update(data);
     this.kafkaService.emit(QueueTopics.CART.UPDATE_CART, updateCartItem);
@@ -119,7 +119,7 @@ export class CartItemService implements OnModuleInit {
   async delete({
     processId,
     ...data
-  }: DeleteCartItemRequest): Promise<DeleteCartResponse> {
+  }: DeleteCartItemRequest): Promise<DeleteCartItemResponse> {
     try {
       const deleteCartItem = await this.cartItemRepository.delete(data);
       this.kafkaService.emit(QueueTopics.CART.DELETE_CART, deleteCartItem);

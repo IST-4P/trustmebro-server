@@ -9,7 +9,7 @@ export const UserSchema = BaseSchema.extend({
   username: z.string(),
   phoneNumber: z.string(),
   avatar: z.string(),
-  birthday: z.date().nullable(),
+  birthday: z.any().nullable(),
   gender: GenderEnums,
   status: UserStatusEnums,
 

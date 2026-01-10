@@ -6,7 +6,7 @@ export const AddressResponseSchema = AddressSchema;
 
 export const GetManyAddressesResponseSchema =
   PaginationQueryResponseSchema.extend({
-    address: z.array(AddressSchema),
+    addresses: z.array(AddressSchema),
   });
 
 export type AddressResponse = z.infer<typeof AddressResponseSchema>;

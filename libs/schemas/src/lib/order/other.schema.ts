@@ -16,7 +16,7 @@ export const ReceiverSchema = z.object({
 export const TimelineSchema = z.array(
   z.object({
     status: z.string(),
-    at: z.date(),
+    at: z.any(),
   })
 );
 

@@ -5,6 +5,7 @@ import {
   ValidateShopsRequest,
 } from '@common/interfaces/models/user-access';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma-client/user-access';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
@@ -12,8 +13,12 @@ export class ShopRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   find(data: GetShopRequest) {
+    const where: Prisma.ShopWhereUniqueInput = {
+      id: data?.id || undefined,
+      ownerId: data?.userId || undefined,
+    };
     return this.prismaService.shop.findUnique({
-      where: { id: data.id },
+      where,
     });
   }
 

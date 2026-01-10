@@ -6,9 +6,11 @@ import z from 'zod';
 
 export const LoginRequestSchema = UserSchema.pick({
   username: true,
-}).extend({
-  password: z.string(),
-});
+})
+  .extend({
+    password: z.string(),
+  })
+  .strict();
 
 export const RefreshTokenRequestSchema = z.object({
   refreshToken: z.string(),
@@ -23,11 +25,13 @@ export const RegisterRequestSchema = UserSchema.pick({
   email: true,
   phoneNumber: true,
   gender: true,
-}).extend({
-  processId: z.uuid().optional(),
-  code: z.string(),
-  password: z.string(),
-});
+})
+  .extend({
+    processId: z.uuid().optional(),
+    code: z.string(),
+    password: z.string(),
+  })
+  .strict();
 
 export const VerifyTokenRequestSchema = z.object({
   token: z.string(),
@@ -38,7 +42,7 @@ export const VerifyTokenRequestSchema = z.object({
 export const SendVerificationCodeRequestSchema = VerificationCodeSchema.pick({
   email: true,
   type: true,
-});
+}).strict();
 
 export const ValidateVerificationCodeRequestSchema =
   VerificationCodeSchema.pick({
@@ -55,11 +59,12 @@ export const DeleteVerificationCodeRequestSchema = VerificationCodeSchema.pick({
 export const ChangePasswordRequestSchema = UserSchema.pick({
   email: true,
 })
-.extend({
-  password: z.string(),
-  code: z.string(),
-  processId: z.uuid().optional(),
-});
+  .extend({
+    password: z.string(),
+    code: z.string(),
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 export type RefreshTokenRequest = z.infer<typeof RefreshTokenRequestSchema>;

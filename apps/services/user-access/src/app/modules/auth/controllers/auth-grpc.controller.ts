@@ -12,7 +12,11 @@ import {
   VerifyTokenResponse,
 } from '@common/interfaces/models/auth';
 import { MessageResponse } from '@common/interfaces/models/common/response.model';
-import { Controller, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  UnauthorizedException,
+  UseInterceptors,
+} from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from '../services/auth.service';
 
@@ -28,13 +32,19 @@ export class AuthGrpcController {
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'LoginDirectAccessGrants')
   async loginDirectAccessGrants(data: LoginRequest): Promise<LoginResponse> {
-    const result = await this.authService.loginDirectAccessGrants(data);
-    return {
-      accessToken: result.access_token,
-      refreshToken: result.refresh_token,
-      expiresIn: result.expires_in,
-      refreshExpiresIn: result.refresh_expires_in,
-    };
+    try {
+      const result = await this.authService.loginDirectAccessGrants(data);
+      return {
+        accessToken: result.access_token,
+        refreshToken: result.refresh_token,
+        expiresIn: result.expires_in,
+        refreshExpiresIn: result.refresh_expires_in,
+      };
+    } catch (error) {
+      if (error.status && error.status === 401) {
+        throw new UnauthorizedException('Error.InvalidCredentials');
+      }
+    }
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'RefreshToken')

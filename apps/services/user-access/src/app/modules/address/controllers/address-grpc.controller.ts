@@ -3,29 +3,41 @@ import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interce
 import {
   CreateAddressRequest,
   DeleteAddressRequest,
+  GetAddressRequest,
+  GetManyAddressesRequest,
   UpdateAddressRequest,
 } from '@common/interfaces/models/user-access';
-import { Body, Controller, UseInterceptors } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AddressService } from '../services/address.service';
 
 @Controller()
 @UseInterceptors(GrpcLoggingInterceptor)
 export class AddressGrpcController {
-  constructor(private readonly shopService: AddressService) {}
+  constructor(private readonly addressService: AddressService) {}
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetManyAddresses')
+  getManyAddresses(data: GetManyAddressesRequest) {
+    return this.addressService.list(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetAddress')
+  getAddress(data: GetAddressRequest) {
+    return this.addressService.findById(data);
+  }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'CreateAddress')
-  createAddress(@Body() body: CreateAddressRequest) {
-    return this.shopService.create(body);
+  createAddress(data: CreateAddressRequest) {
+    return this.addressService.create(data);
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'UpdateAddress')
-  updateAddress(@Body() body: UpdateAddressRequest) {
-    return this.shopService.update(body);
+  updateAddress(data: UpdateAddressRequest) {
+    return this.addressService.update(data);
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'DeleteAddress')
-  deleteAddress(@Body() body: DeleteAddressRequest) {
-    return this.shopService.delete(body);
+  deleteAddress(data: DeleteAddressRequest) {
+    return this.addressService.delete(data);
   }
 }

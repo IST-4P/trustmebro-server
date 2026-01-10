@@ -9,6 +9,6 @@ export const AddressSchema = z.object({
   district: z.string().optional(),
   province: z.string().optional(),
   isDefault: z.boolean().default(false),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.any(),
+  updatedAt: z.any(),
 });

@@ -10,7 +10,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class OrderService implements OnModuleInit {
+export class OrderWriteService implements OnModuleInit {
   private orderService!: OrderServiceClient;
 
   constructor(
