@@ -1,45 +1,14 @@
+import { OrderStatusValues } from '@common/constants/order.constant';
 import { PaymentStatusValues } from '@common/constants/payment.constant';
-import {
-  CreateOrderRepository,
-  GetManyOrdersRequest,
-} from '@common/interfaces/models/order';
+import { CreateOrderRepository } from '@common/interfaces/models/order';
 import { generateCode } from '@common/utils/order-code.util';
 import { Injectable } from '@nestjs/common';
-import { OrderStatus, Prisma } from '@prisma-client/order';
+import { OrderStatus } from '@prisma-client/order';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class OrderRepository {
   constructor(private readonly prismaService: PrismaService) {}
-
-  async list(data: GetManyOrdersRequest) {
-    const skip = (data.page - 1) * data.limit;
-    const take = data.limit;
-
-    const where: Prisma.OrderWhereInput = {
-      paymentId: data.paymentId ? data.paymentId : undefined,
-      status: data.status ? data.status : undefined,
-      userId: data.userId ? data.userId : undefined,
-    };
-
-    const [totalItems, orders] = await Promise.all([
-      this.prismaService.order.count({ where }),
-      this.prismaService.order.findMany({
-        where,
-        skip,
-        take,
-        orderBy: { createdAt: 'desc' },
-      }),
-    ]);
-
-    return {
-      orders,
-      page: data.page,
-      limit: data.limit,
-      totalItems,
-      totalPages: Math.ceil(totalItems / data.limit),
-    };
-  }
 
   async create(data: CreateOrderRepository) {
     const orders = await this.prismaService.$transaction(async (tx) => {
@@ -147,5 +116,28 @@ export class OrderRepository {
         userId: true,
       },
     });
+  }
+
+  async paid(data: { paymentId: string }) {
+    const orders = await this.prismaService.order.findMany({
+      where: {
+        paymentId: data.paymentId,
+      },
+    });
+
+    return this.prismaService.$transaction(
+      orders.map((order) =>
+        this.prismaService.order.update({
+          where: { id: order.id },
+          data: {
+            timeline: [
+              ...(Array.isArray(order.timeline) ? order.timeline : []),
+              { status: OrderStatusValues.PENDING, at: new Date() },
+            ],
+            paymentStatus: PaymentStatusValues.SUCCESS,
+          },
+        })
+      )
+    );
   }
 }

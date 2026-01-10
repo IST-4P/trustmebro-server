@@ -5,7 +5,7 @@ export const BaseSchema = z.object({
   createdById: z.string().nullable(),
   updatedById: z.string().nullable(),
   deletedById: z.string().nullable(),
-  deletedAt: z.date().nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  deletedAt: z.any().nullable(),
+  createdAt: z.any(),
+  updatedAt: z.any(),
 });

@@ -54,6 +54,7 @@ model User {
 
     @@unique([email, deletedAt])
     @@unique([username, deletedAt])
+    @@unique([phoneNumber])
     @@index([deletedAt])
     @@index([email])
     @@index([username])
@@ -61,19 +62,20 @@ model User {
 }
 
 model Address {
-    id        String   @id @default(uuid())
+    id        String  @id @default(uuid())
     userId    String
-    fullName  String
-    phone     String   @db.VarChar(20)
+    user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    name      String
     address   String
     ward      String?
     district  String?
     province  String?
-    isDefault Boolean  @default(false)
+    isDefault Boolean @default(false)
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+    @@unique([name])
     @@index([userId])
 }
 
@@ -117,5 +119,5 @@ model VerificationCode {
 
 enum VerificationCodeType {
     REGISTER
-    FORGOT_PASSWORD
+    CHANGE_PASSWORD
 }

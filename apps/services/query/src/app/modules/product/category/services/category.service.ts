@@ -9,6 +9,7 @@ import { generateCategoryCacheKey } from '@common/utils/cache-key.util';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import ms, { StringValue } from 'ms';
 import { CategoryMapper } from '../mappers/category.mapper';
 import { CategoryRepository } from '../repositories/category.repository';
 
@@ -39,7 +40,7 @@ export class CategoryService {
     this.cacheManager.set(
       cacheKey,
       { categories },
-      RedisConfiguration.CACHE_CATEGORY_TTL
+      ms(RedisConfiguration.CACHE_CATEGORY_TTL as StringValue)
     );
     return { categories };
   }
@@ -60,7 +61,7 @@ export class CategoryService {
     return this.categoryRepository.update(CategoryMapper(data));
   }
 
-  delete(data: CategoryResponse) {
+  delete(data: { id: string }) {
     return this.categoryRepository.delete({ id: data.id });
   }
 }

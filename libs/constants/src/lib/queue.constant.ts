@@ -6,6 +6,7 @@ export enum QueueService {
   CART_SERVICE = 'cart',
   ORDER_SERVICE = 'order',
   PAYMENT_SERVICE = 'payment',
+  MEDIA_SERVICE = 'media',
 }
 
 export enum QueueGroups {
@@ -15,6 +16,7 @@ export enum QueueGroups {
   CART_GROUP = 'cart-group',
   ORDER_GROUP = 'order-group',
   PAYMENT_GROUP = 'payment-group',
+  MEDIA_GROUP = 'media-group',
 }
 
 enum CategoryQueueTopics {
@@ -69,10 +71,17 @@ enum OrderQueueTopics {
   UPDATE_ORDER = 'update_order',
   CANCEL_ORDER = 'cancel_order',
   CREATE_PAYMENT_BY_ORDER = 'create_payment_by_order',
+  PAID_ORDER = 'paid_order',
 }
 
 enum PaymentQueueTopics {
   CANCEL_ORDER_BY_PAYMENT = 'cancel_order_by_payment',
+}
+
+enum MediaQueueTopics {
+  UPSERT_VIDEO = 'upsert_video',
+  DELETE_VIDEO = 'delete_video',
+  VIDEO_UPLOADED = 'video_uploaded',
 }
 
 export const QueueTopics = {
@@ -86,4 +95,5 @@ export const QueueTopics = {
   CART: CartQueueTopics,
   ORDER: OrderQueueTopics,
   PAYMENT: PaymentQueueTopics,
+  MEDIA: MediaQueueTopics,
 } as const;

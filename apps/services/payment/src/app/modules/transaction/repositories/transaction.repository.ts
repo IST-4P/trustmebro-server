@@ -63,11 +63,10 @@ export class TransactionRepository {
           code: paymentCode,
         },
       });
-      console.log(payment);
       if (!payment) {
         throw new NotFoundException('Error.PaymentNotFound');
       }
-      const { amount, orderId } = payment;
+      const { amount } = payment;
       if (amount !== data.transferAmount) {
         throw new BadRequestException('Error.AmountPriceMismatch');
       }
@@ -86,6 +85,7 @@ export class TransactionRepository {
 
       return {
         paymentCode,
+        paymentId: payment.id,
         userId: payment.userId,
         message: 'Message.ReceivedSuccessfully',
       };

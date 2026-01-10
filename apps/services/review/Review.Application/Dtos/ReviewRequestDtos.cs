@@ -8,6 +8,7 @@ namespace Review.Application.Dtos
   {
     public required string UserId { get; set; } 
     public required string OrderItemId { get; set; }
+    public required string OrderId { get; set; }
 
     public ReviewRating Rating { get; set; }
     public required string Content { get; set; }

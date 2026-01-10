@@ -28,9 +28,10 @@ message Review {
     string updated_at = 9;
     bool is_deleted = 10;
 
-    ReviewReply replies = 11;
+    ReviewReply reply = 11;
 
     int64 like_count = 12; 
+    string order_id = 13;
 }
 
 message ReviewReply {
@@ -45,7 +46,7 @@ message ReviewReply {
 // Create 
 message CreateReviewRequest {
     string user_id = 1;
-    string product_id = 2;
+    string order_id = 2;
     string order_items_id = 3;
 
     ReviewRating rating = 4;

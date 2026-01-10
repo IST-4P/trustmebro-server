@@ -6,11 +6,16 @@ export const GetManyCategoriesRequestSchema = z
     processId: z.uuid(),
     parentCategoryId: z.uuid(),
   })
-  .partial();
+  .partial()
+  .strict();
 
 export const GetCategoryRequestSchema = CategorySchema.pick({
   id: true,
-});
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const CreateCategoryRequestSchema = CategorySchema.pick({
   name: true,

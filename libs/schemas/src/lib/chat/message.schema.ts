@@ -8,5 +8,5 @@ export const MessageSchema = z.object({
   content: z.string(),
   type: MessageTypeEnums,
   metadata: z.any(),
-  createdAt: z.date(),
+  createdAt: z.any(),
 });

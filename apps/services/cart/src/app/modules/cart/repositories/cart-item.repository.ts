@@ -222,14 +222,25 @@ export class CartItemRepository {
         throw new NotFoundException('Error.CartNotFound');
       }
 
+      let cartItemId = data.cartItemId;
+      if (!cartItemId && data.productId && data.skuId) {
+        const carrItem = await tx.cartItem.findUnique({
+          where: {
+            cartId_productId_skuId: {
+              cartId: cart.id,
+              productId: data.productId,
+              skuId: data.skuId,
+            },
+          },
+        });
+        cartItemId = carrItem?.id;
+      }
+
       // Xóa CartItem
       await tx.cartItem.delete({
         where: {
-          cartId_productId_skuId: {
-            cartId: cart.id,
-            productId: data.productId,
-            skuId: data.skuId,
-          },
+          id: cartItemId,
+          cartId: cart.id,
         },
       });
 

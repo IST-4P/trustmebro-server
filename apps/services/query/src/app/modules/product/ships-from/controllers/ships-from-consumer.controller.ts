@@ -19,7 +19,7 @@ export class ShipsFromConsumerController {
   }
 
   @EventPattern(QueueTopics.SHIPS_FROM.DELETE_SHIPS_FROM)
-  deleteShipsFrom(@Payload() payload: ShipsFromResponse) {
+  deleteShipsFrom(@Payload() payload: { id: string }) {
     return this.shipsFromService.delete(payload);
   }
 }

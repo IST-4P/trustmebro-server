@@ -8,6 +8,7 @@ import { VerificationCodeRepository } from './repositories/verification-code.rep
 import { AuthService } from './services/auth.service';
 import { EmailService } from './services/email.service';
 import { KeycloakHttpService } from './services/keycloak-htpp.service';
+import { VerificationCodeService } from './services/verification-code.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { KeycloakHttpService } from './services/keycloak-htpp.service';
     EmailService,
     VerificationCodeRepository,
     AuthService,
+    VerificationCodeService,
   ],
 })
 export class AuthModule {}

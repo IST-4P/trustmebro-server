@@ -11,9 +11,10 @@ import { ExceptionInterceptor } from '@common/interceptors/exception.interceptor
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerMiddleware } from '@common/middlewares/logger.middleware';
 import { LoggerModule } from '@common/observability/logger';
+import CustomZodValidationPipe from '@common/pipes/zod-validation.pipe';
 import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
 import { CartModule } from './modules/cart/cart.module';
 import { ChatModule } from './modules/chat/chat.module';
@@ -21,6 +22,7 @@ import { HealthModule } from './modules/health/health.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
@@ -42,11 +44,16 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     ProductModule,
     CartModule,
     OrderModule,
+    PaymentModule,
   ],
   providers: [
     WebSocketService,
     AccessTokenGuard,
     PaymentAPIKeyGuard,
+    {
+      provide: APP_PIPE,
+      useClass: CustomZodValidationPipe,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: ExceptionInterceptor,

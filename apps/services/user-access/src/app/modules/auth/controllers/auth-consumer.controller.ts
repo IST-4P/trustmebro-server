@@ -1,15 +1,17 @@
 import { QueueTopics } from '@common/constants/queue.constant';
-import { SendOtpRequest } from '@common/interfaces/models/auth';
+import { SendVerificationCodeRequest } from '@common/interfaces/models/auth';
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import { AuthService } from '../services/auth.service';
+import { VerificationCodeService } from '../services/verification-code.service';
 
 @Controller()
 export class AuthConsumerController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly verificationCodeService: VerificationCodeService
+  ) {}
 
   @EventPattern(QueueTopics.USER_ACCESS.SEND_OTP)
-  sendOtp(@Payload() payload: SendOtpRequest) {
-    this.authService.sendOtp(payload);
+  sendVerificationCode(@Payload() payload: SendVerificationCodeRequest) {
+    this.verificationCodeService.send(payload);
   }
 }

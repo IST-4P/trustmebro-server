@@ -1,15 +1,16 @@
 import { BaseConfiguration } from '@common/configurations/base.config';
 import { KeycloakConfiguration } from '@common/configurations/keycloak.config';
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
   DefaultRoleNameValues,
   VerificationCodeValues,
 } from '@common/constants/user.constant';
 import {
+  ChangePasswordRequest,
   LoginRequest,
   LogoutRequest,
   RefreshTokenRequest,
   RegisterRequest,
-  SendOtpRequest,
   VerifyTokenRequest,
   VerifyTokenResponse,
 } from '@common/interfaces/models/auth';
@@ -19,26 +20,21 @@ import {
   RoleResponse,
   RoleServiceClient,
 } from '@common/interfaces/proto-types/role';
-import { generateOTP } from '@common/utils/generate-otp.util';
 import {
   BadRequestException,
   Inject,
   Injectable,
   Logger,
-  NotFoundException,
   OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { addMilliseconds } from 'date-fns';
 import jwt, { Jwt, JwtPayload } from 'jsonwebtoken';
 import jwksRsa, { JwksClient } from 'jwks-rsa';
-import ms, { StringValue } from 'ms';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../user/services/user.service';
-import { VerificationCodeRepository } from '../repositories/verification-code.repository';
-import { EmailService } from './email.service';
 import { KeycloakHttpService } from './keycloak-htpp.service';
+import { VerificationCodeService } from './verification-code.service';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -48,9 +44,8 @@ export class AuthService implements OnModuleInit {
 
   constructor(
     private readonly keycloakHttpService: KeycloakHttpService,
-    private readonly emailService: EmailService,
     private readonly userService: UserService,
-    private readonly verificationCodeRepository: VerificationCodeRepository,
+    private readonly verificationCodeService: VerificationCodeService,
     @Inject(ROLE_SERVICE_PACKAGE_NAME)
     private roleClient: ClientGrpc
   ) {
@@ -82,28 +77,90 @@ export class AuthService implements OnModuleInit {
   }
 
   async register(data: RegisterRequest) {
-    const userId = await this.keycloakHttpService.createUser(data);
-    const roleCustomer = await firstValueFrom(
-      this.roleService.getRole({
-        name: DefaultRoleNameValues.CUSTOMER,
-        withInheritance: false,
-      })
-    );
-    await this.userService.create({
-      id: userId,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      username: data.username,
-      phoneNumber: data.phoneNumber,
-      avatar: BaseConfiguration.AVATAR_DEFAULT_URL,
-      gender: data.gender,
-      roleId: roleCustomer.id,
-      roleName: roleCustomer.name,
-    });
-    return {
-      message: 'Message.RegisterSuccessfully',
-    };
+    try {
+      const user = await this.userService.find({
+        phoneNumber: data.phoneNumber,
+      });
+
+      if (user) {
+        throw new UnauthorizedException('Error.PhoneNumberAlreadyExists');
+      }
+
+      await this.verificationCodeService.validate({
+        email: data.email,
+        type: VerificationCodeValues.REGISTER,
+        code: data.code,
+      });
+
+      const userId = await this.keycloakHttpService.createUser(data);
+
+      const roleCustomer = await firstValueFrom(
+        this.roleService.getRole({
+          name: DefaultRoleNameValues.CUSTOMER,
+          withInheritance: false,
+        })
+      );
+      await Promise.all([
+        this.userService.create({
+          id: userId,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          username: data.username,
+          phoneNumber: data.phoneNumber,
+          avatar: BaseConfiguration.AVATAR_DEFAULT_URL,
+          gender: data.gender,
+          roleId: roleCustomer.id,
+          roleName: roleCustomer.name,
+        }),
+        this.verificationCodeService.delete({
+          email: data.email,
+          type: VerificationCodeValues.REGISTER,
+        }),
+      ]);
+      return {
+        message: 'Message.RegisterSuccessfully',
+      };
+    } catch (error) {
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new BadRequestException('Error.UserAlreadyExists');
+      }
+      throw error;
+    }
+  }
+
+  async changePassword(data: ChangePasswordRequest) {
+    try {
+      const user = await this.userService.find({
+        email: data.email,
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('Error.UserNotFound');
+      }
+
+      await this.verificationCodeService.validate({
+        email: data.email,
+        type: VerificationCodeValues.CHANGE_PASSWORD,
+        code: data.code,
+      });
+
+      await Promise.all([
+        this.keycloakHttpService.changePassword({
+          userId: user.id,
+          newPassword: data.password,
+        }),
+        this.verificationCodeService.delete({
+          email: data.email,
+          type: VerificationCodeValues.CHANGE_PASSWORD,
+        }),
+      ]);
+      return {
+        message: 'Message.ChangePasswordSuccessfully',
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async verifyToken(data: VerifyTokenRequest): Promise<VerifyTokenResponse> {
@@ -148,46 +205,5 @@ export class AuthService implements OnModuleInit {
       this.logger.error({ error });
       throw new UnauthorizedException('Error.InvalidToken');
     }
-  }
-
-  async sendOtp(body: SendOtpRequest) {
-    // Kiểm tra email có tồn tại hay chưa
-    const user = await this.userService.find({
-      email: body.email,
-    });
-
-    if (body.type === VerificationCodeValues.REGISTER && user) {
-      throw new BadRequestException('Error.EmailAlreadyExists');
-    }
-
-    if (body.type === VerificationCodeValues.FORGOT_PASSWORD && !user) {
-      throw new NotFoundException('Error.UserNotFound');
-    }
-
-    // Tạo mã OTP
-    const code = generateOTP();
-    await this.verificationCodeRepository.create({
-      email: body.email,
-      type: body.type,
-      code,
-      expiresAt: addMilliseconds(
-        new Date(),
-        ms(BaseConfiguration.OTP_EXPIRES as StringValue)
-      ),
-    });
-
-    // Gửi OTP
-    const { error } = await this.emailService.sendOTP({
-      email: body.email,
-      code,
-    });
-
-    if (error) {
-      throw new BadRequestException('Error.SendOtpFailed');
-    }
-
-    return {
-      message: 'Message.SendOtpSuccessfully',
-    };
   }
 }

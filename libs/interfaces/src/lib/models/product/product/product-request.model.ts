@@ -64,6 +64,7 @@ export const CreateProductRequestSchema = ProductSchema.pick({
   images: true,
   variants: true,
   createdById: true,
+  updatedById: true,
   shopId: true,
   description: true,
   sizeGuide: true,
@@ -106,6 +107,21 @@ export const CreateProductRequestSchema = ProductSchema.pick({
     }
   });
 
+export const UpdateProductRequestSchema = CreateProductRequestSchema.safeExtend(
+  {
+    id: z.uuid(),
+  }
+).strict();
+
+export const DeleteProductRequestSchema = ProductSchema.pick({
+  id: true,
+  deletedById: true,
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
+
 export const ValidateProductsRequestSchema = z.object({
   productIds: z.array(
     z.object({
@@ -126,3 +142,5 @@ export type CreateProductRequest = z.infer<typeof CreateProductRequestSchema>;
 export type ValidateProductsRequest = z.infer<
   typeof ValidateProductsRequestSchema
 >;
+export type UpdateProductRequest = z.infer<typeof UpdateProductRequestSchema>;
+export type DeleteProductRequest = z.infer<typeof DeleteProductRequestSchema>;

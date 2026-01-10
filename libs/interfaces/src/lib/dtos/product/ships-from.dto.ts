@@ -1,3 +1,4 @@
+import { ResponseSchema } from '@common/interfaces/models/common/response.model';
 import {
   CreateShipsFromRequestSchema,
   DeleteShipsFromRequestSchema,
@@ -32,9 +33,9 @@ export class DeleteShipsFromRequestDto extends createZodDto(
 //=================================================Response DTOs=================================================
 
 export class GetManyShipsFromResponseDto extends createZodDto(
-  GetManyShipsFromResponseSchema
+  ResponseSchema(GetManyShipsFromResponseSchema)
 ) {}
 
 export class GetShipsFromResponseDto extends createZodDto(
-  GetShipsFromResponseSchema
+  ResponseSchema(GetShipsFromResponseSchema)
 ) {}

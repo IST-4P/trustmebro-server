@@ -11,4 +11,10 @@ export class HealthController {
   checkLiveness() {
     return this.healthService.checkMemoryHeap();
   }
+
+  @Get('readiness')
+  @HealthCheck()
+  checkReadiness() {
+    return this.healthService.checkReadiness();
+  }
 }

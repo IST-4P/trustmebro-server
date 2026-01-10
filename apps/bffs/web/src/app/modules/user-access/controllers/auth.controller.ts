@@ -1,9 +1,12 @@
+import { BaseConfiguration } from '@common/configurations/base.config';
 import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import {
+  ChangePasswordRequestDto,
+  LoginPostmanResponseDto,
   LoginRequestDto,
   RegisterRequestDto,
-  SendOtpRequestDto,
+  SendVerificationCodeRequestDto,
 } from '@common/interfaces/dtos/user-access';
 import {
   Body,
@@ -13,6 +16,7 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { parse } from 'cookie';
 import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
@@ -21,15 +25,19 @@ const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: 'none',
-  // domain: 'hacmieu.xyz',
+  ...(BaseConfiguration.NODE_ENV !== 'development' && {
+    domain: 'hacmieu.xyz',
+  }),
   path: '/',
 };
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login-postman')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   async loginDirectAccessGrants(
     @Body() body: LoginRequestDto,
@@ -55,6 +63,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   async refreshToken(
     @Req() req: Request,
@@ -87,6 +96,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   logout(
     @Req() req: Request,
@@ -103,17 +113,29 @@ export class AuthController {
   }
 
   @Post('register')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   register(@Body() body: RegisterRequestDto, @ProcessId() processId: string) {
     return this.authService.register({ ...body, processId });
   }
 
-  @Post('send-otp')
+  @Post('change-password')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
-  sendOtp(@Body() body: SendOtpRequestDto) {
-    this.authService.sendOtp(body);
+  changePassword(
+    @Body() body: ChangePasswordRequestDto,
+    @ProcessId() processId: string
+  ) {
+    return this.authService.changePassword({ ...body, processId });
+  }
+
+  @Post('send-otp')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
+  @IsPublic()
+  sendVerificationCode(@Body() body: SendVerificationCodeRequestDto) {
+    this.authService.sendVerificationCode(body);
     return {
-      message: 'Message.SendOtpSuccessfully',
+      message: 'Message.SendVerificationCodeSuccessfully',
     };
   }
 }

@@ -12,6 +12,7 @@ import { WebSocketService } from '@common/redis/websocket/websocket.service';
 import { syncPermissions } from '@common/utils/sync-permissions.util';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {} from 'nestjs-zod';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {

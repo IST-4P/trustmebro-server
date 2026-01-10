@@ -21,6 +21,7 @@ namespace Review.Domain.Entities
     public string UserId { get; set; } = string.Empty;
     public string ProductId { get; set; } = string.Empty;
     public string? OrderItemId { get; set; }
+    public string? OrderId { get; set; }
 
     public ReviewRating Rating { get; set; }
     public required string Content { get; set; }

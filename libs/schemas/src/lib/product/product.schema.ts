@@ -94,8 +94,8 @@ export const ProductViewSchema = z.object({
   isApproved: z.boolean().default(false),
   isHidden: z.boolean().default(false),
 
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.any(),
+  updatedAt: z.any(),
 });
 
 export type Product = z.infer<typeof ProductSchema>;

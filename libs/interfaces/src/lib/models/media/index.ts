@@ -1,20 +1,7 @@
-import z from 'zod';
-
-export const CreatePresignedUrlRequestSchema = z
-  .object({
-    filename: z.string(),
-  })
-  .strict();
-
-export const CreatePresignedUrlResponseSchema = z.object({
-  presignedUrl: z.string(),
-  url: z.string(),
-});
-
-export type CreatePresignedUrlRequest = z.infer<
-  typeof CreatePresignedUrlRequestSchema
->;
-
-export type CreatePresignedUrlResponse = z.infer<
-  typeof CreatePresignedUrlResponseSchema
->;
+export * from './playback-request.model';
+export * from './playback-response.model';
+export * from './presigned-url-request.model';
+export * from './presigned-url-response.model';
+export * from './tusd-request.model';
+export * from './video-request.model';
+export * from './video-response.model';

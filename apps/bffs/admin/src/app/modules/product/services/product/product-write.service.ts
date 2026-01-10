@@ -1,9 +1,11 @@
 import {
   CreateProductRequest,
+  DeleteProductRequest,
   PRODUCT_SERVICE_NAME,
   PRODUCT_SERVICE_PACKAGE_NAME,
   ProductResponse,
   ProductServiceClient,
+  UpdateProductRequest,
 } from '@common/interfaces/proto-types/product';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -27,11 +29,11 @@ export class ProductWriteService implements OnModuleInit {
     return firstValueFrom(this.productService.createProduct(data));
   }
 
-  // async updateProduct(data: UpdateProductRequest): Promise<ProductResponse> {
-  //   return firstValueFrom(this.productService.updateProduct(data));
-  // }
+  async updateProduct(data: UpdateProductRequest): Promise<ProductResponse> {
+    return firstValueFrom(this.productService.updateProduct(data));
+  }
 
-  // async deleteProduct(data: DeleteProductRequest): Promise<ProductResponse> {
-  //   return firstValueFrom(this.productService.deleteProduct(data));
-  // }
+  async deleteProduct(data: DeleteProductRequest): Promise<ProductResponse> {
+    return firstValueFrom(this.productService.deleteProduct(data));
+  }
 }

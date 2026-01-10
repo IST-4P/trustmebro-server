@@ -3,6 +3,7 @@ import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerModule } from '@common/observability/logger';
 import { RedisModule } from '@common/redis/redis/redis.module';
 import { Module } from '@nestjs/common';
+import { RemoveNotificationCronJob } from './cornjobs/remove-notification.cronjob';
 import { HealthModule } from './modules/health/health.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -16,5 +17,6 @@ import { PrismaModule } from './prisma/prisma.module';
     HealthModule,
     NotificationModule,
   ],
+  providers: [RemoveNotificationCronJob],
 })
 export class AppModule {}

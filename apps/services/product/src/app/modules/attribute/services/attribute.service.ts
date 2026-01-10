@@ -68,10 +68,9 @@ export class AttributeService {
         data,
         false
       );
-      this.kafkaService.emit(
-        QueueTopics.ATTRIBUTE.DELETE_ATTRIBUTE,
-        deletedAttribute
-      );
+      this.kafkaService.emit(QueueTopics.ATTRIBUTE.DELETE_ATTRIBUTE, {
+        id: deletedAttribute.id,
+      });
       return deletedAttribute;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {

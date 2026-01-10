@@ -10,8 +10,8 @@ export const CartItemSchema = z.object({
   productName: z.string(),
   skuValue: z.string(),
   productImage: z.string().nullable(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.any(),
+  updatedAt: z.any(),
 });
 
 export const CartShopGroupSchema = z.object({
