@@ -1,50 +1,63 @@
 syntax = "proto3";
+
 package review;
 option csharp_namespace = "Review.Grpc";
 
-// Review entity
+// Enums
+enum ReviewRating {
+    REVIEW_RATING_UNSPECIFIED = 0; 
+    RATING_1 = 1;
+    RATING_2 = 2;
+    RATING_3 = 3;
+    RATING_4 = 4;
+    RATING_5 = 5;
+}
+
+// Entities
 message Review {
-    string id = 1;             
-    string user_id = 2;         
-    string product_id = 3;     
-    string order_id = 4;        
+    string id = 1;
+    string user_id = 2;
+    string product_id = 3;
+    string order_items_id = 4;
 
-    int32 rating = 5;          
-    string content = 6;        
+    ReviewRating rating = 5;
+    string content = 6;
+    repeated string medias = 7;
 
-    repeated string medias = 7; //images, video
+    string created_at = 8;
+    string updated_at = 9;
+    bool is_deleted = 10;
 
-    string created_at = 8;    
-    string updated_at = 9;      
-    int32 update_count = 10; // max = 1;  
+    ReviewReply replies = 11;
+
+    int64 like_count = 12; 
 }
 
-// Dashboard 
-message DashboardReviewStats {
-    int32 total_reviews = 1;                
-    double average_rating = 2;              
-    map<int32, int32> rating_distribution = 3; 
+message ReviewReply {
+    string id = 1;
+    string review_id = 2;
+    string seller_id = 3;
+    string content = 4;
+    string created_at = 5;
+    string updated_at = 6;
 }
 
-message GetDashboardReviewStatsRequest {
-    string product_id = 1;
-}
-
-message GetDashboardReviewStatsResponse {
-    DashboardReviewStats stats = 1;
-}
-
-// Create
+// Create 
 message CreateReviewRequest {
-    Review review = 1;
+    string user_id = 1;
+    string product_id = 2;
+    string order_items_id = 3;
+
+    ReviewRating rating = 4;
+    string content = 5;
+    repeated string medias = 6;
 }
 
 message CreateReviewResponse {
     Review review = 1;
 }
 
-
-// Get
+// Get Detail
 message GetReviewRequest {
     string id = 1;
 }
@@ -53,55 +66,153 @@ message GetReviewResponse {
     Review review = 1;
 }
 
-
-// Get List by Product
+// List Reviews by Product
 message ListReviewByProductRequest {
     string product_id = 1;
-    int32 page = 2;  
-    int32 limit = 3; 
-    string sort_by = 4;   
-    string sort_order = 5;
+    int32 page = 2;
+    int32 limit = 3;
 }
 
 message ListReviewByProductResponse {
     repeated Review reviews = 1;
-    int32 total = 2;    
-    int32 page = 3;
-    int32 limit = 4;
+    int32 page = 2;
+    int32 limit = 3;
+    int64 total_items = 4;
+    double average_rating = 5;
+}
+
+// Update 
+message UpdateReviewRequest {
+    string id = 1;
+    string user_id = 2;
+
+    optional ReviewRating rating = 3;
+    optional string content = 4;
+    repeated string medias = 5;
+}
+
+message UpdateReviewResponse {
+    Review review = 1;
 }
 
 // Delete
 message DeleteReviewRequest {
     string id = 1;
-    string user_id = 2; 
+    string deleted_by = 2;
+    string reason = 3;
 }
 
 message DeleteReviewResponse {
     bool success = 1;
 }
 
+// Seller Reply Review
+message ReplyReviewRequest {
+    string review_id = 1;
+    string seller_id = 2;
+    string content = 3;
+}
 
-// Seller Rating Summary
+message ReplyReviewResponse {
+    ReviewReply reply = 1;
+}
+
+// Like Review
+message LikeReviewRequest {
+    string review_id = 1;
+}
+
+message LikeReviewResponse {
+    int64 like_count = 1; 
+}
+
+// Dashboard Stats
+message GetDashboardReviewStatsRequest {
+    string seller_id = 1; // nếu null thì lấy toàn bộ (admin)
+    optional string from_date = 2;
+    optional string to_date = 3;
+}
+
+message DashboardReviewStats {
+    int64 total_reviews = 1;
+    double average_rating = 2;
+
+    int64 one_star_count = 3;
+    int64 two_star_count = 4;
+    int64 three_star_count = 5;
+    int64 four_star_count = 6;
+    int64 five_star_count = 7;
+
+    int64 reviews_with_media = 8;
+    int64 reviews_with_content = 9;
+}
+
+message GetDashboardReviewStatsResponse {
+    DashboardReviewStats stats = 1;
+}
+
+
+// Product Rating Summary 
+message GetProductRatingRequest {
+    string product_id = 1;
+}
+
+message ProductRatingStats {
+    string product_id = 1;
+    double average_rating = 2;
+    int64 total_reviews = 3;
+
+    int64 one_star_count = 4;
+    int64 two_star_count = 5;
+    int64 three_star_count = 6;
+    int64 four_star_count = 7;
+    int64 five_star_count = 8;
+}
+
+message GetProductRatingResponse {
+    ProductRatingStats stats = 1;
+}
+
+// Seller Rating
 message GetSellerRatingRequest {
     string seller_id = 1;
 }
 
 message SellerRatingStats {
-    double average_rating = 1;
-    int32 total_reviews = 2;
-    map<int32, int32> rating_distribution = 3; 
+    string seller_id = 1;
+    double average_rating = 2;
+    int64 total_reviews = 3;
+
+    int64 one_star_count = 4;
+    int64 two_star_count = 5;
+    int64 three_star_count = 6;
+    int64 four_star_count = 7;
+    int64 five_star_count = 8;
 }
 
 message GetSellerRatingResponse {
     SellerRatingStats stats = 1;
 }
 
+// Service Definition
 service ReviewService {
+    // User
     rpc CreateReview(CreateReviewRequest) returns (CreateReviewResponse);
     rpc GetReview(GetReviewRequest) returns (GetReviewResponse);
     rpc ListReviewByProduct(ListReviewByProductRequest) returns (ListReviewByProductResponse);
-    rpc DeleteReview(DeleteReviewRequest) returns (DeleteReviewResponse);
-    rpc GetDashboardReviewStats(GetDashboardReviewStatsRequest) returns (GetDashboardReviewStatsResponse);
+    rpc UpdateReview(UpdateReviewRequest) returns (UpdateReviewResponse);
+
+    // Seller
+    rpc ReplyReview(ReplyReviewRequest) returns (ReplyReviewResponse);
     rpc GetSellerRating(GetSellerRatingRequest) returns (GetSellerRatingResponse);
 
+    // Product rating
+    rpc GetProductRating(GetProductRatingRequest) returns (GetProductRatingResponse);
+
+    // Like
+    rpc LikeReview(LikeReviewRequest) returns (LikeReviewResponse);
+
+    // Admin / Dashboard
+    rpc DeleteReview(DeleteReviewRequest) returns (DeleteReviewResponse);
+    rpc GetDashboardReviewStats(GetDashboardReviewStatsRequest) returns (GetDashboardReviewStatsResponse);
 }
