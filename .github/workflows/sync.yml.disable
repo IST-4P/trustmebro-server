@@ -54,6 +54,8 @@ jobs:
             secret: COOLIFY_APP_ADMIN
           - name: web
             secret: COOLIFY_APP_WEB
+          - name: seller
+            secret: COOLIFY_APP_SELLER
           - name: cart
             secret: COOLIFY_APP_CART
           - name: chat

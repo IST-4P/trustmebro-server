@@ -6,7 +6,20 @@ export const GetManyNotificationsRequestSchema =
   PaginationQueryRequestSchema.extend({
     type: NotificationSchema.shape.type.optional(),
     userId: NotificationSchema.shape.userId,
-  });
+  })
+    .extend({
+      processId: z.uuid().optional(),
+    })
+    .strict();
+
+export const GetNotificationRequestSchema = NotificationSchema.pick({
+  id: true,
+  userId: true,
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const CreateNotificationRequestSchema = NotificationSchema.pick({
   title: true,
@@ -35,10 +48,17 @@ export const ReadNotificationRequestSchema = NotificationSchema.pick({
 export const DeleteNotificationRequestSchema = NotificationSchema.pick({
   id: true,
   deletedById: true,
-}).strict();
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export type GetManyNotificationsRequest = z.infer<
   typeof GetManyNotificationsRequestSchema
+>;
+export type GetNotificationRequest = z.infer<
+  typeof GetNotificationRequestSchema
 >;
 export type CreateNotificationRequest = z.infer<
   typeof CreateNotificationRequestSchema

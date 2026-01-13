@@ -15,6 +15,13 @@ export class UserRepository {
     };
     return this.prismaService.user.findUnique({
       where,
+      include: {
+        shop: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
   }
 

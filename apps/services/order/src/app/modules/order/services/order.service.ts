@@ -1,9 +1,11 @@
 import { PaymentStatusValues } from '@common/constants/payment.constant';
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   CancelOrderRequest,
   CreateOrderRequest,
   CreateOrderResponse,
+  UpdateStatusOrderRequest,
 } from '@common/interfaces/models/order';
 import {
   CART_SERVICE_NAME,
@@ -181,8 +183,13 @@ export class OrderService implements OnModuleInit {
 
   async cancelOrder({ processId, ...data }: CancelOrderRequest) {
     const orderIds = [data.orderId];
-    const userId = data.userId;
-    const cancelledOrders = await this.orderRepository.cancel(orderIds, userId);
+    const userId = data.userId || undefined;
+    const shopId = data.shopId || undefined;
+    const cancelledOrders = await this.orderRepository.cancel(
+      orderIds,
+      userId,
+      shopId
+    );
 
     await Promise.all(
       cancelledOrders.map((order) =>
@@ -203,8 +210,26 @@ export class OrderService implements OnModuleInit {
   async paid(data: { paymentId: string }) {
     try {
       const orders = await this.orderRepository.paid(data);
+      await Promise.all(
+        orders.map((order) =>
+          this.kafkaService.emit(QueueTopics.ORDER.UPDATE_ORDER, order)
+        )
+      );
       return orders;
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateStatus({ processId, ...data }: UpdateStatusOrderRequest) {
+    try {
+      const order = await this.orderRepository.updateStatus(data);
+      this.kafkaService.emit(QueueTopics.ORDER.UPDATE_ORDER, order);
+      return order;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.OrderNotFound');
+      }
       throw error;
     }
   }

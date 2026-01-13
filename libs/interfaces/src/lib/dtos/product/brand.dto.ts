@@ -1,3 +1,4 @@
+import { ResponseSchema } from '@common/interfaces/models/common/response.model';
 import {
   CreateBrandRequestSchema,
   DeleteBrandRequestSchema,
@@ -30,7 +31,9 @@ export class DeleteBrandRequestDto extends createZodDto(
 //=================================================Response DTOs=================================================
 
 export class GetManyBrandsResponseDto extends createZodDto(
-  GetManyBrandsResponseSchema
+  ResponseSchema(GetManyBrandsResponseSchema)
 ) {}
 
-export class GetBrandResponseDto extends createZodDto(GetBrandResponseSchema) {}
+export class GetBrandResponseDto extends createZodDto(
+  ResponseSchema(GetBrandResponseSchema)
+) {}

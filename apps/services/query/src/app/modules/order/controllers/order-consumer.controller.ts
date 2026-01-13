@@ -15,6 +15,11 @@ export class OrderConsumerController {
     return this.orderService.create(payload.order);
   }
 
+  @EventPattern(QueueTopics.ORDER.UPDATE_ORDER)
+  updateOrder(@Payload() payload: OrderResponse) {
+    return this.orderService.update(payload);
+  }
+
   @EventPattern(QueueTopics.ORDER.CANCEL_ORDER)
   cancelOrder(@Payload() payload: { orderId: string }) {
     return this.orderService.cancel(payload);

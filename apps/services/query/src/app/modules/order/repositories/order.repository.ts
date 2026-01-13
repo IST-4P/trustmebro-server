@@ -15,7 +15,8 @@ export class OrderRepository {
     const take = data.limit;
 
     const where: Prisma.OrderViewWhereInput = {
-      userId: data.userId,
+      userId: data?.userId || undefined,
+      shopId: data?.shopId || undefined,
       status: data.status,
     };
 

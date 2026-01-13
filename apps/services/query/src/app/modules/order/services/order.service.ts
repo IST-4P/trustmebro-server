@@ -45,4 +45,8 @@ export class OrderService {
       status: OrderStatusValues.CANCELLED,
     });
   }
+
+  update(data: OrderResponse) {
+    return this.orderRepository.update(data);
+  }
 }

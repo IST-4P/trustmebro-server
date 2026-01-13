@@ -2,6 +2,7 @@ import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateProductRequest,
+  DeleteProductRequest,
   UpdateProductRequest,
   ValidateProductsRequest,
 } from '@common/interfaces/models/product';
@@ -22,6 +23,11 @@ export class ProductGrpcController {
   @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'UpdateProduct')
   updateProduct(data: UpdateProductRequest) {
     return this.productService.update(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'DeleteProduct')
+  deleteProduct(data: DeleteProductRequest) {
+    return this.productService.delete(data);
   }
 
   @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'ValidateProducts')

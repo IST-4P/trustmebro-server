@@ -1,3 +1,4 @@
+import { BaseConfiguration } from '@common/configurations/base.config';
 import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import { LoginRequestDto } from '@common/interfaces/dtos/user-access';
@@ -17,7 +18,9 @@ const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: true,
   sameSite: 'none',
-  // domain: 'hacmieu.xyz',
+  ...(BaseConfiguration.NODE_ENV !== 'development' && {
+    domain: 'hacmieu.xyz',
+  }),
   path: '/',
 };
 

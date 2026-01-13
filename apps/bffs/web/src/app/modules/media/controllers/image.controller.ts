@@ -8,7 +8,7 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ImageService } from '../services/image.service';
 
 @Controller('media/image')
-@ApiTags('Image')
+@ApiTags('Media')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 

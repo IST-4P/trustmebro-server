@@ -90,7 +90,8 @@ message VerifyTokenResponse {
   string userId = 2;
   string roleId = 3;
   string roleName = 4;
-  repeated Permissions permissions = 5;
+  optional string shopId = 5;
+  repeated Permissions permissions = 6;
 }
 
 message Permissions {

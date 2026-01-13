@@ -19,6 +19,7 @@ export const VerifyTokenResponseSchema = z.object({
   userId: z.string(),
   roleId: z.string(),
   roleName: z.string(),
+  shopId: z.uuid().optional(),
   permissions: z.array(
     z.object({
       id: z.string(),

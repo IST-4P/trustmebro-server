@@ -100,6 +100,7 @@ jobs:
           SERVICES_JSON='[
             {"name":"admin","dockerfile":"apps/bffs/admin/Dockerfile","secret":"COOLIFY_APP_ADMIN"},
             {"name":"web","dockerfile":"apps/bffs/web/Dockerfile","secret":"COOLIFY_APP_WEB"},
+            {"name":"seller","dockerfile":"apps/bffs/seller/Dockerfile","secret":"COOLIFY_APP_SELLER"},
 
             {"name":"cart","dockerfile":"apps/services/cart/Dockerfile","secret":"COOLIFY_APP_CART"},
             {"name":"chat","dockerfile":"apps/services/chat/Dockerfile","secret":"COOLIFY_APP_CHAT"},

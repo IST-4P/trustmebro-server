@@ -270,6 +270,7 @@ export class ProductRepository {
       return this.prismaService.product.delete({
         where: {
           id: data.id,
+          shopId: data.shopId,
         },
       });
     } else {
@@ -277,6 +278,7 @@ export class ProductRepository {
         this.prismaService.product.update({
           where: {
             id: data.id,
+            shopId: data.shopId,
             deletedAt: null,
           },
           data: {

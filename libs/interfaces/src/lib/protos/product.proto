@@ -267,6 +267,7 @@ message DeleteProductRequest {
   optional string processId = 1;
   string id = 2;
   optional string deletedById = 3;
+  string shopId = 4;
 }
 
 //==================== ProductResponse ====================//

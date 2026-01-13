@@ -12,8 +12,8 @@ export const GetBrandResponseSchema = z.object({
   soldCount: z.number(),
   categoryIds: z.array(z.uuid()),
   categories: z.any(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.any(),
+  updatedAt: z.any(),
 });
 
 export const GetManyBrandsResponseSchema = PaginationQueryResponseSchema.extend(

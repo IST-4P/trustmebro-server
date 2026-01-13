@@ -3,15 +3,13 @@ import { ProcessId } from '@common/decorators/process-id.decorator';
 import { UserData } from '@common/decorators/user-data.decorator';
 import { TusdWebhookRequest } from '@common/interfaces/models/media';
 import { Body, Controller, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { TusdService } from '../services/tusd.service';
-import { VideoService } from '../services/video.service';
 
 @Controller('media/tusd')
+@ApiTags('Media')
 export class TusdController {
-  constructor(
-    private readonly tusdService: TusdService,
-    private readonly videoService: VideoService
-  ) {}
+  constructor(private readonly tusdService: TusdService) {}
 
   @Post()
   async videoHook(

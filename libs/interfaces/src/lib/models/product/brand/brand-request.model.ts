@@ -4,11 +4,19 @@ import { PaginationQueryRequestSchema } from '../../common/pagination.model';
 
 export const GetManyBrandsRequestSchema = PaginationQueryRequestSchema.extend({
   name: BrandSchema.shape.name.optional(),
-});
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const GetBrandRequestSchema = BrandSchema.pick({
   id: true,
-});
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const CreateBrandRequestSchema = BrandSchema.pick({
   name: true,
