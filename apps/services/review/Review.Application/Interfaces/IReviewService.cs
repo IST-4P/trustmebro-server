@@ -1,5 +1,4 @@
 using Review.Application.Dtos;
-using Review.Domain.Entities;
 using SharedKernel;
 
 namespace Review.Application.Interfaces
@@ -7,14 +6,35 @@ namespace Review.Application.Interfaces
   public interface IReviewService
   {
 
-    //Admin
-    Task<PageResult<ReviewListAdminDto>> GetReviewsAdmin(ReviewFilterDto filter, string adminId);
-    Task<ReviewDetailResponseAdminDto> GetReviewByIdAdmin(string reviewId, string adminId);
+    //Admin get
+    Task<PageResult<ReviewListAdminDto>> GetReviewsAdmin(AdminReviewFilterDto filter);
+    Task<ReviewDetailResponseAdminDto> GetReviewByIdAdmin(string reviewId);
 
-    //User
-    Task<PageResult<ReviewResponseClientDto>> GetMyReview(ReviewFilterDto filter, string userId);
-    Task<PageResult<ProductRatingDto>> GetProductReview (ReviewFilterDto filter, string userId);
+    //User/ Seller get
+    Task<PageResult<ReviewResponseClientDto>> GetMyReviews(MyReviewFilterDto filter);
+    Task<ProductRatingDto> GetProductRating (string productId);
+    Task<SellerRatingDto> GetSellerRating(string sellerId);
+    Task<PageResult<ReviewResponseClientDto>> GetProductReviews(string productId, MyReviewFilterDto filter);
 
-    Task<>
+    Task<ReviewResponseClientDto> GetReviewByIdClient(string reviewId);
+
+
+    // Dashboard
+    Task<DashboardReviewStatsDto> GetDashboard();
+    Task<DashboardSellerReviewStatsDto> GetDashboardSeller();
+
+
+    //Create
+    Task<ReviewResponseClientDto> CreateReview(CreateReviewRequestDto dto);
+    Task<ReviewResponseClientDto> CreateReply(CreateReplyRequestDto dto);
+
+    //Update
+    Task<ReviewResponseClientDto> UpdateReview(string reviewId, UpdateReviewRequestDto dto);
+    Task<ReviewResponseClientDto> UpdateReply(string replyId, UpdateReplyRequestDto dto);
+
+    //Delete
+    Task<bool> DeleteReview(string reviewId);
+    Task<bool> DeleteReply(string replyId);
+
   }
 }

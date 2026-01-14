@@ -8,15 +8,25 @@ namespace Review.Application.Interfaces
   public interface IReviewRepository : IRepository<ReviewEntity>
   {
     //Get 
-    Task<List<ReviewEntity>> FilterReviewsWithReplyAsync(ReviewFilterDto filter);
-    Task<ProductReview?> GetProductRatingSummaryAsync(string productId);
+    Task<List<ReviewEntity>> FilterReviewsWithReplyAsync(ReviewFilterInternal filter);
+    Task<ProductRating?> GetProductRatingSummaryAsync(string productId);
     Task<SellerRating?> GetSellerRatingSummaryAsync(string sellerId);
-    Task<List<ReviewEntity>> GetByUserWithReplyAsync(string userId); // admin
+    Task<ReviewEntity?> GetOrderItemAsync(string orderItemId, string userId);
 
     // Reply
-    Task <ReviewReply> AddReplyAsync(string reviewId, ReviewReply reply);
+    Task <ReviewReply> AddReplyAsync( ReviewReply reply);
+    Task<ReviewReply?> GetReplyByIdAsync(string replyId);
     Task UpdateReplyAsync(ReviewReply reply);
     Task<bool> DeleteReplyAsync(string replyId);
+
+    // Dashboard
+    Task<int> CountAllAsync();
+    Task<int> CountByRatingAsync(int rating);
+    Task<int> CountAllWithMediaAsync();
+
+    //Helper
+    Task UpdateProductReviewRatingAsync(string productId);
+    Task UpdateSellerReviewRatingAsync(string sellerId);
 
   }
 }

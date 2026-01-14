@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using SharedKernel;
 
@@ -19,17 +17,16 @@ namespace Review.Domain.Entities
   public class Review : BaseAuditableEntity
   {
     public string UserId { get; set; } = string.Empty;
-    public string ProductId { get; set; } = string.Empty;
+    public string? ProductId { get; set; }
+    public string? SellerId { get; set; }
     public string? OrderItemId { get; set; }
     public string? OrderId { get; set; }
 
     public ReviewRating Rating { get; set; }
-    public required string Content { get; set; }
+    public string? Content { get; set; }
     public List<string> Medias { get; set; } = new();
 
     public ReviewReply? Replies { get; set; } 
-
-    public long LikeCount { get; set; }
   }
 
 
@@ -37,13 +34,13 @@ namespace Review.Domain.Entities
     public class ReviewReply : BaseAuditableEntity
     {
       public string ReviewId { get; set; } = string.Empty;
-    public string SellerId { get; set; } = null!;
+      public string SellerId { get; set; } = null!;
 
       public required string Content { get; set; }
     }
 
-  [Table("product_review")]
-  public class ProductReview : BaseAuditableEntity
+  [Table("product_rating")]
+  public class ProductRating : BaseAuditableEntity
   {
     public string ProductId { get; set; } = string.Empty;
     public double AverageRating { get; set; }
@@ -70,5 +67,6 @@ namespace Review.Domain.Entities
     public long FourStarCount { get; set; }
     public long FiveStarCount { get; set; }
   }
+
 }
 

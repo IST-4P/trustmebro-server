@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+option csharp_namespace = "Order";
 package ORDER_SERVICE;
 
 service OrderService {

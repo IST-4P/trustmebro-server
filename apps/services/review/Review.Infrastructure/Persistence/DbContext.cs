@@ -10,7 +10,7 @@ namespace Review.Infrastructure.Persistence
   {
     public DbSet<ReviewEntity> Reviews { get; set; } = null!;
     public DbSet<ReviewReply> ReviewReplies { get; set; } = null!;
-    public DbSet<ProductReview> ProductReviews { get; set; } = null!;
+    public DbSet<ProductRating> ProductRatings { get; set; } = null!;
     public DbSet<SellerRating> SellerRatings { get; set; } = null!;
 
     public ReviewDbContext(DbContextOptions<ReviewDbContext> options)
@@ -43,7 +43,7 @@ namespace Review.Infrastructure.Persistence
 
       modelBuilder.Entity<ReviewEntity>().HasQueryFilter(x => !x.IsDeleted);
       modelBuilder.Entity<ReviewReply>().HasQueryFilter(x => !x.IsDeleted);
-      modelBuilder.Entity<ProductReview>().HasQueryFilter(x => !x.IsDeleted);
+      modelBuilder.Entity<ProductRating>().HasQueryFilter(x => !x.IsDeleted);
       modelBuilder.Entity<SellerRating>().HasQueryFilter(x => !x.IsDeleted);
     }
 
@@ -70,9 +70,13 @@ namespace Review.Infrastructure.Persistence
         entity.Property(e => e.OrderItemId)
             .IsRequired()
             .HasMaxLength(50);
+        entity.Property(e => e.OrderId)
+            .IsRequired()
+            .HasMaxLength(50);
 
         entity.Property(e => e.Rating)
-            .IsRequired();
+            .IsRequired()
+            .HasConversion<int>();
 
         entity.Property(e => e.Content)
             .IsRequired()
@@ -88,9 +92,6 @@ namespace Review.Infrastructure.Persistence
 
         entity.Property(e => e.Medias)
             .HasColumnType("jsonb");
-
-        entity.Property(e => e.LikeCount)
-            .HasDefaultValue(0);
 
         entity.HasIndex(e => e.ProductId)
             .HasDatabaseName("IX_Reviews_ProductId");
@@ -150,9 +151,9 @@ namespace Review.Infrastructure.Persistence
 
     private static void ConfigureProductReview(ModelBuilder modelBuilder)
     {
-      modelBuilder.Entity<ProductReview>(entity =>
+      modelBuilder.Entity<ProductRating>(entity =>
       {
-        entity.ToTable("product_review");
+        entity.ToTable("product_ratings");
 
         entity.HasKey(e => e.Id);
 
@@ -178,7 +179,7 @@ namespace Review.Infrastructure.Persistence
     {
       modelBuilder.Entity<SellerRating>(entity =>
       {
-        entity.ToTable("seller_rating");
+        entity.ToTable("seller_ratings");
 
         entity.HasKey(e => e.Id);
 
