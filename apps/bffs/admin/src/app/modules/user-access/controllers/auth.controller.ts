@@ -1,7 +1,10 @@
 import { BaseConfiguration } from '@common/configurations/base.config';
 import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
-import { LoginRequestDto } from '@common/interfaces/dtos/user-access';
+import {
+  LoginPostmanResponseDto,
+  LoginRequestDto,
+} from '@common/interfaces/dtos/user-access';
 import {
   Body,
   Controller,
@@ -10,6 +13,7 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { parse } from 'cookie';
 import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
@@ -25,10 +29,12 @@ const cookieOptions: CookieOptions = {
 };
 
 @Controller('auth-admin')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login-postman')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   async loginDirectAccessGrants(
     @Body() body: LoginRequestDto,
@@ -55,6 +61,7 @@ export class AuthController {
   }
 
   @Post('refresh-token')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   async refreshToken(
     @Req() req: Request,
@@ -87,6 +94,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   logout(
     @Req() req: Request,

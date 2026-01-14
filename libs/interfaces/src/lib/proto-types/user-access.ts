@@ -90,6 +90,18 @@ export interface GetUserRequest {
   phoneNumber?: string | undefined;
 }
 
+/** ==================== UpdateUser ====================// */
+export interface UpdateUserRequest {
+  processId?: string | undefined;
+  id: string;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  phoneNumber?: string | undefined;
+  avatar?: string | undefined;
+  gender?: string | undefined;
+  birthday?: string | undefined;
+}
+
 /** ==================== CreateUser ====================// */
 export interface CreateUserRequest {
   processId?: string | undefined;
@@ -286,6 +298,8 @@ export interface UserAccessServiceClient {
 
   getUser(request: GetUserRequest): Observable<UserResponse>;
 
+  updateUser(request: UpdateUserRequest): Observable<UserResponse>;
+
   createUser(request: CreateUserRequest): Observable<UserResponse>;
 
   checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
@@ -327,6 +341,8 @@ export interface UserAccessServiceController {
   ): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
   getUser(request: GetUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+
+  updateUser(request: UpdateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
   createUser(request: CreateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
@@ -376,6 +392,7 @@ export function UserAccessServiceControllerMethods() {
       "verifyToken",
       "changePassword",
       "getUser",
+      "updateUser",
       "createUser",
       "checkParticipantExists",
       "getShop",

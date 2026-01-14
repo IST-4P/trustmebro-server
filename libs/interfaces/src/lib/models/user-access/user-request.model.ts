@@ -7,7 +7,10 @@ export const GetUserRequestSchema = z
     email: z.email(),
     phoneNumber: z.string(),
   })
-  .partial();
+  .partial()
+  .extend({
+    processId: z.string().optional(),
+  });
 
 export const CreateUserRequestSchema = UserSchema.pick({
   id: true,
@@ -33,6 +36,7 @@ export const UpdateUserRequestSchema = UserSchema.pick({
   .partial()
   .extend({
     id: z.uuid(),
+    processId: z.string().optional(),
   })
   .strict();
 
@@ -41,9 +45,20 @@ export const CheckParticipantExistsRequestSchema = z.object({
   participantIds: z.array(z.uuid()),
 });
 
+export const UpdateRoleRequestSchema = UserSchema.pick({
+  roleId: true,
+  roleName: true,
+  id: true,
+})
+  .extend({
+    processId: z.string().optional(),
+  })
+  .strict();
+
 export type GetUserRequest = z.infer<typeof GetUserRequestSchema>;
 export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;
 export type CheckParticipantExistsRequest = z.infer<
   typeof CheckParticipantExistsRequestSchema
 >;
 export type UpdateUserRequest = z.infer<typeof UpdateUserRequestSchema>;
+export type UpdateRoleRequest = z.infer<typeof UpdateRoleRequestSchema>;
