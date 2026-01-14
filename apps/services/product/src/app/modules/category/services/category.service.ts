@@ -63,10 +63,9 @@ export class CategoryService {
   async delete({ processId, ...data }: DeleteCategoryRequest) {
     try {
       const deletedCategory = await this.categoryRepository.delete(data, false);
-      this.kafkaService.emit(
-        QueueTopics.CATEGORY.DELETE_CATEGORY,
-        deletedCategory
-      );
+      this.kafkaService.emit(QueueTopics.CATEGORY.DELETE_CATEGORY, {
+        id: deletedCategory.id,
+      });
       this.cacheManager.del(
         generateCategoryCacheKey(deletedCategory.parentCategoryId ?? '')
       );

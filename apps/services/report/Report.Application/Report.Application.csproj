@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\SharedKernel\SharedKernel.csproj" />
     <ProjectReference Include="..\Report.Domain\Report.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\libs\SharedKernel\SharedKernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,8 @@
 import { QueueTopics } from '@common/constants/queue.constant';
-import { SendOtpRequest } from '@common/interfaces/models/auth';
+import {
+  ChangePasswordRequest,
+  SendVerificationCodeRequest,
+} from '@common/interfaces/models/auth';
 import {
   LoginRequest,
   LogoutRequest,
@@ -47,7 +50,11 @@ export class AuthService implements OnModuleInit {
     return firstValueFrom(this.userAccessService.register(data));
   }
 
-  sendOtp(data: SendOtpRequest) {
+  async changePassword(data: ChangePasswordRequest) {
+    return firstValueFrom(this.userAccessService.changePassword(data));
+  }
+
+  sendVerificationCode(data: SendVerificationCodeRequest) {
     this.kafkaService.emit(QueueTopics.USER_ACCESS.SEND_OTP, data);
   }
 }

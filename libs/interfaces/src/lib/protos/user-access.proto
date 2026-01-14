@@ -8,13 +8,23 @@ service UserAccessService {
   rpc Logout(LogoutRequest) returns (MessageResponse);
   rpc Register(RegisterRequest) returns (MessageResponse);
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (MessageResponse);
 
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
 
   rpc GetShop(GetShopRequest) returns (ShopResponse);
   rpc CreateShop(CreateShopRequest) returns (ShopResponse);
   rpc UpdateShop(UpdateShopRequest) returns (ShopResponse);
+  rpc ValidateShops(ValidateShopsRequest) returns (ValidateShopsResponse);
+
+  rpc GetManyAddresses(GetManyAddressesRequest) returns (GetManyAddressesResponse);
+  rpc GetAddress(GetAddressRequest) returns (AddressResponse);
+  rpc CreateAddress(CreateAddressRequest) returns (AddressResponse);
+  rpc UpdateAddress(UpdateAddressRequest) returns (AddressResponse);
+  rpc DeleteAddress(DeleteAddressRequest) returns (AddressResponse);
 }
 
 //==================== Login ====================//
@@ -54,10 +64,19 @@ message RegisterRequest {
   string password = 6;
   string phoneNumber = 7;
   string gender = 8;
+  string code = 9;
 }
 
 message MessageResponse {
   string message = 1;
+}
+
+// ==================== Change Password ====================//
+message ChangePasswordRequest {
+  optional string processId = 1;
+  string email = 2;
+  string password = 3;
+  string code = 4;
 }
 
 // ==================== Verify Token ====================//
@@ -72,13 +91,34 @@ message VerifyTokenResponse {
   string userId = 2;
   string roleId = 3;
   string roleName = 4;
-  repeated Permissions permissions = 5;
+  optional string shopId = 5;
+  repeated Permissions permissions = 6;
 }
 
 message Permissions {
   string id = 1;
   string path = 2;
   string method = 3;
+}
+
+//==================== GetUser ====================//
+message GetUserRequest {
+  optional string processId = 1;
+  optional string id = 2;
+  optional string email = 3;
+  optional string phoneNumber = 4;
+}
+
+// ==================== UpdateUser ====================//
+message UpdateUserRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string firstName = 3;
+  optional string lastName = 4;
+  optional string phoneNumber = 5;
+  optional string avatar = 6;
+  optional string gender = 7;
+  optional string birthday = 8;
 }
 
 //==================== CreateUser ====================//
@@ -129,7 +169,8 @@ message CheckParticipantExistsResponse {
 //==================== GetShop ====================//
 message GetShopRequest {
   optional string processId = 1;
-  string id = 2;
+  optional string id = 2;
+  optional string userId = 3;
 }
 
 message ShopResponse {
@@ -172,4 +213,88 @@ message UpdateShopRequest {
   optional string address = 7;
   optional string phone = 8;
   optional bool isOpen = 9;
+}
+
+//==================== ValidateShops ====================//
+message ValidateShopsRequest {
+  optional string processId = 1;
+  repeated string shopIds = 2;
+}
+
+message ValidateShop {
+  string id = 1;
+  string name = 2;
+}
+
+message ValidateShopsResponse {
+  repeated ValidateShop shops = 1;
+}
+
+//==================== GetManyAddresses ====================//
+message GetManyAddressesRequest {
+  optional string processId = 1;
+  string userId = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message GetManyAddressesResponse {
+  repeated AddressResponse addresses = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//==================== GetAddress ====================//
+message GetAddressRequest {
+  optional string processId = 1;
+  string id = 2;
+  string userId = 3;
+}
+
+//==================== CreateAddress ====================//
+message CreateAddressRequest {
+  optional string processId = 1;
+  string userId = 2;
+  string name = 3;
+  string address = 4;
+  optional string ward = 5;
+  optional string district = 6;
+  optional string province = 7;
+  bool isDefault = 8;
+}
+
+//==================== UpdateAddress ====================//
+message UpdateAddressRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string userId = 3;
+  optional string name = 4;
+  optional string address = 5;
+  optional string ward = 6;
+  optional string district = 7;
+  optional string province = 8;
+  optional bool isDefault = 9;
+}
+
+//==================== DeleteAddress ====================//
+message DeleteAddressRequest {
+  optional string processId = 1;
+  string id = 2;
+  string userId = 3;
+}
+
+//==================== AddressResponse ====================//
+message AddressResponse {
+  string id = 1;
+  string userId = 2;
+  string name = 3;
+  string address = 4;
+  string ward = 5;
+  string district = 6;
+  string province = 7;
+  bool isDefault = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
 }

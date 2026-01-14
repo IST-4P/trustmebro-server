@@ -13,7 +13,10 @@ import { BrandRepository } from '../repositories/brand.repository';
 export class BrandService {
   constructor(private readonly brandRepository: BrandRepository) {}
 
-  async list(data: GetManyBrandsRequest): Promise<GetManyBrandsResponse> {
+  async list({
+    processId,
+    ...data
+  }: GetManyBrandsRequest): Promise<GetManyBrandsResponse> {
     const brands = await this.brandRepository.list(data);
     if (brands.totalItems === 0) {
       throw new NotFoundException('Error.BrandNotFound');
@@ -21,7 +24,10 @@ export class BrandService {
     return brands;
   }
 
-  async findById(data: GetBrandRequest): Promise<GetBrandResponse | null> {
+  async findById({
+    processId,
+    ...data
+  }: GetBrandRequest): Promise<GetBrandResponse | null> {
     const brand = await this.brandRepository.findById(data.id);
     if (!brand) {
       throw new NotFoundException('Error.BrandNotFound');

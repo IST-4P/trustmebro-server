@@ -19,13 +19,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="10.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\..\libs\SharedKernel\SharedKernel.csproj" />
     <ProjectReference Include="..\Report.Application\Report.Application.csproj" />
     <ProjectReference Include="..\Report.Infrastructure\Report.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\..\libs\SharedInfrastructure\SharedInfrastructure.csproj" />
   </ItemGroup>
 
 </Project>

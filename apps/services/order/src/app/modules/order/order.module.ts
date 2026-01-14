@@ -12,6 +12,7 @@ import { OrderService } from './services/order.service';
     ClientsModule.register([
       GrpcClientProvider(GrpcService.PRODUCT_SERVICE),
       GrpcClientProvider(GrpcService.CART_SERVICE),
+      GrpcClientProvider(GrpcService.USER_ACCESS_SERVICE),
     ]),
   ],
   controllers: [OrderGrpcController, OrderConsumerController],

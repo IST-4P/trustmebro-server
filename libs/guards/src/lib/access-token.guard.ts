@@ -21,6 +21,7 @@ import {
 import { ClientGrpc } from '@nestjs/microservices';
 import { Cache } from 'cache-manager';
 import { keyBy } from 'lodash';
+import ms, { StringValue } from 'ms';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
@@ -75,7 +76,7 @@ export class AccessTokenGuard implements CanActivate, OnModuleInit {
       this.cacheManager.set(
         cacheKey,
         decodedAccessToken,
-        RedisConfiguration.CACHE_TOKEN_TTL
+        ms(RedisConfiguration.CACHE_TOKEN_TTL as StringValue)
       );
       request[MetadataKeys.USER_DATA] = decodedAccessToken;
       return decodedAccessToken;

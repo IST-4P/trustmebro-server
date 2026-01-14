@@ -31,7 +31,8 @@
       "@common/kafka/*": ["libs/kafka/src/lib/*"],
       "@common/redis/*": ["libs/redis/src/lib/*"],
       "@common/observability/*": ["libs/observability/src/lib/*"],
-      "@common/health": ["libs/health/src/index.ts"]
+      "@common/health": ["libs/health/src/index.ts"],
+      "@common/pipes/*": ["libs/pipes/src/lib/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

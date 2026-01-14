@@ -10,6 +10,7 @@ import { generateShipsFromCacheKey } from '@common/utils/cache-key.util';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Cache } from 'cache-manager';
+import ms, { StringValue } from 'ms';
 import { ShipsFromMapper } from '../mappers/ships-from.mapper';
 import { ShipsFromRepository } from '../repositories/ships-from.repository';
 
@@ -37,7 +38,7 @@ export class ShipsFromService {
     this.cacheManager.set(
       cacheKey,
       { shipsFromList },
-      RedisConfiguration.CACHE_SHIPS_FROM_TTL
+      ms(RedisConfiguration.CACHE_SHIPS_FROM_TTL as StringValue)
     );
     return { shipsFromList };
   }
@@ -60,7 +61,7 @@ export class ShipsFromService {
     return this.shipsFromRepository.update(ShipsFromMapper(data));
   }
 
-  delete(data: ShipsFromResponse) {
+  delete(data: { id: string }) {
     return this.shipsFromRepository.delete({ id: data.id });
   }
 }

@@ -1,16 +1,17 @@
 import { createKeyv } from '@keyv/redis';
 import { CacheModule } from '@nestjs/cache-manager';
+import ms, { StringValue } from 'ms';
 import z from 'zod';
 
 export const RedisConfigurationSchema = z.object({
   REDIS_URL: z.string(),
-  REDIS_TTL: z.coerce.number(),
+  REDIS_TTL: z.string(),
 
-  CACHE_TOKEN_TTL: z.coerce.number(),
-  CACHE_CATEGORY_TTL: z.coerce.number(),
-  CACHE_SHIPS_FROM_TTL: z.coerce.number(),
+  CACHE_TOKEN_TTL: z.string(),
+  CACHE_CATEGORY_TTL: z.string(),
+  CACHE_SHIPS_FROM_TTL: z.string(),
 
-  PAYMENT_TTL: z.coerce.number(),
+  PAYMENT_TTL: z.string(),
 });
 
 const configServer = RedisConfigurationSchema.safeParse(process.env);
@@ -25,5 +26,5 @@ export const RedisConfiguration = configServer.data;
 
 export const CacheProvider = CacheModule.register({
   stores: [createKeyv(RedisConfiguration.REDIS_URL)],
-  ttl: RedisConfiguration.REDIS_TTL, // 30 minutes
+  ttl: ms(RedisConfiguration.REDIS_TTL as StringValue), // 30 minutes
 });

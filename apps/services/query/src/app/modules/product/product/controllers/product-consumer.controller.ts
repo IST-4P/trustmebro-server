@@ -19,7 +19,7 @@ export class ProductConsumerController {
   }
 
   @EventPattern(QueueTopics.PRODUCT.DELETE_PRODUCT)
-  deleteProduct(@Payload() payload: ProductResponse) {
+  deleteProduct(@Payload() payload: { id: string }) {
     return this.productService.delete(payload);
   }
 }

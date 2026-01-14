@@ -12,5 +12,6 @@ import { PaymentService } from './services/payment.service';
   imports: [BullModule.registerQueue({ name: PAYMENT_QUEUE_NAME })],
   controllers: [PaymentGrpcController, PaymentConsumerController],
   providers: [PaymentRepository, PaymentService, PaymentProducer, PaymentQueue],
+  exports: [PaymentProducer],
 })
 export class PaymentModule {}

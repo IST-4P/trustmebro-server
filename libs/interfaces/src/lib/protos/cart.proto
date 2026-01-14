@@ -3,7 +3,9 @@ syntax = "proto3";
 package CART_SERVICE;
 
 service CartService {
-  rpc AddCartItem(AddCartItemRequest) returns (AddCartItemResponse);
+  rpc AddCartItem(AddCartItemRequest) returns (CartResponse);
+  rpc UpdateCartItem(UpdateCartItemRequest) returns (CartResponse);
+  rpc DeleteCartItem(DeleteCartItemRequest) returns (CartResponse);
   rpc ValidateCartItems(ValidateCartItemsRequest) returns (ValidateCartItemsResponse);
   rpc GetManyCartItems(GetManyCartItemsRequest) returns (GetManyCartItemsResponse);
 }
@@ -35,9 +37,29 @@ message CartItemResponse {
   string updatedAt = 11;
 }
 
-message AddCartItemResponse {
+message CartResponse {
   CartItemResponse cartItem = 1;
   int32 cartCount = 2;
+}
+
+//==================== UpdateCartItem ====================//
+message UpdateCartItemRequest {
+ optional string processId = 1;
+  string userId = 2;
+  string productId = 3;
+  string skuId = 4;
+  string shopId = 5;
+  int32 quantity = 6;
+  string skuValue = 7;
+  string productName = 8;
+  optional string productImage = 9;
+}
+
+//==================== DeleteCartItem ====================//
+message DeleteCartItemRequest {
+  optional string processId = 1;
+  string userId = 2;
+  string cartItemId = 3;
 }
 
 //==================== ValidateCartItems ====================//

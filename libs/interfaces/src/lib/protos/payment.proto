@@ -3,9 +3,34 @@ syntax = "proto3";
 package PAYMENT_SERVICE;
 
 service PaymentService {
+  rpc Receiver(WebhookTransactionRequest) returns (WebhookTransactionResponse);
+
   rpc CreatePayment(CreatePaymentRequest) returns (PaymentResponse);
 }
 
+
+//=========================================== Receiver ===========================================//
+message WebhookTransactionRequest {
+  int32 id = 1;
+  string gateway = 2;
+  string transactionDate = 3;
+  optional string accountNumber = 4;
+  optional string code = 5;
+  optional string content = 6;
+  string transferType = 7;
+  double transferAmount = 8;
+  double accumulated = 9;
+  optional string subAccount = 10;
+  optional string referenceCode = 11;
+  string description = 12;
+}
+
+message WebhookTransactionResponse {
+  string message = 1;
+  string paymentCode = 2;
+  string userId = 3;
+  string paymentId = 4;
+}
 //==================== CreatePayment ====================//
 message CreatePaymentRequest {
   optional string processId = 1;

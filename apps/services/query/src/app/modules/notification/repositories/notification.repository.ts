@@ -1,4 +1,7 @@
-import { GetManyNotificationsRequest } from '@common/interfaces/models/notification';
+import {
+  GetManyNotificationsRequest,
+  GetNotificationRequest,
+} from '@common/interfaces/models/notification';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/query';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -35,6 +38,12 @@ export class NotificationRepository {
       limit: data.limit,
       totalPages: Math.ceil(totalItems / data.limit),
     };
+  }
+
+  async findById(data: GetNotificationRequest) {
+    return this.prismaService.notificationView.findUnique({
+      where: { id: data.id, userId: data.userId },
+    });
   }
 
   create(data: Prisma.NotificationViewCreateInput) {

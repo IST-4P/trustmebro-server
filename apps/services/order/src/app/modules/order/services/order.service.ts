@@ -1,8 +1,11 @@
 import { PaymentStatusValues } from '@common/constants/payment.constant';
+import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
 import {
   CancelOrderRequest,
   CreateOrderRequest,
+  CreateOrderResponse,
+  UpdateStatusOrderRequest,
 } from '@common/interfaces/models/order';
 import {
   CART_SERVICE_NAME,
@@ -14,6 +17,11 @@ import {
   PRODUCT_SERVICE_PACKAGE_NAME,
   ProductServiceClient,
 } from '@common/interfaces/proto-types/product';
+import {
+  USER_ACCESS_SERVICE_NAME,
+  USER_ACCESS_SERVICE_PACKAGE_NAME,
+  UserAccessServiceClient,
+} from '@common/interfaces/proto-types/user-access';
 import { KafkaService } from '@common/kafka/kafka.service';
 import { generateCode } from '@common/utils/order-code.util';
 import {
@@ -31,12 +39,15 @@ import { OrderRepository } from '../repositories/order.repository';
 export class OrderService implements OnModuleInit {
   private productService!: ProductServiceClient;
   private cartService!: CartServiceClient;
+  private userAccessService!: UserAccessServiceClient;
 
   constructor(
     @Inject(PRODUCT_SERVICE_PACKAGE_NAME)
     private productClient: ClientGrpc,
     @Inject(CART_SERVICE_PACKAGE_NAME)
     private cartClient: ClientGrpc,
+    @Inject(USER_ACCESS_SERVICE_PACKAGE_NAME)
+    private userAccessClient: ClientGrpc,
     private readonly orderRepository: OrderRepository,
     private readonly kafkaService: KafkaService
   ) {}
@@ -46,15 +57,31 @@ export class OrderService implements OnModuleInit {
       this.productClient.getService<ProductServiceClient>(PRODUCT_SERVICE_NAME);
     this.cartService =
       this.cartClient.getService<CartServiceClient>(CART_SERVICE_NAME);
+    this.userAccessService =
+      this.userAccessClient.getService<UserAccessServiceClient>(
+        USER_ACCESS_SERVICE_NAME
+      );
   }
 
-  async create({ processId, userId, ...data }: CreateOrderRequest) {
+  async create({
+    processId,
+    userId,
+    ...data
+  }: CreateOrderRequest): Promise<CreateOrderResponse> {
     const cartItemIds = data.orders.map((item) => item.cartItemIds).flat();
     const cartItems = await firstValueFrom(
       this.cartService.validateCartItems({
         processId,
         cartItemIds: cartItemIds,
         userId,
+      })
+    );
+
+    // Check shopId có đúng k
+    const shop = await firstValueFrom(
+      this.userAccessService.validateShops({
+        processId,
+        shopIds: data.orders.map((order) => order.shopId),
       })
     );
 
@@ -114,6 +141,10 @@ export class OrderService implements OnModuleInit {
         this.kafkaService.emit(QueueTopics.ORDER.CREATE_ORDER, {
           items: order.items,
           userId: order.userId,
+          order: {
+            ...order,
+            shopName: shop.shops.find((s) => s.id === order.shopId)?.name || '',
+          },
         })
       )
     );
@@ -142,6 +173,7 @@ export class OrderService implements OnModuleInit {
             quantity: item.quantity,
             productId: item.productId,
           })),
+          orderId: order.id,
         })
       )
     );
@@ -151,8 +183,13 @@ export class OrderService implements OnModuleInit {
 
   async cancelOrder({ processId, ...data }: CancelOrderRequest) {
     const orderIds = [data.orderId];
-    const userId = data.userId;
-    const cancelledOrders = await this.orderRepository.cancel(orderIds, userId);
+    const userId = data.userId || undefined;
+    const shopId = data.shopId || undefined;
+    const cancelledOrders = await this.orderRepository.cancel(
+      orderIds,
+      userId,
+      shopId
+    );
 
     await Promise.all(
       cancelledOrders.map((order) =>
@@ -160,11 +197,40 @@ export class OrderService implements OnModuleInit {
           items: order.items.map((item) => ({
             skuId: item.skuId,
             quantity: item.quantity,
+            productId: item.productId,
           })),
+          orderId: order.id,
         })
       )
     );
 
     return cancelledOrders;
+  }
+
+  async paid(data: { paymentId: string }) {
+    try {
+      const orders = await this.orderRepository.paid(data);
+      await Promise.all(
+        orders.map((order) =>
+          this.kafkaService.emit(QueueTopics.ORDER.UPDATE_ORDER, order)
+        )
+      );
+      return orders;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateStatus({ processId, ...data }: UpdateStatusOrderRequest) {
+    try {
+      const order = await this.orderRepository.updateStatus(data);
+      this.kafkaService.emit(QueueTopics.ORDER.UPDATE_ORDER, order);
+      return order;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.OrderNotFound');
+      }
+      throw error;
+    }
   }
 }

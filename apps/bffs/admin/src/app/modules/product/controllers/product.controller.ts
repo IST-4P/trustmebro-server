@@ -2,10 +2,21 @@ import { ProcessId } from '@common/decorators/process-id.decorator';
 import { UserData } from '@common/decorators/user-data.decorator';
 import {
   CreateProductRequestDto,
+  DeleteProductRequestDto,
   GetManyProductsRequestDto,
   GetProductRequestDto,
+  UpdateProductRequestDto,
 } from '@common/interfaces/dtos/product';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ProductReadService } from '../services/product/product-read.service';
 import { ProductWriteService } from '../services/product/product-write.service';
 
@@ -50,29 +61,29 @@ export class ProductController {
     });
   }
 
-  // @Put()
-  // async updateProduct(
-  //   @Body() body: UpdateProductRequestDto,
-  //   @ProcessId() processId: string,
-  //   @UserData('userId') userId: string
-  // ) {
-  //   return this.productWriteService.updateProduct({
-  //     ...body,
-  //     processId,
-  //     updatedById: userId,
-  //   });
-  // }
+  @Put()
+  async updateProduct(
+    @Body() body: UpdateProductRequestDto,
+    @ProcessId() processId: string,
+    @UserData('userId') userId: string
+  ) {
+    return this.productWriteService.updateProduct({
+      ...body,
+      processId,
+      updatedById: userId,
+    });
+  }
 
-  // @Delete(':id')
-  // async deleteProduct(
-  //   @Param() params: DeleteProductRequestDto,
-  //   @ProcessId() processId: string,
-  //   @UserData('userId') userId: string
-  // ) {
-  //   return this.productWriteService.deleteProduct({
-  //     ...params,
-  //     processId,
-  //     deletedById: userId,
-  //   });
-  // }
+  @Delete(':id')
+  async deleteProduct(
+    @Param() params: DeleteProductRequestDto,
+    @ProcessId() processId: string,
+    @UserData('userId') userId: string
+  ) {
+    return this.productWriteService.deleteProduct({
+      ...params,
+      processId,
+      deletedById: userId,
+    });
+  }
 }

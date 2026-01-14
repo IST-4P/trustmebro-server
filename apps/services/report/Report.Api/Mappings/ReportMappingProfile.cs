@@ -77,7 +77,7 @@ namespace Report.Api.Mappings
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.ReportId, opt => opt.MapFrom(src => src.ReportId))
                 .ForMember(dest => dest.AdminId, opt => opt.MapFrom(src => src.AdminId))
-                .ForMember(dest => dest.ActionType, opt => opt.MapFrom(src => MapReportActionType((Grpc.ReportActionType)src.ActionType)))
+                .ForMember(dest => dest.ActionType, opt => opt.MapFrom(src => src.ActionType))
                 .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason ?? string.Empty))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("o")));
 

@@ -75,10 +75,9 @@ export class ShipsFromService {
         data,
         false
       );
-      this.kafkaService.emit(
-        QueueTopics.SHIPS_FROM.DELETE_SHIPS_FROM,
-        deletedShipsFrom
-      );
+      this.kafkaService.emit(QueueTopics.SHIPS_FROM.DELETE_SHIPS_FROM, {
+        id: deletedShipsFrom.id,
+      });
       this.cacheManager.del(generateShipsFromCacheKey());
       return deletedShipsFrom;
     } catch (error) {

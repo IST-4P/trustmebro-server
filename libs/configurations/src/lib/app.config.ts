@@ -2,6 +2,7 @@ import z from 'zod';
 
 export const AppConfigurationSchema = z.object({
   BFF_WEB_SERVICE_PORT: z.coerce.number(),
+  BFF_SELLER_SERVICE_PORT: z.coerce.number(),
   BFF_ADMIN_SERVICE_PORT: z.coerce.number(),
   USER_ACCESS_SERVICE_PORT: z.coerce.number(),
   MEDIA_SERVICE_PORT: z.coerce.number(),

@@ -1,6 +1,8 @@
 import { ProductStatusValues } from '@common/constants/product.constant';
 import {
   CreateProductRequest,
+  DeleteProductRequest,
+  UpdateProductRequest,
   ValidateItemResult,
   ValidateProductsRequest,
 } from '@common/interfaces/models/product';
@@ -50,127 +52,6 @@ export class ProductRepository {
       );
     }
   }
-
-  // async list(data: GetManyProductsRequest): Promise<GetManyProductsResponse> {
-  //   const skip = Number((data.page - 1) * data.limit);
-  //   const take = Number(data.limit);
-  //   let where: Prisma.ProductWhereInput = {
-  //     deletedAt: null,
-  //     status: data.status ? data.status : ProductStatusValues.ACTIVE,
-  //     createdById: data.createdById ? data.createdById : undefined,
-  //   };
-
-  //   if (data.name) {
-  //     where.name = {
-  //       contains: data.name,
-  //       mode: 'insensitive',
-  //     };
-  //   }
-
-  //   if (data.brandIds && data.brandIds.length > 0) {
-  //     where.brandId = {
-  //       in: data.brandIds,
-  //     };
-  //   }
-
-  //   if (data.categories && data.categories.length > 0) {
-  //     where.categories = {
-  //       some: {
-  //         id: {
-  //           in: data.categories,
-  //         },
-  //       },
-  //     };
-  //   }
-
-  //   if (data.minPrice !== undefined || data.maxPrice !== undefined) {
-  //     where.virtualPrice = {
-  //       gte: data.minPrice,
-  //       lte: data.maxPrice,
-  //     };
-  //   }
-  //   // Mắc định sort theo createdAt mới nhất
-  //   let calculatedOrderBy:
-  //     | Prisma.ProductOrderByWithRelationInput
-  //     | Prisma.ProductOrderByWithRelationInput[] = {
-  //     createdAt: data.orderBy,
-  //   };
-
-  //   if (data.sortBy === SortByValues.Price) {
-  //     calculatedOrderBy = {
-  //       basePrice: data.orderBy,
-  //     };
-  //   } else if (data.sortBy === SortByValues.Sale) {
-  //     calculatedOrderBy = {
-  //       soldCount: data.orderBy,
-  //     };
-  //   }
-
-  //   const [totalItems, products] = await Promise.all([
-  //     this.prismaService.product.count({
-  //       where,
-  //     }),
-  //     this.prismaService.product.findMany({
-  //       where,
-  //       orderBy: calculatedOrderBy,
-  //       skip,
-  //       take,
-  //       select: {
-  //         name: true,
-  //         basePrice: true,
-  //         virtualPrice: true,
-  //         images: true,
-  //         status: true,
-  //         averageRate: true,
-  //         soldCount: true,
-  //       },
-  //     }),
-  //   ]);
-  //   return {
-  //     products,
-  //     totalItems,
-  //     page: data.page,
-  //     limit: data.limit,
-  //     totalPages: Math.ceil(totalItems / data.limit),
-  //   };
-  // }
-
-  // findById(data: GetProductRequest) {
-  //   let where: Prisma.ProductWhereUniqueInput = {
-  //     id: data.id,
-  //     deletedAt: null,
-  //   };
-
-  //   if (data.isHidden !== undefined) {
-  //     where.isHidden = data.isHidden;
-  //   }
-  //   return this.prismaService.product.findUnique({
-  //     where,
-  //     include: {
-  //       skus: {
-  //         where: {
-  //           deletedAt: null,
-  //         },
-  //       },
-  //       brand: {
-  //         select: {
-  //           id: true,
-  //           name: true,
-  //         },
-  //       },
-  //       categories: {
-  //         where: {
-  //           deletedAt: null,
-  //         },
-  //         select: {
-  //           id: true,
-  //           name: true,
-  //           parentCategory: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
 
   async create(data: CreateProductRequest) {
     await this.validateAttributes(data.attributes);
@@ -238,6 +119,186 @@ export class ProductRepository {
         },
       },
     });
+  }
+
+  async update(request: UpdateProductRequest) {
+    await this.validateAttributes(request.attributes);
+    const { skus, categories, shipsFromId, brandId, ...productData } = request;
+
+    //Lấy danh sách SKU hiện tại trong DB
+    const existingSkus = await this.prismaService.sKU.findMany({
+      where: {
+        productId: request.id,
+        deletedAt: null,
+      },
+    });
+
+    //Tìm các SKU cần xoá ( tồn tại trong DB nhưng không có trong data payload)
+    const skusToDelete = existingSkus.filter((sku) =>
+      skus.every((dataSku) => dataSku.value !== sku.value)
+    );
+    const skuIdsToDelete = skusToDelete.map((sku) => sku.id);
+
+    // Đưa các ID của sku tồn tại trong DB vào data payload
+    const skuWithId = skus.map((dataSku) => {
+      const existingSku = existingSkus.find(
+        (item) => item.value === dataSku.value
+      );
+      return {
+        ...dataSku,
+        id: existingSku ? existingSku.id : null,
+      };
+    });
+
+    // Tìm các Sku để cập nhập
+    const skusToUpdate = skuWithId.filter((dataSku) => dataSku.id !== null);
+
+    // Tìm các Sku cần thêm mới
+    const skusToCreate = skuWithId
+      .filter((dataSku) => dataSku.id === null)
+      .map((sku) => {
+        const { id: skuId, ...data } = sku;
+        return {
+          ...data,
+          productId: request.id,
+          createdById: request.createdById,
+        };
+      });
+
+    const [product] = await this.prismaService.$transaction([
+      // Cập nhập product
+      this.prismaService.product.update({
+        where: {
+          id: request.id,
+          deletedAt: null,
+        },
+        data: {
+          ...productData,
+          updatedById: request.updatedById,
+          brand: brandId
+            ? {
+                connect: { id: brandId },
+              }
+            : undefined,
+          shipsFrom: {
+            connect: { id: shipsFromId },
+          },
+          categories: {
+            connect: categories.map((category) => ({ id: category })),
+          },
+        },
+        include: {
+          skus: {
+            where: {
+              deletedAt: null,
+            },
+            select: {
+              id: true,
+              value: true,
+              price: true,
+              stock: true,
+              image: true,
+            },
+          },
+          brand: {
+            select: {
+              id: true,
+              name: true,
+              logo: true,
+            },
+          },
+          categories: {
+            where: {
+              deletedAt: null,
+            },
+            select: {
+              id: true,
+              name: true,
+              logo: true,
+              parentCategory: true,
+            },
+          },
+          shipsFrom: {
+            select: {
+              id: true,
+              address: true,
+            },
+          },
+        },
+      }),
+
+      // Xoá mềm các SKU không có trong data payload
+      this.prismaService.sKU.updateMany({
+        where: {
+          id: {
+            in: skuIdsToDelete,
+          },
+        },
+        data: {
+          deletedById: request.updatedById,
+          deletedAt: new Date(),
+        },
+      }),
+
+      // Cập nhập các SKU
+      ...skusToUpdate.map((sku) => {
+        return this.prismaService.sKU.update({
+          where: {
+            id: sku.id!,
+          },
+          data: {
+            value: sku.value,
+            price: sku.price,
+            stock: sku.stock,
+            image: sku.image,
+            updatedById: request.updatedById,
+          },
+        });
+      }),
+
+      // Thêm mới SKU
+      this.prismaService.sKU.createMany({
+        data: skusToCreate,
+      }),
+    ]);
+
+    return product;
+  }
+
+  async delete(data: DeleteProductRequest, isHard?: boolean) {
+    if (isHard) {
+      return this.prismaService.product.delete({
+        where: {
+          id: data.id,
+          shopId: data.shopId,
+        },
+      });
+    } else {
+      const [product] = await Promise.all([
+        this.prismaService.product.update({
+          where: {
+            id: data.id,
+            shopId: data.shopId,
+            deletedAt: null,
+          },
+          data: {
+            deletedById: data.deletedById,
+            deletedAt: new Date(),
+          },
+        }),
+        this.prismaService.sKU.updateMany({
+          where: {
+            productId: data.id,
+            deletedAt: null,
+          },
+          data: {
+            deletedById: data.deletedById,
+            deletedAt: new Date(),
+          },
+        }),
+      ]);
+      return product;
+    }
   }
 
   async validateProducts(data: ValidateProductsRequest) {

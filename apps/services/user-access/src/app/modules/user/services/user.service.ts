@@ -4,6 +4,7 @@ import {
   CheckParticipantExistsResponse,
   CreateUserRequest,
   GetUserRequest,
+  UpdateRoleRequest,
   UpdateUserRequest,
   UserResponse,
 } from '@common/interfaces/models/user-access';
@@ -30,7 +31,10 @@ export class UserService {
     return this.userRepository.create(data);
   }
 
-  async update(data: UpdateUserRequest): Promise<UserResponse> {
+  async update({
+    processId,
+    ...data
+  }: UpdateUserRequest): Promise<UserResponse> {
     try {
       const user = await this.userRepository.update(data);
       return user;
@@ -46,6 +50,24 @@ export class UserService {
       throw error;
     }
   }
+
+  async updateRole({ processId, ...data }: UpdateRoleRequest) {
+    try {
+      const user = await this.userRepository.update(data);
+      return user;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.UserNotFound');
+      }
+
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new NotFoundException('Error.UserAlreadyExists');
+      }
+
+      throw error;
+    }
+  }
+
   async checkParticipantExists({
     processId,
     ...data

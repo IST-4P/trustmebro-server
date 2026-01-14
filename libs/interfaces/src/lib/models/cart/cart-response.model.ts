@@ -4,7 +4,7 @@ import { PaginationQueryResponseSchema } from '../common/pagination.model';
 
 export const CartItemResponseSchema = CartItemSchema;
 
-export const AddCartResponseSchema = z.object({
+export const AddCartItemResponseSchema = z.object({
   cartItem: CartItemResponseSchema,
   cartCount: z.number().int(),
 });
@@ -19,13 +19,15 @@ export const GetManyCartItemsResponseSchema =
     ),
   });
 
-export const DeleteCartResponseSchema = z.object({
+export const DeleteCartItemResponseSchema = z.object({
   cartCount: z.number().int(),
 });
 
 export type CartItemResponse = z.infer<typeof CartItemResponseSchema>;
-export type AddCartResponse = z.infer<typeof AddCartResponseSchema>;
-export type DeleteCartResponse = z.infer<typeof DeleteCartResponseSchema>;
+export type AddCartItemResponse = z.infer<typeof AddCartItemResponseSchema>;
+export type DeleteCartItemResponse = z.infer<
+  typeof DeleteCartItemResponseSchema
+>;
 export type GetManyCartItemsResponse = z.infer<
   typeof GetManyCartItemsResponseSchema
 >;

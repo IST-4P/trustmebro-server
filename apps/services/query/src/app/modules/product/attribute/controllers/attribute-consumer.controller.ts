@@ -19,7 +19,7 @@ export class AttributeConsumerController {
   }
 
   @EventPattern(QueueTopics.ATTRIBUTE.DELETE_ATTRIBUTE)
-  deleteAttribute(@Payload() payload: AttributeResponse) {
+  deleteAttribute(@Payload() payload: { id: string }) {
     return this.attributeService.delete(payload);
   }
 }

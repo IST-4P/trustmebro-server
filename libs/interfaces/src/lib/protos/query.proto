@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+option csharp_namespace = "Query";
 package QUERY_SERVICE;
 
 service QueryService {
@@ -18,7 +19,11 @@ service QueryService {
   rpc GetProduct(GetProductRequest) returns (GetProductResponse);
   rpc GetManyProducts(GetManyProductsRequest) returns (GetManyProductsResponse);
 
+  rpc GetNotification(GetNotificationRequest) returns (NotificationResponse);
   rpc GetManyNotifications(GetManyNotificationsRequest) returns (GetManyNotificationsResponse);
+
+  rpc GetManyOrders(GetManyOrdersRequest) returns (GetManyOrdersResponse);
+  rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
 }
 
 //====================================== Category ======================================//
@@ -169,6 +174,7 @@ message SKU {
 message GetProductRequest {
   optional string processId = 1;
   string id = 2;
+  optional string shopId = 3;
 }
 
 message GetProductResponse {
@@ -242,6 +248,12 @@ message GetManyProductsResponse {
 
 
 //====================================== Notifications ======================================//
+//==================== GetNotificationRequest ====================//
+message GetNotificationRequest {
+  optional string processId = 1;
+  string id = 2;
+  string userId = 3;
+}
 //==================== GetManyNotificationsRequest ====================//
 message GetManyNotificationsRequest {
   optional string processId = 1;
@@ -275,4 +287,90 @@ message NotificationResponse {
   optional Metadata metadata = 9;
   string createdAt = 10;
   string updatedAt = 11;
+}
+
+//====================================== Orders ======================================//
+//==================== GetManyOrdersRequest ====================//
+message GetManyOrdersRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string paymentId = 4;
+  optional string status = 5;
+  optional string userId = 6;
+  optional string shopId = 7;
+}
+
+message OrderSummary {
+  string id = 1;
+  string shopId = 2;
+  string shopName = 3;
+  string status = 4;
+  int32 itemTotal = 5;
+  int32 grandTotal = 6;
+  string firstProductImage = 7;
+  string firstProductName = 8;
+}
+
+message GetManyOrdersResponse {
+  repeated OrderSummary orders = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//==================== GetOrderRequest ====================//
+message GetOrderRequest {
+  optional string processId = 1;
+  string orderId = 2;
+  optional string userId = 3;
+  optional string shopId = 4;
+}
+
+message Receiver {
+  string name = 1;
+  string phoneNumber = 2;
+  string address = 3;
+}
+
+message Timeline {
+  string status = 1;
+  string at = 2;
+}
+
+message OrderItemSnapshot {
+  string id = 1;
+  string productId = 2;
+  string productImage = 3;
+  string productName = 4;
+  string skuValue = 5;
+  int32 quantity = 6;
+  int32 price = 7;
+}
+
+message GetOrderResponse {
+  string id = 1;
+  string code = 2;
+  string userId = 3;
+  string shopId = 4;
+  string shopName = 5;
+  string status = 6;
+  string paymentMethod = 7;
+  string paymentStatus = 8;
+  string paymentId = 9;
+  int32 itemTotal = 10;
+  int32 shippingFee = 11;
+  int32 discount = 12;
+  int32 grandTotal = 13;
+  Receiver receiver = 14;
+  string receiverName = 15;
+  string receiverPhone = 16;
+  string receiverAddress = 17;
+  Timeline timeline = 18;
+  repeated OrderItemSnapshot itemsSnapshot = 19;
+  string firstProductName = 20;
+  string firstProductImage = 21;
+  string createdAt = 22;
+  string updatedAt = 23;
 }

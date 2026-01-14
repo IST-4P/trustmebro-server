@@ -1,13 +1,16 @@
-import { ShopSchema } from '@common/schemas/user';
-import { UserSchema } from '@common/schemas/user/user.schema';
+import { UserSchema } from '@common/schemas/user-access/user.schema';
 import z from 'zod';
 
 export const GetUserRequestSchema = z
   .object({
     id: z.uuid(),
     email: z.email(),
+    phoneNumber: z.string(),
   })
-  .partial();
+  .partial()
+  .extend({
+    processId: z.string().optional(),
+  });
 
 export const CreateUserRequestSchema = UserSchema.pick({
   id: true,
@@ -33,6 +36,7 @@ export const UpdateUserRequestSchema = UserSchema.pick({
   .partial()
   .extend({
     id: z.uuid(),
+    processId: z.string().optional(),
   })
   .strict();
 
@@ -41,43 +45,15 @@ export const CheckParticipantExistsRequestSchema = z.object({
   participantIds: z.array(z.uuid()),
 });
 
-//================================================= Shop Models =================================================//
-
-export const GetShopRequestSchema = z.object({
-  id: z.uuid(),
-  processId: z.uuid().optional(),
-});
-
-export const CreateShopRequestSchema = ShopSchema.pick({
-  ownerId: true,
-  name: true,
-  description: true,
-  logo: true,
-  address: true,
-  phone: true,
+export const UpdateRoleRequestSchema = UserSchema.pick({
+  roleId: true,
+  roleName: true,
+  id: true,
 })
   .extend({
-    processId: z.uuid().optional(),
+    processId: z.string().optional(),
   })
   .strict();
-
-export const UpdateShopRequestSchema = ShopSchema.pick({
-  name: true,
-  description: true,
-  logo: true,
-  address: true,
-  phone: true,
-  isOpen: true,
-})
-  .partial()
-  .extend({
-    id: z.uuid(),
-    ownerId: z.uuid(),
-    processId: z.uuid().optional(),
-  })
-  .strict();
-
-// ================================================= Types =================================================//
 
 export type GetUserRequest = z.infer<typeof GetUserRequestSchema>;
 export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;
@@ -85,6 +61,4 @@ export type CheckParticipantExistsRequest = z.infer<
   typeof CheckParticipantExistsRequestSchema
 >;
 export type UpdateUserRequest = z.infer<typeof UpdateUserRequestSchema>;
-export type CreateShopRequest = z.infer<typeof CreateShopRequestSchema>;
-export type UpdateShopRequest = z.infer<typeof UpdateShopRequestSchema>;
-export type GetShopRequest = z.infer<typeof GetShopRequestSchema>;
+export type UpdateRoleRequest = z.infer<typeof UpdateRoleRequestSchema>;

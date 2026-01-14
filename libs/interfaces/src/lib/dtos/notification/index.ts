@@ -1,8 +1,10 @@
+import { ResponseSchema } from '@common/interfaces/models/common/response.model';
 import {
   CreateNotificationRequestSchema,
   DeleteNotificationRequestSchema,
   GetManyNotificationsRequestSchema,
   GetManyNotificationsResponseSchema,
+  GetNotificationResponseSchema,
   ReadNotificationRequestSchema,
 } from '@common/interfaces/models/notification';
 import { createZodDto } from 'nestjs-zod';
@@ -26,5 +28,9 @@ export class DeleteNotificationRequestDto extends createZodDto(
 //=================================================Response DTOs=================================================
 
 export class GetManyNotificationsResponseDto extends createZodDto(
-  GetManyNotificationsResponseSchema
+  ResponseSchema(GetManyNotificationsResponseSchema)
+) {}
+
+export class GetNotificationResponseDto extends createZodDto(
+  ResponseSchema(GetNotificationResponseSchema)
 ) {}

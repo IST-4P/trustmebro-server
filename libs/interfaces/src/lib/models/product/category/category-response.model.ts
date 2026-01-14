@@ -17,8 +17,8 @@ export const GetCategoryResponseSchema = z.object({
   parentId: z.uuid().optional(),
   path: z.string(),
   level: z.number(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.any(),
+  updatedAt: z.any(),
 });
 
 export const GetManyCategoriesResponseSchema = z.object({

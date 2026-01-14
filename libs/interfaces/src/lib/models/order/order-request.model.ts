@@ -4,20 +4,22 @@ import z from 'zod';
 import { PaginationQueryRequestSchema } from '../common/pagination.model';
 import { ValidateItemResultSchema } from '../product';
 
-export const CreateOrderRequestSchema = z.object({
-  processId: z.uuid().optional(),
-  shippingFee: z.number(),
-  discount: z.number(),
-  paymentMethod: PaymentMethodEnums,
-  userId: z.uuid(),
-  receiver: ReceiverSchema,
-  orders: z.array(
-    z.object({
-      shopId: z.uuid(),
-      cartItemIds: z.array(z.uuid()).min(1),
-    })
-  ),
-});
+export const CreateOrderRequestSchema = z
+  .object({
+    processId: z.uuid().optional(),
+    shippingFee: z.number(),
+    discount: z.number(),
+    paymentMethod: PaymentMethodEnums,
+    userId: z.uuid(),
+    receiver: ReceiverSchema,
+    orders: z.array(
+      z.object({
+        shopId: z.uuid(),
+        cartItemIds: z.array(z.uuid()).min(1),
+      })
+    ),
+  })
+  .strict();
 
 export const CreateOrderRepositorySchema = z.object({
   userId: z.uuid(),
@@ -34,19 +36,47 @@ export const CreateOrderRepositorySchema = z.object({
   ),
 });
 
-export const CancelOrderRequestSchema = z.object({
-  orderId: z.uuid(),
-  userId: z.uuid(),
-  processId: z.uuid().optional(),
-});
+export const CancelOrderRequestSchema = z
+  .object({
+    orderId: z.uuid(),
+    userId: z.uuid().optional(),
+    processId: z.uuid().optional(),
+    shopId: z.uuid().optional(),
+  })
+  .strict();
 
 export const GetManyOrdersRequestSchema = PaginationQueryRequestSchema.extend({
   paymentId: z.uuid().optional(),
   status: OrderSchema.shape.status.optional(),
   userId: z.uuid().optional(),
-});
+  processId: z.uuid().optional(),
+  shopId: z.uuid().optional(),
+}).strict();
+
+export const GetOrderRequestSchema = z
+  .object({
+    orderId: z.uuid(),
+    userId: z.uuid().optional(),
+    processId: z.uuid().optional(),
+    shopId: z.uuid().optional(),
+  })
+  .strict();
+
+export const UpdateStatusOrderRequestSchema = OrderSchema.pick({
+  id: true,
+  status: true,
+  shopId: true,
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export type CreateOrderRequest = z.infer<typeof CreateOrderRequestSchema>;
 export type CreateOrderRepository = z.infer<typeof CreateOrderRepositorySchema>;
 export type CancelOrderRequest = z.infer<typeof CancelOrderRequestSchema>;
 export type GetManyOrdersRequest = z.infer<typeof GetManyOrdersRequestSchema>;
+export type GetOrderRequest = z.infer<typeof GetOrderRequestSchema>;
+export type UpdateStatusOrderRequest = z.infer<
+  typeof UpdateStatusOrderRequestSchema
+>;
