@@ -13,7 +13,6 @@ import { ClientsModule } from '@nestjs/microservices';
 import { HealthModule } from './modules/health/health.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { ProductModule } from './modules/product/product.module';
-import { RoleModule } from './modules/role/role.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
 @Module({
@@ -26,7 +25,6 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     LoggerModule.forRoot('bff-admin'),
     HealthModule,
     UserAccessModule,
-    RoleModule,
     ProductModule,
     NotificationModule,
   ],

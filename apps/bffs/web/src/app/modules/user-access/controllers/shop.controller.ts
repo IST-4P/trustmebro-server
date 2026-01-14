@@ -21,6 +21,11 @@ class UpdateShopBodyDto extends OmitType(UpdateShopRequestDto, [
   'processId',
 ] as const) {}
 
+class GetShopBodyDto extends OmitType(GetShopRequestDto, [
+  'processId',
+  'userId',
+] as const) {}
+
 @Controller('shop')
 @ApiTags('Shop')
 export class ShopController {
@@ -39,7 +44,7 @@ export class ShopController {
   @ApiOkResponse({ type: GetShopResponseDto })
   @IsPublic()
   async getShop(
-    @Param() params: GetShopRequestDto,
+    @Param() params: GetShopBodyDto,
     @ProcessId() processId: string
   ) {
     return this.shopReadService.getShop({ ...params, processId });

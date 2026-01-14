@@ -1,3 +1,4 @@
+import { DefaultRoleNameValues } from '@common/constants/user.constant';
 import {
   LoginRequest,
   LogoutRequest,
@@ -42,7 +43,7 @@ export class AuthService implements OnModuleInit {
         withPermissions: false,
       })
     );
-    if (verifyToken.roleName !== 'ADMIN') {
+    if (verifyToken.roleName !== DefaultRoleNameValues.ADMIN) {
       throw new ForbiddenException('Error.AccessDenied');
     }
     return result;

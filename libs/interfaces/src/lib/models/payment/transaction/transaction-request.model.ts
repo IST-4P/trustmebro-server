@@ -10,7 +10,7 @@ export const WebhookTransactionRequestSchema = z.object({
   transferType: z.enum(['in', 'out']),
   transferAmount: z.number(),
   accumulated: z.number(),
-  subAccount: z.string().optional(),
+  subAccount: z.string().nullish(),
   referenceCode: z.string().optional(),
   description: z.string(),
 });

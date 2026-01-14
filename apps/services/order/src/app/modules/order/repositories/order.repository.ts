@@ -1,6 +1,9 @@
 import { OrderStatusValues } from '@common/constants/order.constant';
 import { PaymentStatusValues } from '@common/constants/payment.constant';
-import { CreateOrderRepository } from '@common/interfaces/models/order';
+import {
+  CreateOrderRepository,
+  UpdateStatusOrderRequest,
+} from '@common/interfaces/models/order';
 import { generateCode } from '@common/utils/order-code.util';
 import { Injectable } from '@nestjs/common';
 import { OrderStatus } from '@prisma-client/order';
@@ -64,12 +67,13 @@ export class OrderRepository {
     return orders;
   }
 
-  async cancel(orderIds: string[], userId: string) {
+  async cancel(orderIds: string[], userId?: string, shopId?: string) {
     const orders = await this.prismaService.$transaction(async (tx) => {
       const existingOrders = await tx.order.findMany({
         where: {
           id: { in: orderIds },
-          userId: userId,
+          userId: userId ? userId : undefined,
+          shopId: shopId ? shopId : undefined,
           status: {
             in: [OrderStatus.PENDING, OrderStatus.CONFIRMED],
           },
@@ -139,5 +143,23 @@ export class OrderRepository {
         })
       )
     );
+  }
+
+  async updateStatus(data: UpdateStatusOrderRequest) {
+    const order = await this.prismaService.order.findUnique({
+      where: { id: data.id },
+      select: { timeline: true },
+    });
+
+    return this.prismaService.order.update({
+      where: { id: data.id, shopId: data.shopId },
+      data: {
+        status: data.status,
+        timeline: [
+          ...(Array.isArray(order.timeline) ? order.timeline : []),
+          { status: data.status, at: new Date() },
+        ],
+      },
+    });
   }
 }

@@ -2,6 +2,7 @@ import {
   GetManyMessagesRequestSchema,
   GetManyMessagesResponseSchema,
 } from '@common/interfaces/models/chat';
+import { ResponseSchema } from '@common/interfaces/models/common/response.model';
 import { createZodDto } from 'nestjs-zod';
 
 export class GetManyMessagesRequestDto extends createZodDto(
@@ -11,5 +12,5 @@ export class GetManyMessagesRequestDto extends createZodDto(
 //=================================================Response DTOs=================================================
 
 export class GetManyMessagesResponseDto extends createZodDto(
-  GetManyMessagesResponseSchema
+  ResponseSchema(GetManyMessagesResponseSchema)
 ) {}

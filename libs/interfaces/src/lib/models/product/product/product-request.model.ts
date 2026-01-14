@@ -47,6 +47,7 @@ export const GetProductRequestSchema = z.object({
   id: z.uuid(),
   isHidden: z.boolean().optional(),
   processId: z.uuid().optional(),
+  shopId: z.uuid().optional(),
 });
 
 export const UpsertSKUBodySchema = SKUSchema.pick({
@@ -116,6 +117,7 @@ export const UpdateProductRequestSchema = CreateProductRequestSchema.safeExtend(
 export const DeleteProductRequestSchema = ProductSchema.pick({
   id: true,
   deletedById: true,
+  shopId: true,
 })
   .extend({
     processId: z.uuid().optional(),

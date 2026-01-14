@@ -11,6 +11,7 @@ service UserAccessService {
   rpc ChangePassword(ChangePasswordRequest) returns (MessageResponse);
 
   rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
 
@@ -90,7 +91,8 @@ message VerifyTokenResponse {
   string userId = 2;
   string roleId = 3;
   string roleName = 4;
-  repeated Permissions permissions = 5;
+  optional string shopId = 5;
+  repeated Permissions permissions = 6;
 }
 
 message Permissions {
@@ -105,6 +107,18 @@ message GetUserRequest {
   optional string id = 2;
   optional string email = 3;
   optional string phoneNumber = 4;
+}
+
+// ==================== UpdateUser ====================//
+message UpdateUserRequest {
+  optional string processId = 1;
+  string id = 2;
+  optional string firstName = 3;
+  optional string lastName = 4;
+  optional string phoneNumber = 5;
+  optional string avatar = 6;
+  optional string gender = 7;
+  optional string birthday = 8;
 }
 
 //==================== CreateUser ====================//

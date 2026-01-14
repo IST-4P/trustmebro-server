@@ -196,6 +196,7 @@ export class AuthService implements OnModuleInit {
         userId: user.id,
         roleId: user.roleId,
         roleName: user.roleName,
+        shopId: user.shop?.id || undefined,
         permissions:
           data.withPermissions && data.withPermissions === true
             ? role.permissions

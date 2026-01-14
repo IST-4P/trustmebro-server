@@ -1,6 +1,8 @@
 import {
   GetManyNotificationsRequest,
   GetManyNotificationsResponse,
+  GetNotificationRequest,
+  GetNotificationResponse,
   NotificationResponse,
 } from '@common/interfaces/models/notification';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -13,14 +15,26 @@ export class NotificationService {
     private readonly notificationRepository: NotificationRepository
   ) {}
 
-  async list(
-    data: GetManyNotificationsRequest
-  ): Promise<GetManyNotificationsResponse> {
+  async list({
+    processId,
+    ...data
+  }: GetManyNotificationsRequest): Promise<GetManyNotificationsResponse> {
     const notifications = await this.notificationRepository.list(data);
     if (notifications.totalItems === 0) {
       throw new NotFoundException('Error.NotificationNotFound');
     }
     return notifications;
+  }
+
+  async findById({
+    processId,
+    ...data
+  }: GetNotificationRequest): Promise<GetNotificationResponse> {
+    const notification = await this.notificationRepository.findById(data);
+    if (!notification) {
+      throw new NotFoundException('Error.NotificationNotFound');
+    }
+    return notification;
   }
 
   create(data: NotificationResponse) {
