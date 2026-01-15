@@ -186,6 +186,26 @@ message CreateReportActionResponse {
     ReportAction action = 1;
 }
 
+// SOFT DELETE REPORT
+message SoftDeleteReportRequest {
+    string report_id = 1;
+    string requester_id = 2;
+}
+message SoftDeleteReportResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+// HARD DELETE REPORT (Admin only)
+message HardDeleteReportRequest {
+    string report_id = 1;
+    string admin_id = 2;
+}
+message HardDeleteReportResponse {
+    bool success = 1;
+    string message = 2;
+}
+
 
 service ReportService {
     rpc CreateReport(CreateReportRequest) returns (CreateReportResponse);
@@ -198,4 +218,7 @@ service ReportService {
 
     rpc UpdateReportStatus(UpdateReportStatusRequest) returns (UpdateReportStatusResponse);
     rpc CreateReportAction(CreateReportActionRequest) returns (CreateReportActionResponse);
+    
+    rpc SoftDeleteReport(SoftDeleteReportRequest) returns (SoftDeleteReportResponse);
+    rpc HardDeleteReport(HardDeleteReportRequest) returns (HardDeleteReportResponse);
 }

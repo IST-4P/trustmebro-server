@@ -6,6 +6,7 @@ using Report.Api.Services;
 using Report.Application.Interfaces;
 using Report.Application.Service;
 using Report.Infrastructure.Persistence;
+using SharedInfrastructure.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
 

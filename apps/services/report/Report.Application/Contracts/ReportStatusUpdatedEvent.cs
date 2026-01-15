@@ -1,3 +1,5 @@
+namespace Report.Application.Contracts;
+
 public sealed record ReportStatusUpdatedEvent(
     string ReportId,
     string OldStatus,

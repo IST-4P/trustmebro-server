@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Report.Domain\Report.Domain.csproj" />
     <ProjectReference Include="..\..\..\..\libs\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\..\libs\SharedInfrastructure\SharedInfrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

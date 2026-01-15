@@ -2,9 +2,13 @@ using Report.Application.Dtos;
 using Report.Application.Exceptions;
 using Report.Application.Interfaces;
 using Report.Application.Validators;
+using Report.Application.Contracts;
+using Report.Application.Constants;
 using Report.Domain.Entities;
 using Report.Domain.Enums;
+using SharedInfrastructure.Kafka.Abstractions;
 using SharedKernel;
+using SharedInfrastructure.Kafka.Producer;
 
 namespace Report.Application.Service
 {
@@ -42,7 +46,7 @@ namespace Report.Application.Service
       return new PageResult<ReportListItemDto>
       {
         Items = items,
-        Total = items.Count,
+        Total_Items = items.Count,
         Page = 1,
         Limit = items.Count
       };
@@ -82,7 +86,7 @@ namespace Report.Application.Service
       return new PageResult<ReportListItemDto>
       {
         Items = items,
-        Total = items.Count,
+        Total_Items = items.Count,
         Page = 1,
         Limit = items.Count
       };
@@ -146,7 +150,7 @@ namespace Report.Application.Service
 
       var created = await _repo.CreateAsync(report);
 
-        await _kafka.EmitAsync(
+      await _kafka.EmitAsync(
         ReportTopics.ReportCreated,
         new ReportCreatedEvent(
           created.Id.ToString(),
@@ -158,7 +162,8 @@ namespace Report.Application.Service
           created.Description,
           created.Status.ToString(),
           created.CreatedAt
-      )
+        )
+      );
 
       return MapToDetailResponse(created);
     }
@@ -239,6 +244,8 @@ namespace Report.Application.Service
       // Validate status transition
       ValidateStatusTransition(report.Status, dto.NewStatus);
 
+      var oldStatus = report.Status;
+
       var history = new ReportHistory
       {
         ReportId = reportId,
@@ -261,6 +268,13 @@ namespace Report.Application.Service
             dto.Note,
             DateTime.UtcNow
         )
+      );
+
+      // Auto-delete when status changes to Rejected
+      if (dto.NewStatus == ReportStatus.Rejected)
+      {
+        await SoftDeleteReportAsync(reportId, dto.AdminId, "admin");
+      }
 
       var updatedReport = await _repo.GetReportByIdAsync(reportId);
       return MapToDetailResponse(updatedReport!);
@@ -270,26 +284,76 @@ namespace Report.Application.Service
 
     #region DELETE Methods
 
-    public async Task DeleteReportAsync(string reportId, string requesterId, string role)
+    public async Task SoftDeleteReportAsync(string reportId, string requesterId, string role)
     {
       var report = await _repo.GetReportByIdAsync(reportId)
         ?? throw new ReportNotFoundException(reportId);
 
-      // Admin can delete any report
+      // Admin can soft delete any report
       if (role == "admin")
       {
-        await _repo.DeleteAsync(reportId);
+        var deleted = await _repo.SoftDeleteAsync(reportId);
+        if (deleted)
+        {
+          await _kafka.EmitAsync(
+            ReportTopics.ReportDeleted,
+            new ReportDeletedEvent(
+              reportId,
+              requesterId,
+              "Admin soft deleted",
+              false,
+              DateTime.UtcNow
+            )
+          );
+        }
         return;
       }
 
-      // Client can only delete their own pending reports
+      // Client can only soft delete their own pending reports
       if (report.ReporterId != requesterId)
         throw new ReportAccessDeniedException(reportId, requesterId);
 
       if (report.Status != ReportStatus.Pending)
         throw new ReportOperationException("Delete", "Only pending reports can be deleted by the reporter");
 
-      await _repo.DeleteAsync(reportId);
+      var softDeleted = await _repo.SoftDeleteAsync(reportId);
+      if (softDeleted)
+      {
+        await _kafka.EmitAsync(
+          ReportTopics.ReportDeleted,
+          new ReportDeletedEvent(
+            reportId,
+            requesterId,
+            "User soft deleted own report",
+            false,
+            DateTime.UtcNow
+          )
+        );
+      }
+    }
+
+    public async Task HardDeleteReportAsync(string reportId, string adminId)
+    {
+      if (string.IsNullOrWhiteSpace(adminId))
+        throw new ReportAccessDeniedException("Admin ID is required for hard delete");
+
+      var report = await _repo.GetReportByIdIncludingDeletedAsync(reportId)
+        ?? throw new ReportNotFoundException(reportId);
+
+      var hardDeleted = await _repo.HardDeleteAsync(reportId);
+      if (hardDeleted)
+      {
+        await _kafka.EmitAsync(
+          ReportTopics.ReportDeleted,
+          new ReportDeletedEvent(
+            reportId,
+            adminId,
+            "Admin permanently deleted report",
+            true,
+            DateTime.UtcNow
+          )
+        );
+      }
     }
 
     #endregion
