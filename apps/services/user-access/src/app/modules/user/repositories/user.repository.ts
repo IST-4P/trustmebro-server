@@ -38,13 +38,23 @@ export class UserRepository {
     });
   }
 
-  checkParticipantExists(participantIds: string[]) {
-    return this.prismaService.user.count({
+  async checkParticipantExists(participantIds: string[]) {
+    const userCount = await this.prismaService.user.count({
       where: {
         id: {
           in: participantIds,
         },
       },
     });
+
+    const shopCount = await this.prismaService.shop.count({
+      where: {
+        id: {
+          in: participantIds,
+        },
+      },
+    });
+
+    return userCount + shopCount;
   }
 }

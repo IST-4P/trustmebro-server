@@ -7,7 +7,11 @@ import { VariantsProductSchema } from './other.schema';
 export const ProductSchema = BaseSchema.extend({
   name: z.string(),
   description: z.string(),
-  shipsFromId: z.uuid(),
+
+  provinceId: z.number().int(),
+  districtId: z.number().int(),
+  wardId: z.number().int(),
+
   sizeGuide: z.string().optional(),
   basePrice: z.number().default(0),
   virtualPrice: z.number().default(0),
@@ -37,8 +41,10 @@ export const ProductViewSchema = z.object({
   id: z.uuid(),
   name: z.string(),
   description: z.string().optional(),
-  shipsFromId: z.uuid(),
-  shipsFromAddress: z.string(),
+
+  provinceId: z.number().int(),
+  districtId: z.number().int(),
+  wardId: z.number().int(),
 
   brandId: z.uuid().optional(),
   brandName: z.string().optional(),

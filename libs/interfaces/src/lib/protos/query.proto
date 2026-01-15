@@ -12,8 +12,6 @@ service QueryService {
   rpc GetAttribute(GetAttributeRequest) returns (GetAttributeResponse);
   rpc GetManyAttributes(GetManyAttributesRequest) returns (GetManyAttributesResponse);
 
-  rpc GetShipsFrom(GetShipsFromRequest) returns (GetShipsFromResponse);
-  rpc GetManyShipsFrom(GetManyShipsFromRequest) returns (GetManyShipsFromResponse);
 
   rpc GetProduct(GetProductRequest) returns (GetProductResponse);
   rpc GetManyProducts(GetManyProductsRequest) returns (GetManyProductsResponse);
@@ -126,30 +124,6 @@ message GetManyAttributesResponse {
   int32 totalPages = 5;
 }
 
-//====================================== ShipsFrom ======================================//
-//==================== GetShipsFromRequest ====================//
-message GetShipsFromRequest {
-  optional string processId = 1;
-  string id = 2;
-}
-
-message GetShipsFromResponse {
-  string id = 1;
-  string address = 2;
-  string createdAt = 3;
-  string updatedAt = 4;
-}
-
-//==================== GetManyShipsFromRequest ====================//
-message GetManyShipsFromRequest {
-  optional string processId = 1;
-  optional string address = 2;
-}
-
-message GetManyShipsFromResponse {
-  repeated GetShipsFromResponse shipsFromList = 1;
-}
-
 //====================================== Product ======================================//
 message Variant {
   string value = 1;
@@ -180,45 +154,47 @@ message GetProductResponse {
   string id = 1;
   string name = 2;
   optional string description = 3;
-  string shipsFromId = 4;
-  string shipsFromAddress = 5;
+  
+  int32 provinceId = 4;
+  int32 districtId = 5;
+  int32 wardId = 6;
 
-  optional string brandId = 6;
-  optional string brandName = 7;
-  optional string brandLogo = 8;
+  optional string brandId = 7;
+  optional string brandName = 8;
+  optional string brandLogo = 9;
 
-  repeated string categoryIds = 9;
-  repeated CategoryProduct categories = 10;
+  repeated string categoryIds = 10;
+  repeated CategoryProduct categories = 11;
 
-  double basePrice = 11;
-  double virtualPrice = 12;
-  double minPrice = 13;
-  double maxPrice = 14;
+  double basePrice = 12;
+  double virtualPrice = 13;
+  double minPrice = 14;
+  double maxPrice = 15;
 
-  int32 totalStock = 15;
-  bool isAvailable = 16;
+  int32 totalStock = 16;
+  bool isAvailable = 17;
 
-  repeated string images = 17;
-  optional string sizeGuide = 18;
+  repeated string images = 18;
+  optional string sizeGuide = 19;
 
-  repeated Variant variants = 19;
-  repeated AttributeProduct attributes = 20;
-  repeated SKU skus = 21;
+  repeated Variant variants = 20;
+  repeated AttributeProduct attributes = 21;
+  repeated SKU skus = 22;
 
-  repeated string reviewIds = 22;
-  int32 ratingCount = 23;
-  double averageRate = 24;
-  int32 soldCount = 25;
-  int32 viewCount = 26;
-  int32 likeCount = 27;
+  repeated string reviewIds = 23;
+  int32 ratingCount = 24;
+  double averageRate = 25;
+  int32 soldCount = 26;
+  int32 viewCount = 27;
+  int32 likeCount = 28;
 
-  string shopId = 28;
-  string status = 29;
-  bool isApproved = 30;
-  bool isHidden = 31;
+  string shopId = 29;
+  string status = 30;
+  bool isApproved = 31;
+  bool isHidden = 32;
 
-  string createdAt = 32;
-  string updatedAt = 33;
+  string createdAt = 33;
+  string updatedAt = 34;
 }
 
 //==================== GetManyProductsRequest ====================//

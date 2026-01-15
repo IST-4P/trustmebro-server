@@ -23,11 +23,13 @@ enum ProductStatus {
 }
 
 model ProductView {
-    id               String  @id
-    name             String
-    description      String? @db.Text
-    shipsFromId      String
-    shipsFromAddress String
+    id          String  @id
+    name        String
+    description String? @db.Text
+
+    provinceId Int
+    districtId Int
+    wardId     Int
 
     brandId   String?
     brandName String?
@@ -132,13 +134,6 @@ model AttributeView {
     updatedAt DateTime
 
     @@index([name])
-}
-
-model ShipsFromView {
-    id        String   @id
-    address   String   @unique
-    createdAt DateTime
-    updatedAt DateTime
 }
 
 // =================================================================================================

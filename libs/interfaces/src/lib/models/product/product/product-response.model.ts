@@ -3,7 +3,6 @@ import {
   CategorySchema,
   ProductSchema,
   ProductViewSchema,
-  ShipsFromSchema,
   SKUSchema,
 } from '@common/schemas/product';
 import z from 'zod';
@@ -21,7 +20,6 @@ export const GetManyProductsResponseSchema =
         status: true,
         averageRate: true,
         soldCount: true,
-        shipsFromAddress: true,
       })
     ),
   });
@@ -49,10 +47,6 @@ export const ProductResponseSchema = ProductSchema.extend({
       parentCategoryId: true,
     })
   ),
-  shipsFrom: ShipsFromSchema.pick({
-    id: true,
-    address: true,
-  }),
 });
 
 export const GetProductResponseSchema = ProductViewSchema;

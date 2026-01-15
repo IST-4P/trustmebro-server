@@ -69,7 +69,9 @@ export const CreateProductRequestSchema = ProductSchema.pick({
   shopId: true,
   description: true,
   sizeGuide: true,
-  shipsFromId: true,
+  provinceId: true,
+  districtId: true,
+  wardId: true,
   status: true,
 })
   .extend({

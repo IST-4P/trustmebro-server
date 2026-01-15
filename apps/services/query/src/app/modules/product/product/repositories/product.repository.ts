@@ -82,7 +82,6 @@ export class ProductRepository {
           status: true,
           averageRate: true,
           soldCount: true,
-          shipsFromAddress: true,
         },
       }),
     ]);

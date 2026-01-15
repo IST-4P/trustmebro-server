@@ -116,32 +116,6 @@ export interface GetManyAttributesResponse {
   totalPages: number;
 }
 
-/**
- * ====================================== ShipsFrom ======================================//
- * ==================== GetShipsFromRequest ====================//
- */
-export interface GetShipsFromRequest {
-  processId?: string | undefined;
-  id: string;
-}
-
-export interface GetShipsFromResponse {
-  id: string;
-  address: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-/** ==================== GetManyShipsFromRequest ====================// */
-export interface GetManyShipsFromRequest {
-  processId?: string | undefined;
-  address?: string | undefined;
-}
-
-export interface GetManyShipsFromResponse {
-  shipsFromList: GetShipsFromResponse[];
-}
-
 /** ====================================== Product ======================================// */
 export interface Variant {
   value: string;
@@ -172,8 +146,9 @@ export interface GetProductResponse {
   id: string;
   name: string;
   description?: string | undefined;
-  shipsFromId: string;
-  shipsFromAddress: string;
+  provinceId: number;
+  districtId: number;
+  wardId: number;
   brandId?: string | undefined;
   brandName?: string | undefined;
   brandLogo?: string | undefined;
@@ -376,10 +351,6 @@ export interface QueryServiceClient {
 
   getManyAttributes(request: GetManyAttributesRequest): Observable<GetManyAttributesResponse>;
 
-  getShipsFrom(request: GetShipsFromRequest): Observable<GetShipsFromResponse>;
-
-  getManyShipsFrom(request: GetManyShipsFromRequest): Observable<GetManyShipsFromResponse>;
-
   getProduct(request: GetProductRequest): Observable<GetProductResponse>;
 
   getManyProducts(request: GetManyProductsRequest): Observable<GetManyProductsResponse>;
@@ -416,14 +387,6 @@ export interface QueryServiceController {
     request: GetManyAttributesRequest,
   ): Promise<GetManyAttributesResponse> | Observable<GetManyAttributesResponse> | GetManyAttributesResponse;
 
-  getShipsFrom(
-    request: GetShipsFromRequest,
-  ): Promise<GetShipsFromResponse> | Observable<GetShipsFromResponse> | GetShipsFromResponse;
-
-  getManyShipsFrom(
-    request: GetManyShipsFromRequest,
-  ): Promise<GetManyShipsFromResponse> | Observable<GetManyShipsFromResponse> | GetManyShipsFromResponse;
-
   getProduct(
     request: GetProductRequest,
   ): Promise<GetProductResponse> | Observable<GetProductResponse> | GetProductResponse;
@@ -456,8 +419,6 @@ export function QueryServiceControllerMethods() {
       "getManyBrands",
       "getAttribute",
       "getManyAttributes",
-      "getShipsFrom",
-      "getManyShipsFrom",
       "getProduct",
       "getManyProducts",
       "getNotification",
