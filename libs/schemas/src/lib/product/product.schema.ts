@@ -9,8 +9,13 @@ export const ProductSchema = BaseSchema.extend({
   description: z.string(),
 
   provinceId: z.number().int(),
+  provinceName: z.string(),
+
   districtId: z.number().int(),
+  districtName: z.string(),
+
   wardId: z.number().int(),
+  wardName: z.string(),
 
   sizeGuide: z.string().optional(),
   basePrice: z.number().default(0),
@@ -43,8 +48,13 @@ export const ProductViewSchema = z.object({
   description: z.string().optional(),
 
   provinceId: z.number().int(),
+  provinceName: z.string(),
+
   districtId: z.number().int(),
+  districtName: z.string(),
+
   wardId: z.number().int(),
+  wardName: z.string(),
 
   brandId: z.uuid().optional(),
   brandName: z.string().optional(),

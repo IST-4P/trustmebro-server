@@ -65,9 +65,14 @@ model Product {
     name        String
     description String @db.Text
 
-    provinceId Int
-    districtId Int
-    wardId     Int
+    provinceId   Int
+    provinceName String
+
+    districtId   Int
+    districtName String
+
+    wardId   Int
+    wardName String
 
     sizeGuide    String?    @db.Text
     basePrice    Float      @default(0)

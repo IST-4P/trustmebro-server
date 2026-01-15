@@ -50,7 +50,16 @@ playback_private.pem
 playback_public.pem
 .env.production.b64
 
-# docker-compose.local.yaml
+
+docker/**/docker_data
+
+.vs/
+**/.vs/
+
+*obj/
+*bin/
+
+docker-compose.local.yaml
 
 scripts
 

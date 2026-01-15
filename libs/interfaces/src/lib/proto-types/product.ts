@@ -183,8 +183,11 @@ export interface CreateProductRequest {
   description: string;
   sizeGuide?: string | undefined;
   provinceId: number;
+  provinceName: string;
   districtId: number;
+  districtName: string;
   wardId: number;
+  wardName: string;
   status: string;
   categories: string[];
   skus: SKUInput[];
@@ -206,8 +209,11 @@ export interface UpdateProductRequest {
   description: string;
   sizeGuide?: string | undefined;
   provinceId?: number | undefined;
+  provinceName?: string | undefined;
   districtId?: number | undefined;
+  districtName?: string | undefined;
   wardId?: number | undefined;
+  wardName?: string | undefined;
   status: string;
   categories: string[];
   skus: SKUInput[];

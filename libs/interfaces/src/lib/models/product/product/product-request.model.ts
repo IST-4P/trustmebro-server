@@ -70,8 +70,11 @@ export const CreateProductRequestSchema = ProductSchema.pick({
   description: true,
   sizeGuide: true,
   provinceId: true,
+  provinceName: true,
   districtId: true,
+  districtName: true,
   wardId: true,
+  wardName: true,
   status: true,
 })
   .extend({

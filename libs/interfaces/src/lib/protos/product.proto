@@ -197,13 +197,20 @@ message CreateProductRequest {
   string shopId = 10;
   string description = 11;
   optional string sizeGuide = 12;
+
   int32 provinceId = 13;
-  int32 districtId = 14;
-  int32 wardId = 15;
-  string status = 16;
-  repeated string categories = 17;
-  repeated SKUInput skus = 18;
-  repeated AttributeProduct attributes = 19;
+  string provinceName = 14;
+
+  int32 districtId = 15;
+  string districtName = 16;
+
+  int32 wardId = 17;
+  string wardName = 18;
+
+  string status = 19;
+  repeated string categories = 20;
+  repeated SKUInput skus = 21;
+  repeated AttributeProduct attributes = 22;
 }
 
 //==================== UpdateProductRequest ====================//
@@ -220,14 +227,21 @@ message UpdateProductRequest {
   string shopId = 10;
   string description = 11;
   optional string sizeGuide = 12;
+
   optional int32 provinceId = 13;
-  optional int32 districtId = 14;
-  optional int32 wardId = 15;
-  string status = 16;
-  repeated string categories = 17;
-  repeated SKUInput skus = 18;
-  repeated AttributeProduct attributes = 19;
-  string id = 20;
+  optional string provinceName = 14;
+
+  optional int32 districtId = 15;
+  optional string districtName = 16;
+
+  optional int32 wardId = 17;
+  optional string wardName = 18;
+
+  string status = 19;
+  repeated string categories = 20;
+  repeated SKUInput skus = 21;
+  repeated AttributeProduct attributes = 22;
+  string id = 23;
 }
 
 //==================== DeleteProductRequest ====================//
