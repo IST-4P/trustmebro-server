@@ -18,6 +18,16 @@ namespace Review.Application.Interfaces
     Task<ReviewReply?> GetReplyByIdAsync(string replyId);
     Task UpdateReplyAsync(ReviewReply reply);
     Task<bool> DeleteReplyAsync(string replyId);
+    Task<bool> SoftDeleteReplyAsync(string replyId, string deletedBy, string? reason);
+    Task<bool> HardDeleteReplyAsync(string replyId);
+
+    // Soft Delete for Reviews
+    Task<bool> SoftDeleteAsync(string reviewId, string deletedBy, string? reason);
+    Task<bool> HardDeleteAsync(string reviewId);
+    
+    // Get deleted items (for admin)
+    Task<List<ReviewEntity>> GetDeletedReviewsAsync();
+    Task<List<ReviewReply>> GetDeletedRepliesAsync();
 
     // Dashboard
     Task<int> CountAllAsync();

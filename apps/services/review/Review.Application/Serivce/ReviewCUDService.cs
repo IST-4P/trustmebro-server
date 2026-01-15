@@ -1,13 +1,13 @@
 using AutoMapper;
 using Grpc.Core;
 using Query;
+using Review.Application.Contracts;
 using Review.Application.Dtos;
 using Review.Application.Exceptions;
 using Review.Application.Interfaces;
-using Review.Application.Validators;
-using Review.Domain.Entities;
 using SharedKernel.Interfaces;
 using static Review.Application.Validators.ReviewValidators;
+using SharedInfrastructure.Kafka.Abstractions;
 
 namespace Review.Application.Service
 {
@@ -17,13 +17,21 @@ namespace Review.Application.Service
     private readonly ICurrentUserService _currentUser;
     private readonly IMapper _mapper;
     private readonly Query.QueryService.QueryServiceClient _queryService;
+    private readonly IKafkaProducer _kafka;
 
-    public ReviewService(IReviewRepository reviewRepository, IMapper mapper, Query.QueryService.QueryServiceClient queryService, ICurrentUserService currentUser)
+    public ReviewService(
+      IReviewRepository reviewRepository,
+      IMapper mapper,
+      Query.QueryService.QueryServiceClient queryService,
+      ICurrentUserService currentUser,
+      IKafkaProducer kafka)
     {
       _repo = reviewRepository;
       _mapper = mapper;
       _queryService = queryService;
       _currentUser = currentUser;
+      _kafka = kafka;
+
     }
 
     #region Create
@@ -52,9 +60,17 @@ namespace Review.Application.Service
         Content = dto.Content
       };
 
-      await _repo.AddReplyAsync( reply);
-      review = await _repo.GetByIdAsync(dto.ReviewId) ?? review;
+      await _repo.AddReplyAsync(reply);
 
+      await _kafka.EmitAsync(ReviewTopics.ReplyCreated, new ReplyCreatedEvent(
+        ReplyId: reply.Id,
+        ReviewId: reply.ReviewId,
+        SellerId: reply.SellerId,
+        Content: reply.Content,
+        CreatedAt: reply.CreatedAt
+      ));
+
+      review = await _repo.GetByIdAsync(dto.ReviewId) ?? review;
       return _mapper.Map<ReviewResponseClientDto>(reply);
 
     }
@@ -124,17 +140,29 @@ namespace Review.Application.Service
       await _repo.UpdateProductReviewRatingAsync(productId);
       await _repo.UpdateSellerReviewRatingAsync(sellerId);
 
+      await _kafka.EmitAsync(ReviewTopics.ReviewCreated, new ReviewCreatedEvent(
+        ReviewId: review.Id,
+        ProductId: review.ProductId!,
+        UserId: review.UserId,
+        SellerId: review.SellerId!,
+        OrderId: review.OrderId!,
+        OrderItemId: review.OrderItemId!,
+        Rating: (int)review.Rating,
+        Content: review.Content ?? string.Empty,
+        Medias: review.Medias,
+        CreatedAt: review.CreatedAt
+      ));
+
       return _mapper.Map<ReviewResponseClientDto>(review);
     }
     #endregion
 
     #region Delete
-    // Reply
+    // Reply - Soft Delete for Seller
     public async Task<bool> DeleteReply(string replyId)
     {
-        var sellerId = _currentUser.UserId
-           ?? throw new UnauthorizedAccessException();
-
+      var sellerId = _currentUser.UserId
+         ?? throw new UnauthorizedAccessException();
 
       var reply = await _repo.GetReplyByIdAsync(replyId)
           ?? throw new ReviewNotFoundException("Error.ReviewReplyNotFound");
@@ -142,9 +170,22 @@ namespace Review.Application.Service
       if (reply.SellerId != sellerId)
         throw new ReviewAccessDeniedException(replyId, sellerId);
 
-      return await _repo.DeleteReplyAsync(replyId);
+      var result = await _repo.SoftDeleteReplyAsync(replyId, sellerId, "Deleted by seller");
+
+      if (result)
+      {
+        await _kafka.EmitAsync(ReviewTopics.ReplyDeleted, new ReplyDeletedEvent(
+          ReplyId: reply.Id,
+          ReviewId: reply.ReviewId,
+          SellerId: reply.SellerId,
+          DeletedAt: DateTime.UtcNow
+        ));
+      }
+
+      return result;
     }
-    //  Review
+
+    // Review - Soft Delete for User
     public async Task<bool> DeleteReview(string reviewId)
     {
       var userId = _currentUser.UserId
@@ -156,7 +197,67 @@ namespace Review.Application.Service
       if (review.UserId != userId)
         throw new ReviewAccessDeniedException(reviewId, userId);
 
-      return await _repo.DeleteAsync(reviewId);
+      var result = await _repo.SoftDeleteAsync(reviewId, userId, "Deleted by user");
+
+      if (result)
+      {
+        await _kafka.EmitAsync(ReviewTopics.ReviewDeleted, new ReviewDeletedEvent(
+          ReviewId: review.Id,
+          ProductId: review.ProductId!,
+          UserId: review.UserId,
+          DeletedAt: DateTime.UtcNow
+        ));
+      }
+
+      return result;
+    }
+
+    // Admin Hard Delete - Permanent Delete
+    public async Task<bool> AdminHardDeleteReview(string reviewId)
+    {
+      var adminId = _currentUser.UserId
+        ?? throw new UnauthorizedAccessException();
+
+      // Check if user is admin (you might want to add role checking here)
+      var review = await _repo.GetByIdAsync(reviewId)
+          ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
+
+      var result = await _repo.HardDeleteAsync(reviewId);
+
+      if (result)
+      {
+        await _kafka.EmitAsync(ReviewTopics.ReviewDeleted, new ReviewDeletedEvent(
+          ReviewId: review.Id,
+          ProductId: review.ProductId!,
+          UserId: review.UserId,
+          DeletedAt: DateTime.UtcNow
+        ));
+      }
+
+      return result;
+    }
+
+    public async Task<bool> AdminHardDeleteReply(string replyId)
+    {
+      var adminId = _currentUser.UserId
+         ?? throw new UnauthorizedAccessException();
+
+      var reply = await _repo.GetReplyByIdAsync(replyId)
+          ?? throw new ReviewNotFoundException("Error.ReviewReplyNotFound");
+
+      var result = await _repo.HardDeleteReplyAsync(replyId);
+
+      if (result)
+      {
+        await _kafka.EmitAsync(ReviewTopics.ReplyDeleted, new ReplyDeletedEvent(
+          ReplyId: reply.Id,
+          ReviewId: reply.ReviewId,
+          SellerId: reply.SellerId,
+          DeletedAt: DateTime.UtcNow
+        ));
+      }
+
+      return result;
     }
 
     #endregion
@@ -181,6 +282,14 @@ namespace Review.Application.Service
 
       reply.Content = dto.Content ?? reply.Content;
       await _repo.UpdateReplyAsync(reply);
+
+      await _kafka.EmitAsync(ReviewTopics.ReplyUpdated, new ReplyUpdatedEvent(
+        ReplyId: reply.Id,
+        ReviewId: reply.ReviewId,
+        SellerId: reply.SellerId,
+        Content: reply.Content,
+        UpdatedAt: reply.UpdatedAt
+      ));
 
       var review = await _repo.GetByIdAsync(reply.ReviewId)
          ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
@@ -211,6 +320,16 @@ namespace Review.Application.Service
       await _repo.UpdateAsync(review);
       await _repo.UpdateProductReviewRatingAsync(review.ProductId!);
       await _repo.UpdateSellerReviewRatingAsync(review.SellerId!);
+
+      await _kafka.EmitAsync(ReviewTopics.ReviewUpdated, new ReviewUpdatedEvent(
+        ReviewId: review.Id,
+        ProductId: review.ProductId!,
+        UserId: review.UserId,
+        Rating: (int)review.Rating,
+        Content: review.Content ?? string.Empty,
+        Medias: review.Medias,
+        UpdatedAt: review.UpdatedAt
+      ));
 
       var updatedReview = await _repo.GetByIdAsync(reviewId)
          ?? throw new ReviewNotFoundException("Error.ReviewNotFound");

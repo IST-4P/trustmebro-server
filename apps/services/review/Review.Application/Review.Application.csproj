@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Review.Domain\Review.Domain.csproj" />
     <ProjectReference Include="..\..\..\..\libs\SharedKernel\SharedKernel.csproj" />
+    <ProjectReference Include="..\..\..\..\libs\SharedInfrastructure\SharedInfrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

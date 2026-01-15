@@ -32,31 +32,104 @@ namespace Review.Infrastructure.Repository
     #endregion
 
     #region Delete
-    public async Task<bool> DeleteAsync(string id)
+    // Soft Delete Review (User/Seller)
+    public async Task<bool> SoftDeleteAsync(string id, string deletedBy, string? reason)
     {
       var review = await _db.Reviews.FindAsync(id);
-      if (review == null)
+      if (review == null || review.IsDeleted)
       {
         return false;
       }
+
       review.IsDeleted = true;
-      _db.Reviews.Remove(review);
+      review.DeletedAt = DateTime.UtcNow;
+      review.DeletedBy = deletedBy;
+      review.DeleteReason = reason;
+      review.PurgeAt = DateTime.UtcNow.AddDays(14); // Auto-purge after 14 days
+
       await _db.SaveChangesAsync();
       return true;
-
     }
 
-    public async Task<bool> DeleteReplyAsync(string id)
+    // Hard Delete Review (Admin or Auto-Purge)
+    public async Task<bool> HardDeleteAsync(string id)
     {
-      var review = await _db.Reviews.FindAsync(id);
+      var review = await _db.Reviews.IgnoreQueryFilters().FirstOrDefaultAsync(r => r.Id == id);
       if (review == null)
       {
         return false;
       }
-      review.IsDeleted = true;
+
       _db.Reviews.Remove(review);
       await _db.SaveChangesAsync();
       return true;
+    }
+
+    // Soft Delete Reply (Seller)
+    public async Task<bool> SoftDeleteReplyAsync(string id, string deletedBy, string? reason)
+    {
+      var reply = await _db.ReviewReplies.FindAsync(id);
+      if (reply == null || reply.IsDeleted)
+      {
+        return false;
+      }
+
+      reply.IsDeleted = true;
+      reply.DeletedAt = DateTime.UtcNow;
+      reply.DeletedBy = deletedBy;
+      reply.DeleteReason = reason;
+      reply.PurgeAt = DateTime.UtcNow.AddDays(14); // Auto-purge after 14 days
+
+      await _db.SaveChangesAsync();
+      return true;
+    }
+
+    // Hard Delete Reply (Admin or Auto-Purge)
+    public async Task<bool> HardDeleteReplyAsync(string id)
+    {
+      var reply = await _db.ReviewReplies.IgnoreQueryFilters().FirstOrDefaultAsync(r => r.Id == id);
+      if (reply == null)
+      {
+        return false;
+      }
+
+      _db.ReviewReplies.Remove(reply);
+      await _db.SaveChangesAsync();
+      return true;
+    }
+
+    // Old methods - kept for backward compatibility but marked as obsolete
+    [Obsolete("Use SoftDeleteAsync instead")]
+    public async Task<bool> DeleteAsync(string id)
+    {
+      return await SoftDeleteAsync(id, "System", null);
+    }
+
+    [Obsolete("Use SoftDeleteReplyAsync instead")]
+    public async Task<bool> DeleteReplyAsync(string id)
+    {
+      return await SoftDeleteReplyAsync(id, "System", null);
+    }
+
+    // Get Deleted Reviews (for admin)
+    public async Task<List<Domain.Entities.Review>> GetDeletedReviewsAsync()
+    {
+      return await _db.Reviews
+          .IgnoreQueryFilters()
+          .Where(r => r.IsDeleted)
+          .Include(r => r.Replies)
+          .OrderByDescending(r => r.DeletedAt)
+          .ToListAsync();
+    }
+
+    // Get Deleted Replies (for admin)
+    public async Task<List<ReviewReply>> GetDeletedRepliesAsync()
+    {
+      return await _db.ReviewReplies
+          .IgnoreQueryFilters()
+          .Where(r => r.IsDeleted)
+          .OrderByDescending(r => r.DeletedAt)
+          .ToListAsync();
     }
     #endregion
 

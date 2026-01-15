@@ -214,6 +214,28 @@ namespace Review.Application.Service
           ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
       return _mapper.Map<ReviewResponseClientDto>(review);
     }
+
+    // Admin Get Deleted Reviews
+    public async Task<PageResult<ReviewListAdminDto>> GetDeletedReviews()
+    {
+      var adminId = _currentUser.UserId
+          ?? throw new UnauthorizedAccessException();
+          
+      if (!_currentUser.IsAdmin)
+        throw new UnauthorizedAccessException("Admin access required");
+
+      var deletedReviews = await _repo.GetDeletedReviewsAsync();
+
+      var items = deletedReviews.Select(r => _mapper.Map<ReviewListAdminDto>(r)).ToList();
+
+      return new PageResult<ReviewListAdminDto>
+      {
+        Items = items,
+        Total_Items = items.Count,
+        Page = 1,
+        Limit = items.Count
+      };
+    }
     #endregion
   }
 }
