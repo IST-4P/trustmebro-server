@@ -24,7 +24,6 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { ProductModule } from './modules/product/product.module';
-import { ReviewModule } from './modules/review/review.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
 @Module({
@@ -46,7 +45,6 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     CartModule,
     OrderModule,
     PaymentModule,
-    ReviewModule,
   ],
   providers: [
     WebSocketService,
