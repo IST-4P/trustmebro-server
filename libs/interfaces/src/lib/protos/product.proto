@@ -22,6 +22,8 @@ service ProductService {
   rpc GetSKU(GetSKURequest) returns (SKUResponse);
 
   rpc ValidateProducts(ValidateProductsRequest) returns (ValidateProductsResponse);
+
+  rpc DashboardSeller(DashboardSellerRequest) returns (DashboardSellerResponse);
 }
 
 //====================================== Category ======================================//
@@ -362,4 +364,14 @@ message ValidateItemsResponse {
 message ValidateProductsResponse {
   bool isValid = 1;
   repeated ValidateItemsResponse items = 2;
+}
+
+//==================== DashboardSellerRequest ====================//
+message DashboardSellerRequest {
+  optional string processId = 1;
+  string shopId = 2;
+}
+//==================== DashboardSellerResponse ====================//
+message DashboardSellerResponse {
+  int32 totalProducts = 1;
 }

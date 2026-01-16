@@ -8,7 +8,7 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { NotificationReadService } from '../services/notification-read.service';
 import { NotificationWriteService } from '../services/notification-write.service';
 
-@Controller('notification-admin')
+@Controller('notification')
 export class NotificationController {
   constructor(
     private readonly notificationWriteService: NotificationWriteService,

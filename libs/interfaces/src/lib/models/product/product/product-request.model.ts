@@ -32,6 +32,7 @@ export const GetManyProductsRequestSchema = z
     minPrice: z.coerce.number().int().positive(),
     maxPrice: z.coerce.number().int().positive(),
     shopId: z.uuid(),
+    provinceId: z.number().int(),
   })
   .partial()
   .extend({

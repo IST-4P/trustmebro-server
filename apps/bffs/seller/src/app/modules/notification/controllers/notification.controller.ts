@@ -35,7 +35,7 @@ class DeleteNotificationParamsDto extends OmitType(
   ['deletedById', 'processId'] as const
 ) {}
 
-@Controller('notification-seller')
+@Controller('notification')
 @ApiTags('Notification')
 export class NotificationController {
   constructor(

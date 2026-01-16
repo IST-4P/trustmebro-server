@@ -20,7 +20,7 @@ import {
 import { BrandReadService } from '../services/brand/brand-read.service';
 import { BrandWriteService } from '../services/brand/brand-write.service';
 
-@Controller('brand-admin')
+@Controller('brand')
 export class BrandController {
   constructor(
     private readonly brandWriteService: BrandWriteService,

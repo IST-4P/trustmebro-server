@@ -1,5 +1,6 @@
 import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { QueueTopics } from '@common/constants/queue.constant';
+import { DashboardSellerRequest } from '@common/interfaces/models/order';
 import {
   CreateProductRequest,
   DeleteProductRequest,
@@ -85,5 +86,9 @@ export class ProductService {
     data: ValidateProductsRequest
   ): Promise<ValidateProductsResponse> {
     return this.productRepository.validateProducts(data);
+  }
+
+  async dashboardSeller(data: DashboardSellerRequest) {
+    return this.productRepository.dashboardSeller(data);
   }
 }

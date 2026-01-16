@@ -47,7 +47,7 @@ class DeleteProductBodyDto extends OmitType(DeleteProductRequestDto, [
   'shopId',
 ] as const) {}
 
-@Controller('product-seller')
+@Controller('product')
 @ApiTags('Product')
 export class ProductController {
   constructor(

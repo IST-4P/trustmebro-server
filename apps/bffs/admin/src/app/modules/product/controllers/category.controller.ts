@@ -20,7 +20,7 @@ import {
 import { CategoryReadService } from '../services/category/category-read.service';
 import { CategoryWriteService } from '../services/category/category-write.service';
 
-@Controller('category-admin')
+@Controller('category')
 export class CategoryController {
   constructor(
     private readonly categoryReadService: CategoryReadService,

@@ -20,7 +20,7 @@ import {
 import { ProductReadService } from '../services/product/product-read.service';
 import { ProductWriteService } from '../services/product/product-write.service';
 
-@Controller('product-admin')
+@Controller('product')
 export class ProductController {
   constructor(
     private readonly productWriteService: ProductWriteService,

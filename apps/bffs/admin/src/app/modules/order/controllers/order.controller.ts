@@ -41,7 +41,7 @@ class CancelOrderBodyDto extends OmitType(CancelOrderRequestDto, [
   'processId',
 ]) {}
 
-@Controller('order-admin')
+@Controller('order')
 export class OrderController {
   constructor(
     private readonly orderWriteService: OrderWriteService,

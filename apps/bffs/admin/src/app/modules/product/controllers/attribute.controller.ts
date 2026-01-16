@@ -20,7 +20,7 @@ import {
 import { AttributeReadService } from '../services/attribute/attribute-read.service';
 import { AttributeWriteService } from '../services/attribute/attribute-write.service';
 
-@Controller('attribute-admin')
+@Controller('attribute')
 export class AttributeController {
   constructor(
     private readonly attributeWriteService: AttributeWriteService,

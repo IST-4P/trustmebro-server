@@ -28,7 +28,7 @@ const cookieOptions: CookieOptions = {
   path: '/',
 };
 
-@Controller('auth-admin')
+@Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

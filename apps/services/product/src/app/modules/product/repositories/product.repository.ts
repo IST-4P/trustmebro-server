@@ -1,4 +1,5 @@
 import { ProductStatusValues } from '@common/constants/product.constant';
+import { DashboardSellerRequest } from '@common/interfaces/models/order';
 import {
   CreateProductRequest,
   DeleteProductRequest,
@@ -420,5 +421,15 @@ export class ProductRepository {
       isValid: isAllValid,
       items: results,
     };
+  }
+
+  async dashboardSeller(data: DashboardSellerRequest) {
+    const totalProducts = await this.prismaService.product.count({
+      where: {
+        shopId: data.shopId,
+        isHidden: false,
+      },
+    });
+    return { totalProducts };
   }
 }

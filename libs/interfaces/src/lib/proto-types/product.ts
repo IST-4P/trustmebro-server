@@ -339,6 +339,17 @@ export interface ValidateProductsResponse {
   items: ValidateItemsResponse[];
 }
 
+/** ==================== DashboardSellerRequest ====================// */
+export interface DashboardSellerRequest {
+  processId?: string | undefined;
+  shopId: string;
+}
+
+/** ==================== DashboardSellerResponse ====================// */
+export interface DashboardSellerResponse {
+  totalProducts: number;
+}
+
 export const PRODUCT_SERVICE_PACKAGE_NAME = "PRODUCT_SERVICE";
 
 export interface ProductServiceClient {
@@ -369,6 +380,8 @@ export interface ProductServiceClient {
   getSku(request: GetSKURequest): Observable<SKUResponse>;
 
   validateProducts(request: ValidateProductsRequest): Observable<ValidateProductsResponse>;
+
+  dashboardSeller(request: DashboardSellerRequest): Observable<DashboardSellerResponse>;
 }
 
 export interface ProductServiceController {
@@ -419,6 +432,10 @@ export interface ProductServiceController {
   validateProducts(
     request: ValidateProductsRequest,
   ): Promise<ValidateProductsResponse> | Observable<ValidateProductsResponse> | ValidateProductsResponse;
+
+  dashboardSeller(
+    request: DashboardSellerRequest,
+  ): Promise<DashboardSellerResponse> | Observable<DashboardSellerResponse> | DashboardSellerResponse;
 }
 
 export function ProductServiceControllerMethods() {
@@ -438,6 +455,7 @@ export function ProductServiceControllerMethods() {
       "deleteProduct",
       "getSku",
       "validateProducts",
+      "dashboardSeller",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

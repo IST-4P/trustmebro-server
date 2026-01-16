@@ -2,6 +2,7 @@ import { OrderStatusValues } from '@common/constants/order.constant';
 import { PaymentStatusValues } from '@common/constants/payment.constant';
 import {
   CreateOrderRepository,
+  DashboardSellerRequest,
   UpdateStatusOrderRequest,
 } from '@common/interfaces/models/order';
 import { generateCode } from '@common/utils/order-code.util';
@@ -161,5 +162,43 @@ export class OrderRepository {
         ],
       },
     });
+  }
+
+  async dashboardSeller(data: DashboardSellerRequest) {
+    const whereBase = {
+      shopId: data.shopId,
+      userId: data.userId,
+    };
+
+    const [statusCounts, revenueAgg] = await Promise.all([
+      this.prismaService.order.groupBy({
+        by: ['status'],
+        where: whereBase,
+        _count: { _all: true },
+      }),
+
+      this.prismaService.order.aggregate({
+        where: {
+          ...whereBase,
+          status: OrderStatus.COMPLETED,
+        },
+        _sum: {
+          grandTotal: true,
+        },
+      }),
+    ]);
+
+    // Map status → count
+    const countMap = Object.fromEntries(
+      statusCounts.map((i) => [i.status, i._count._all])
+    );
+
+    return {
+      totalOrders: statusCounts.reduce((sum, i) => sum + i._count._all, 0),
+      pendingOrders: countMap[OrderStatus.PENDING] ?? 0,
+      confirmedOrders: countMap[OrderStatus.CONFIRMED] ?? 0,
+      completedOrders: countMap[OrderStatus.COMPLETED] ?? 0,
+      totalRevenue: revenueAgg._sum.grandTotal ?? 0,
+    };
   }
 }
