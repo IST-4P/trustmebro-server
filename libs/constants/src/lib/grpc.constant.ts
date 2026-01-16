@@ -9,7 +9,7 @@ export enum GrpcService {
   CART_SERVICE = 'CART_SERVICE',
   ORDER_SERVICE = 'ORDER_SERVICE',
   PAYMENT_SERVICE = 'PAYMENT_SERVICE',
-  REVIEW_SERVICE = 'REVIEW_SERVICE',
+  // REVIEW_SERVICE = 'REVIEW_SERVICE',
 }
 
 export enum GrpcServiceName {
@@ -23,5 +23,5 @@ export enum GrpcServiceName {
   CART_SERVICE = 'CartService',
   ORDER_SERVICE = 'OrderService',
   PAYMENT_SERVICE = 'PaymentService',
-  REVIEW_SERVICE = 'ReviewService',
+  // REVIEW_SERVICE = 'ReviewService',
 }
