@@ -5,7 +5,9 @@ package PAYMENT_SERVICE;
 service PaymentService {
   rpc Receiver(WebhookTransactionRequest) returns (WebhookTransactionResponse);
 
+  rpc GetManyPayments(GetManyPaymentsRequest) returns (GetManyPaymentsResponse);
   rpc CreatePayment(CreatePaymentRequest) returns (PaymentResponse);
+  rpc UpdatePaymentStatus(UpdatePaymentStatusRequest) returns (PaymentResponse);
 }
 
 
@@ -57,5 +59,35 @@ message PaymentResponse {
   string deletedAt = 11;
   string createdAt = 12;
   string updatedAt = 13;
+}
+
+//==================== GetManyPayments ====================//
+message GetManyPaymentsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string createdAt = 4;
+  optional string code = 5;
+  optional string userId = 6;
+  optional string method = 7;
+  optional string status = 8;
+  optional int32 amount = 9;
+}
+
+//==================== GetManyPaymentsResponse ====================//
+message GetManyPaymentsResponse {
+  repeated PaymentResponse payments = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
+}
+
+//==================== UpdatePaymentStatus ====================//
+message UpdatePaymentStatusRequest {
+  optional string processId = 1;
+  string id = 2;
+  string status = 3;
+  string updatedById = 4;
 }
 

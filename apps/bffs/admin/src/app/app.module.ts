@@ -11,7 +11,9 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
 import { HealthModule } from './modules/health/health.module';
+import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { PaymentModule } from './modules/payment/payment.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
@@ -27,6 +29,8 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     UserAccessModule,
     ProductModule,
     NotificationModule,
+    MediaModule,
+    PaymentModule,
   ],
   providers: [
     AccessTokenGuard,

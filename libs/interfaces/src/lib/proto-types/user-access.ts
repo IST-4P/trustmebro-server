@@ -148,6 +148,46 @@ export interface CheckParticipantExistsResponse {
   count: number;
 }
 
+/** ==================== GetManyUser ====================// */
+export interface GetManyUsersRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  email?: string | undefined;
+  phoneNumber?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  username?:
+    | string
+    | undefined;
+  /** "MALE" | "FEMALE" | "OTHER" */
+  gender?:
+    | string
+    | undefined;
+  /** "ACTIVE" | "INACTIVE" | "BLOCKED" */
+  status?: string | undefined;
+  roleName?: string | undefined;
+}
+
+export interface GetManyUsersResponse {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  users: UserBasicInfo[];
+}
+
+export interface UserBasicInfo {
+  id: string;
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  status: string;
+  roleName: string;
+}
+
 /** ==================== GetShop ====================// */
 export interface GetShopRequest {
   processId?: string | undefined;
@@ -298,6 +338,8 @@ export interface UserAccessServiceClient {
 
   getUser(request: GetUserRequest): Observable<UserResponse>;
 
+  getManyUser(request: GetManyUsersRequest): Observable<GetManyUsersResponse>;
+
   updateUser(request: UpdateUserRequest): Observable<UserResponse>;
 
   createUser(request: CreateUserRequest): Observable<UserResponse>;
@@ -341,6 +383,10 @@ export interface UserAccessServiceController {
   ): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
   getUser(request: GetUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+
+  getManyUser(
+    request: GetManyUsersRequest,
+  ): Promise<GetManyUsersResponse> | Observable<GetManyUsersResponse> | GetManyUsersResponse;
 
   updateUser(request: UpdateUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
@@ -392,6 +438,7 @@ export function UserAccessServiceControllerMethods() {
       "verifyToken",
       "changePassword",
       "getUser",
+      "getManyUser",
       "updateUser",
       "createUser",
       "checkParticipantExists",

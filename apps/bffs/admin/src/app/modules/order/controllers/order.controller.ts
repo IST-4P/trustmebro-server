@@ -17,7 +17,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOkResponse, OmitType } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags, OmitType } from '@nestjs/swagger';
 import { OrderReadService } from '../services/order-read.service';
 import { OrderWriteService } from '../services/order-write.service';
 
@@ -42,6 +42,7 @@ class CancelOrderBodyDto extends OmitType(CancelOrderRequestDto, [
 ]) {}
 
 @Controller('order')
+@ApiTags('Order')
 export class OrderController {
   constructor(
     private readonly orderWriteService: OrderWriteService,

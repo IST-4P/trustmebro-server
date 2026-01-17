@@ -1,25 +1,25 @@
-// import { GrpcServiceName } from '@common/constants/grpc.constant';
-// import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
-// import {
-//   GetBrandRequest,
-//   GetManyBrandsRequest,
-// } from '@common/interfaces/models/product';
-// import { Controller, UseInterceptors } from '@nestjs/common';
-// import { GrpcMethod } from '@nestjs/microservices';
-// import { BrandService } from '../services/video.service';
+import { GrpcServiceName } from '@common/constants/grpc.constant';
+import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
+import {
+  GetManyVideosRequest,
+  GetVideoRequest,
+} from '@common/interfaces/models/media';
+import { Controller, UseInterceptors } from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
+import { VideoService } from '../services/video.service';
 
-// @Controller()
-// @UseInterceptors(GrpcLoggingInterceptor)
-// export class BrandGrpcController {
-//   constructor(private readonly brandService: BrandService) {}
+@Controller()
+@UseInterceptors(GrpcLoggingInterceptor)
+export class VideoGrpcController {
+  constructor(private readonly videoService: VideoService) {}
 
-//   @GrpcMethod(GrpcServiceName.QUERY_SERVICE, 'GetManyBrands')
-//   getManyBrands(data: GetManyBrandsRequest) {
-//     return this.brandService.list(data);
-//   }
+  @GrpcMethod(GrpcServiceName.QUERY_SERVICE, 'GetManyVideos')
+  getManyVideos(data: GetManyVideosRequest) {
+    return this.videoService.list(data);
+  }
 
-//   @GrpcMethod(GrpcServiceName.QUERY_SERVICE, 'GetBrand')
-//   getBrand(data: GetBrandRequest) {
-//     return this.brandService.findById(data);
-//   }
-// }
+  @GrpcMethod(GrpcServiceName.QUERY_SERVICE, 'GetVideo')
+  getVideo(data: GetVideoRequest) {
+    return this.videoService.findById(data);
+  }
+}

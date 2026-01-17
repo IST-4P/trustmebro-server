@@ -16,7 +16,7 @@ export class PlaybackController {
 
   @Get('verify')
   async verifyPlayback(
-    @Query() query: { videoId: string },
+    @Query() queries: { videoId: string },
     @Headers('authorization') token: string,
     @Res() res: Response
   ) {
@@ -26,7 +26,7 @@ export class PlaybackController {
     }
     await this.playbackService.verifyToken(
       token.replace('Bearer ', ''),
-      query.videoId
+      queries.videoId
     );
     return res.status(200).send();
   }

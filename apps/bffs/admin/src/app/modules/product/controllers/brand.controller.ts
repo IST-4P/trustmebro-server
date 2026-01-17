@@ -17,10 +17,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { BrandReadService } from '../services/brand/brand-read.service';
 import { BrandWriteService } from '../services/brand/brand-write.service';
 
 @Controller('brand')
+@ApiTags('Product')
 export class BrandController {
   constructor(
     private readonly brandWriteService: BrandWriteService,
@@ -29,10 +31,10 @@ export class BrandController {
 
   @Get()
   async getManyBrands(
-    @Query() query: GetManyBrandsRequestDto,
+    @Query() queries: GetManyBrandsRequestDto,
     @ProcessId() processId: string
   ) {
-    return this.brandReadService.getManyBrands({ ...query, processId });
+    return this.brandReadService.getManyBrands({ ...queries, processId });
   }
 
   @Get(':id')

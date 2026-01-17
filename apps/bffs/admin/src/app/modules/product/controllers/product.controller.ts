@@ -17,10 +17,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ProductReadService } from '../services/product/product-read.service';
 import { ProductWriteService } from '../services/product/product-write.service';
 
 @Controller('product')
+@ApiTags('Product')
 export class ProductController {
   constructor(
     private readonly productWriteService: ProductWriteService,
@@ -29,14 +31,14 @@ export class ProductController {
 
   @Get()
   async getManyProducts(
-    @Query() query: GetManyProductsRequestDto,
+    @Query() queries: GetManyProductsRequestDto,
     @ProcessId() processId: string
   ) {
     return this.productReadService.getManyProducts({
-      ...query,
+      ...queries,
       processId,
-      brandIds: query.brandIds ?? [],
-      categories: query.categories ?? [],
+      brandIds: queries.brandIds ?? [],
+      categories: queries.categories ?? [],
     });
   }
 

@@ -3,6 +3,8 @@ import {
   CheckParticipantExistsRequest,
   CheckParticipantExistsResponse,
   CreateUserRequest,
+  GetManyUsersRequest,
+  GetManyUsersResponse,
   GetUserRequest,
   UpdateRoleRequest,
   UpdateUserRequest,
@@ -16,15 +18,19 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async find(data: GetUserRequest): Promise<UserResponse> {
-    try {
-      const user = await this.userRepository.find(data);
-      return user;
-    } catch (error) {
-      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
-        throw new NotFoundException('Error.UserNotFound');
-      }
-      throw error;
+    const user = await this.userRepository.find(data);
+    if (!user) {
+      throw new NotFoundException('Error.UserNotFound');
     }
+    return user;
+  }
+
+  async list(data: GetManyUsersRequest): Promise<GetManyUsersResponse> {
+    const users = await this.userRepository.list(data);
+    if (users.totalItems === 0) {
+      throw new NotFoundException('Error.UsersNotFound');
+    }
+    return users;
   }
 
   async create(data: CreateUserRequest): Promise<UserResponse> {

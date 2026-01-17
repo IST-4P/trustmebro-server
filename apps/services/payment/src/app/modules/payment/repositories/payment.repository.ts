@@ -1,4 +1,5 @@
 import { PaymentStatusValues } from '@common/constants/payment.constant';
+import { GetManyPaymentsRequest } from '@common/interfaces/models/payment';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/payment';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -6,6 +7,41 @@ import { PrismaService } from '../../../prisma/prisma.service';
 @Injectable()
 export class PaymentRepository {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async list(data: GetManyPaymentsRequest) {
+    const skip = (data.page - 1) * data.limit;
+    const take = data.limit;
+
+    const whereClause: Prisma.PaymentWhereInput = {
+      userId: data?.userId || undefined,
+      method: data?.method || undefined,
+      status: data?.status || undefined,
+      amount: data?.amount || undefined,
+      code: data?.code
+        ? { contains: data.code, mode: 'insensitive' }
+        : undefined,
+      createdAt: data?.createdAt ? { lte: data.createdAt } : undefined,
+    };
+
+    const [totalItems, payments] = await Promise.all([
+      this.prismaService.payment.count({
+        where: whereClause,
+      }),
+      this.prismaService.payment.findMany({
+        where: whereClause,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+    return {
+      payments,
+      totalItems,
+      page: data.page,
+      limit: data.limit,
+      totalPages: Math.ceil(totalItems / data.limit),
+    };
+  }
 
   create(data: Prisma.PaymentCreateInput) {
     return this.prismaService.payment.create({

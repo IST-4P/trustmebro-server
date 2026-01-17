@@ -1,6 +1,10 @@
 import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
-import { CreatePaymentRequest } from '@common/interfaces/models/payment';
+import {
+  CreatePaymentRequest,
+  GetManyPaymentsRequest,
+  UpdatePaymentStatusRequest,
+} from '@common/interfaces/models/payment';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { PaymentService } from '../services/payment.service';
@@ -10,8 +14,18 @@ import { PaymentService } from '../services/payment.service';
 export class PaymentGrpcController {
   constructor(private readonly paymentService: PaymentService) {}
 
+  @GrpcMethod(GrpcServiceName.PAYMENT_SERVICE, 'GetManyPayments')
+  getManyPayments(data: GetManyPaymentsRequest) {
+    return this.paymentService.list(data);
+  }
+
   @GrpcMethod(GrpcServiceName.PAYMENT_SERVICE, 'CreatePayment')
   createPayment(data: CreatePaymentRequest) {
     return this.paymentService.create(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.PAYMENT_SERVICE, 'UpdatePaymentStatus')
+  updatePaymentStatus(data: UpdatePaymentStatusRequest) {
+    return this.paymentService.updateStatus(data);
   }
 }

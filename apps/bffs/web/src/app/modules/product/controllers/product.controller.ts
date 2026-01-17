@@ -27,14 +27,14 @@ export class ProductController {
   @ApiOkResponse({ type: GetManyProductsResponseDto })
   @IsPublic()
   async getManyProducts(
-    @Query() query: GetManyProductsBodyDto,
+    @Query() queries: GetManyProductsBodyDto,
     @ProcessId() processId: string
   ) {
     return this.productReadService.getManyProducts({
-      ...query,
+      ...queries,
       processId,
-      brandIds: query.brandIds ?? [],
-      categories: query.categories ?? [],
+      brandIds: queries.brandIds ?? [],
+      categories: queries.categories ?? [],
     });
   }
 
