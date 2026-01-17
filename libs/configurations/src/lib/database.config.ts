@@ -12,6 +12,7 @@ export const DatabaseConfigurationSchema = z.object({
   PAYMENT_SERVICE_DATABASE_URL: z.string(),
   REPORT_SERVICE_DATABASE_URL: z.string(),
   MEDIA_SERVICE_DATABASE_URL: z.string(),
+  PROMOTION_SERVICE_DATABASE_URL: z.string(),
 });
 
 const configServer = DatabaseConfigurationSchema.safeParse(process.env);
