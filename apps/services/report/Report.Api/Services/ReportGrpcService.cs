@@ -156,7 +156,7 @@ namespace Report.Api.Services
 
                 var response = new ListReportsResponse
                 {
-                    Total = result.Total,
+                    Total = result.Total_Items,
                     Page = result.Page,
                     Limit = result.Limit
                 };
@@ -334,6 +334,78 @@ namespace Report.Api.Services
             {
                 _logger.LogError(ex, "Error creating report action");
                 throw new RpcException(new Status(StatusCode.Internal, "An error occurred while creating report action"));
+            }
+        }
+
+        public override async Task<SoftDeleteReportResponse> SoftDeleteReport(SoftDeleteReportRequest request, ServerCallContext context)
+        {
+            try
+            {
+                _logger.LogInformation("Soft deleting report {ReportId}", request.ReportId);
+
+                var userId = context.RequestHeaders.GetValue("user_id") ?? request.RequesterId;
+                var role = context.RequestHeaders.GetValue("user_role") ?? "user";
+
+                await _reportService.SoftDeleteReportAsync(request.ReportId, userId, role);
+
+                return new SoftDeleteReportResponse
+                {
+                    Success = true,
+                    Message = "Report successfully soft deleted"
+                };
+            }
+            catch (ReportNotFoundException ex)
+            {
+                _logger.LogWarning(ex, "Report not found when soft deleting: {ReportId}", request.ReportId);
+                throw new RpcException(new Status(StatusCode.NotFound, ex.Message));
+            }
+            catch (ReportAccessDeniedException ex)
+            {
+                _logger.LogWarning(ex, "Access denied for soft delete");
+                throw new RpcException(new Status(StatusCode.PermissionDenied, ex.Message));
+            }
+            catch (ReportOperationException ex)
+            {
+                _logger.LogWarning(ex, "Invalid operation for soft delete");
+                throw new RpcException(new Status(StatusCode.FailedPrecondition, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error soft deleting report {ReportId}", request.ReportId);
+                throw new RpcException(new Status(StatusCode.Internal, "An error occurred while soft deleting the report"));
+            }
+        }
+
+        public override async Task<HardDeleteReportResponse> HardDeleteReport(HardDeleteReportRequest request, ServerCallContext context)
+        {
+            try
+            {
+                _logger.LogInformation("Hard deleting report {ReportId}", request.ReportId);
+
+                var adminId = context.RequestHeaders.GetValue("user_id") ?? request.AdminId;
+
+                await _reportService.HardDeleteReportAsync(request.ReportId, adminId);
+
+                return new HardDeleteReportResponse
+                {
+                    Success = true,
+                    Message = "Report permanently deleted"
+                };
+            }
+            catch (ReportNotFoundException ex)
+            {
+                _logger.LogWarning(ex, "Report not found when hard deleting: {ReportId}", request.ReportId);
+                throw new RpcException(new Status(StatusCode.NotFound, ex.Message));
+            }
+            catch (ReportAccessDeniedException ex)
+            {
+                _logger.LogWarning(ex, "Access denied for hard delete - admin only");
+                throw new RpcException(new Status(StatusCode.PermissionDenied, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error hard deleting report {ReportId}", request.ReportId);
+                throw new RpcException(new Status(StatusCode.Internal, "An error occurred while permanently deleting the report"));
             }
         }
     }

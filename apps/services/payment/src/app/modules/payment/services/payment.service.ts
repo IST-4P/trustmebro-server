@@ -3,7 +3,10 @@ import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
   CreatePaymentRequest,
   DeletePaymentRequest,
+  GetManyPaymentsRequest,
+  GetManyPaymentsResponse,
   PaymentResponse,
+  UpdatePaymentStatusRequest,
 } from '@common/interfaces/models/payment';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentProducer } from '../producers/payment.producer';
@@ -16,6 +19,14 @@ export class PaymentService {
     private readonly paymentProducer: PaymentProducer
   ) {}
 
+  async list(data: GetManyPaymentsRequest): Promise<GetManyPaymentsResponse> {
+    const payments = await this.paymentRepository.list(data);
+    if (payments.totalItems === 0) {
+      throw new NotFoundException('Error.PaymentsNotFound');
+    }
+    return payments;
+  }
+
   async create({
     processId,
     ...data
@@ -25,6 +36,19 @@ export class PaymentService {
       await this.paymentProducer.cancelPaymentJob(createdPayment.id);
     }
     return createdPayment;
+  }
+
+  async updateStatus(
+    data: UpdatePaymentStatusRequest
+  ): Promise<PaymentResponse> {
+    try {
+      const payment = await this.paymentRepository.update(data);
+      return payment;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.PaymentNotFound');
+      }
+    }
   }
 
   async delete(data: DeletePaymentRequest): Promise<PaymentResponse> {

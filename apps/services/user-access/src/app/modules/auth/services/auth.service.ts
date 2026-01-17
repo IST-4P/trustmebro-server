@@ -168,7 +168,6 @@ export class AuthService implements OnModuleInit {
     if (!decoded || !decoded.header || !decoded.header.kid) {
       throw new UnauthorizedException('Error.InvalidTokenStructure');
     }
-
     try {
       const key = await this.jwksClient.getSigningKey(decoded.header.kid);
       const publicKey = key.getPublicKey();

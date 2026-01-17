@@ -1,5 +1,7 @@
+import { DefaultRoleNameEnums } from '@common/constants/user.constant';
 import { UserSchema } from '@common/schemas/user-access/user.schema';
 import z from 'zod';
+import { PaginationQueryRequestSchema } from '../common/pagination.model';
 
 export const GetUserRequestSchema = z
   .object({
@@ -10,6 +12,23 @@ export const GetUserRequestSchema = z
   .partial()
   .extend({
     processId: z.string().optional(),
+  });
+
+export const GetManyUsersRequestSchema = UserSchema.pick({
+  firstName: true,
+  lastName: true,
+  email: true,
+  username: true,
+  phoneNumber: true,
+  gender: true,
+  status: true,
+})
+  .partial()
+  .safeExtend({
+    roleName: DefaultRoleNameEnums.optional(),
+    processId: z.string().optional(),
+    page: PaginationQueryRequestSchema.shape.page,
+    limit: PaginationQueryRequestSchema.shape.limit,
   });
 
 export const CreateUserRequestSchema = UserSchema.pick({
@@ -56,6 +75,7 @@ export const UpdateRoleRequestSchema = UserSchema.pick({
   .strict();
 
 export type GetUserRequest = z.infer<typeof GetUserRequestSchema>;
+export type GetManyUsersRequest = z.infer<typeof GetManyUsersRequestSchema>;
 export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;
 export type CheckParticipantExistsRequest = z.infer<
   typeof CheckParticipantExistsRequestSchema

@@ -55,7 +55,11 @@ export class WebSocketAdapter extends IoAdapter {
 
     server.of(/.*/).use((socket, next) => {
       void this.authMiddleware(
-        [DefaultRoleNameValues.CUSTOMER, DefaultRoleNameValues.ADMIN],
+        [
+          DefaultRoleNameValues.CUSTOMER,
+          DefaultRoleNameValues.SELLER,
+          DefaultRoleNameValues.ADMIN,
+        ],
         socket,
         next
       );

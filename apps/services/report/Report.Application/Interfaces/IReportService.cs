@@ -27,6 +27,7 @@ namespace Report.Application.Interfaces
     Task<ReportDetailResponseDtos> UpdateReportStatusAsync(string reportId, UpdateReportStatusDtos dto, string adminId);
 
     // DELETE 
-    Task DeleteReportAsync(string reportId, string requesterId, string role);
+    Task SoftDeleteReportAsync(string reportId, string requesterId, string role);
+    Task HardDeleteReportAsync(string reportId, string adminId);
   }
 }

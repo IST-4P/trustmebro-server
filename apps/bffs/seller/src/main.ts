@@ -31,7 +31,7 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('TrustMeBro-Web API')
+    .setTitle('TrustMeBro-Seller API')
     .setDescription('Quỳ xuống mà xin API đi bro')
     .setVersion('1.0.0')
     .addBearerAuth({

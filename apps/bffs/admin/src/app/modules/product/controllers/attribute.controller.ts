@@ -17,10 +17,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AttributeReadService } from '../services/attribute/attribute-read.service';
 import { AttributeWriteService } from '../services/attribute/attribute-write.service';
 
-@Controller('attribute-admin')
+@Controller('attribute')
+@ApiTags('Product')
 export class AttributeController {
   constructor(
     private readonly attributeWriteService: AttributeWriteService,
@@ -29,10 +31,13 @@ export class AttributeController {
 
   @Get()
   async getManyAttributes(
-    @Query() query: GetManyAttributesRequestDto,
+    @Query() queries: GetManyAttributesRequestDto,
     @ProcessId() processId: string
   ) {
-    return this.attributeReadService.getManyAttributes({ ...query, processId });
+    return this.attributeReadService.getManyAttributes({
+      ...queries,
+      processId,
+    });
   }
 
   @Get(':id')

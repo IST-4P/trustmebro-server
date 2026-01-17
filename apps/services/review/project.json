@@ -1,0 +1,109 @@
+{
+  "name": "review",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/services/review",
+  "projectType": "application",
+  "tags": ["type:app", "platform:dotnet"],
+  "targets": {
+    "restore": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet restore Review.sln",
+        "cwd": "apps/services/review"
+      }
+    },
+    "copy-proto": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "powershell -Command \"if (!(Test-Path 'libs/interfaces/src/lib/protos')) { New-Item -ItemType Directory -Force -Path 'libs/interfaces/src/lib/protos' | Out-Null }; Copy-Item -Path 'apps/services/review/Review.Api/Protos/review.proto' -Destination 'libs/interfaces/src/lib/protos/review.proto' -Force\"",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["restore", "copy-proto"],
+      "outputs": [
+        "{workspaceRoot}/apps/services/review/Review.Api/bin/Release"
+      ],
+      "options": {
+        "command": "dotnet build Review.sln -c Release",
+        "cwd": "apps/services/review"
+      },
+      "configurations": {
+        "development": {
+          "command": "dotnet build Review.sln -c Debug"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "dotnet run --project Review.Api/Review.Api.csproj",
+        "cwd": "apps/services/review"
+      },
+      "configurations": {
+        "development": {
+          "command": "dotnet run --project Review.Api/Review.Api.csproj --environment Development"
+        },
+        "production": {
+          "command": "dotnet run --project Review.Api/Review.Api.csproj --environment Production"
+        }
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "outputs": [
+        "{workspaceRoot}/apps/services/review/Review.Api/bin/Release/net10.0/publish"
+      ],
+      "options": {
+        "command": "dotnet publish Review.Api/Review.Api.csproj -c Release -o Review.Api/bin/Release/net10.0/publish",
+        "cwd": "apps/services/review"
+      }
+    },
+    "docker-build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["publish"],
+      "options": {
+        "command": "docker build -t caophi562005/trustmebro-review:latest -f apps/services/review/Dockerfile .",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "docker-push": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["docker-build"],
+      "options": {
+        "command": "docker push caophi562005/trustmebro-review:latest"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test Review.sln",
+        "cwd": "apps/services/review"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet clean Review.sln",
+        "cwd": "apps/services/review"
+      }
+    },
+    "ef-migrations-add": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet ef migrations add {args.name} --project Review.Infrastructure/Review.Infrastructure.csproj --startup-project Review.Api/Review.Api.csproj",
+        "cwd": "apps/services/review"
+      }
+    },
+    "ef-database-update": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet ef database update --project Review.Infrastructure/Review.Infrastructure.csproj --startup-project Review.Api/Review.Api.csproj",
+        "cwd": "apps/services/review"
+      }
+    }
+  }
+}

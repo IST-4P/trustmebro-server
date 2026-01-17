@@ -3,6 +3,7 @@ import {
   CancelOrderRequestSchema,
   CreateOrderRequestSchema,
   CreateOrderResponseSchema,
+  DashboardSellerResponseSchema,
   GetManyOrdersRequestSchema,
   GetManyOrdersResponseSchema,
   GetOrderRequestSchema,
@@ -10,6 +11,7 @@ import {
   UpdateStatusOrderRequestSchema,
 } from '@common/interfaces/models/order';
 import { createZodDto } from 'nestjs-zod';
+import z from 'zod';
 
 export class GetManyOrdersRequestDto extends createZodDto(
   GetManyOrdersRequestSchema
@@ -40,4 +42,15 @@ export class GetManyOrdersResponseDto extends createZodDto(
 
 export class GetOrderResponseDto extends createZodDto(
   ResponseSchema(GetOrderResponseSchema)
+) {}
+
+export class DashboardSellerResponseDto extends createZodDto(
+  ResponseSchema(
+    z.object({
+      orders: DashboardSellerResponseSchema,
+      products: z.object({
+        totalProducts: z.number(),
+      }),
+    })
+  )
 ) {}

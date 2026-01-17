@@ -11,6 +11,7 @@ service UserAccessService {
   rpc ChangePassword(ChangePasswordRequest) returns (MessageResponse);
 
   rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc GetManyUser(GetManyUsersRequest) returns (GetManyUsersResponse);
   rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
@@ -164,6 +165,40 @@ message CheckParticipantExistsRequest {
 
 message CheckParticipantExistsResponse {
   int32 count = 1;
+}
+
+//==================== GetManyUser ====================//
+message GetManyUsersRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string email = 4;
+  optional string phoneNumber = 5;
+  optional string firstName = 6;
+  optional string lastName = 7;
+  optional string username = 8;
+  optional string gender = 9; // "MALE" | "FEMALE" | "OTHER"
+  optional string status = 10; // "ACTIVE" | "INACTIVE" | "BLOCKED"
+  optional string roleName = 11;
+}
+
+message GetManyUsersResponse {
+  int32 page = 1;
+  int32 limit = 2;
+  int32 totalItems = 3;
+  int32 totalPages = 4;
+  repeated UserBasicInfo users = 5;
+}
+
+message UserBasicInfo {
+  string id = 1;
+  string email = 2;
+  string phoneNumber = 3;
+  string firstName = 4;
+  string lastName = 5;
+  string gender = 6;
+  string status = 7;
+  string roleName = 8;
 }
 
 //==================== GetShop ====================//

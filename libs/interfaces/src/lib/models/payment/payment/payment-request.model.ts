@@ -1,13 +1,22 @@
 import { PaymentSchema } from '@common/schemas/payment';
 import z from 'zod';
+import { PaginationQueryRequestSchema } from '../../common/pagination.model';
 
-// export const GetManyPaymentsRequestSchema = PaginationQueryRequestSchema.extend({
-//   name: PaymentSchema.shape.name.optional(),
-// });
-
-// export const GetPaymentRequestSchema = PaymentSchema.pick({
-//   id: true,
-// });
+export const GetManyPaymentsRequestSchema = PaymentSchema.pick({
+  userId: true,
+  method: true,
+  status: true,
+  amount: true,
+  code: true,
+  createdAt: true,
+})
+  .partial()
+  .extend({
+    processId: z.uuid().optional(),
+    page: PaginationQueryRequestSchema.shape.page,
+    limit: PaginationQueryRequestSchema.shape.limit,
+  })
+  .strict();
 
 export const CreatePaymentRequestSchema = PaymentSchema.pick({
   id: true,
@@ -32,5 +41,21 @@ export const DeletePaymentRequestSchema = PaymentSchema.pick({
   })
   .strict();
 
+export const UpdatePaymentStatusRequestSchema = PaymentSchema.pick({
+  id: true,
+  status: true,
+  updatedById: true,
+})
+  .extend({
+    processId: z.string().uuid().optional(),
+  })
+  .strict();
+
+export type GetManyPaymentsRequest = z.infer<
+  typeof GetManyPaymentsRequestSchema
+>;
 export type CreatePaymentRequest = z.infer<typeof CreatePaymentRequestSchema>;
 export type DeletePaymentRequest = z.infer<typeof DeletePaymentRequestSchema>;
+export type UpdatePaymentStatusRequest = z.infer<
+  typeof UpdatePaymentStatusRequestSchema
+>;

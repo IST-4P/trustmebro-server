@@ -1,4 +1,7 @@
-import { GetUserRequest } from '@common/interfaces/models/user-access';
+import {
+  GetManyUsersRequest,
+  GetUserRequest,
+} from '@common/interfaces/models/user-access';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/user-access';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -25,6 +28,41 @@ export class UserRepository {
     });
   }
 
+  async list(data: GetManyUsersRequest) {
+    const skip = (data.page - 1) * data.limit;
+    const take = data.limit;
+
+    const where: Prisma.UserWhereInput = {
+      firstName: data?.firstName || undefined,
+      lastName: data?.lastName || undefined,
+      email: data?.email || undefined,
+      username: data?.username || undefined,
+      phoneNumber: data?.phoneNumber || undefined,
+      gender: data?.gender || undefined,
+      status: data?.status || undefined,
+      roleName: data?.roleName || undefined,
+    };
+
+    const [totalItems, users] = await Promise.all([
+      this.prismaService.user.count({
+        where,
+      }),
+      this.prismaService.user.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+    return {
+      users,
+      totalItems,
+      page: data.page,
+      limit: data.limit,
+      totalPages: Math.ceil(totalItems / data.limit),
+    };
+  }
+
   create(data: Prisma.UserCreateInput) {
     return this.prismaService.user.create({
       data,
@@ -38,13 +76,23 @@ export class UserRepository {
     });
   }
 
-  checkParticipantExists(participantIds: string[]) {
-    return this.prismaService.user.count({
+  async checkParticipantExists(participantIds: string[]) {
+    const userCount = await this.prismaService.user.count({
       where: {
         id: {
           in: participantIds,
         },
       },
     });
+
+    const shopCount = await this.prismaService.shop.count({
+      where: {
+        id: {
+          in: participantIds,
+        },
+      },
+    });
+
+    return userCount + shopCount;
   }
 }

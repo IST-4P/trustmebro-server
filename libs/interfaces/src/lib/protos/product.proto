@@ -15,10 +15,6 @@ service ProductService {
   rpc UpdateAttribute(UpdateAttributeRequest) returns (AttributeResponse);
   rpc DeleteAttribute(DeleteAttributeRequest) returns (AttributeResponse);
 
-  rpc CreateShipsFrom(CreateShipsFromRequest) returns (ShipsFromResponse);
-  rpc UpdateShipsFrom(UpdateShipsFromRequest) returns (ShipsFromResponse);
-  rpc DeleteShipsFrom(DeleteShipsFromRequest) returns (ShipsFromResponse);
-
   rpc CreateProduct(CreateProductRequest) returns (ProductResponse);
   rpc UpdateProduct(UpdateProductRequest) returns (ProductResponse);
   rpc DeleteProduct(DeleteProductRequest) returns (ProductResponse);
@@ -26,6 +22,8 @@ service ProductService {
   rpc GetSKU(GetSKURequest) returns (SKUResponse);
 
   rpc ValidateProducts(ValidateProductsRequest) returns (ValidateProductsResponse);
+
+  rpc DashboardSeller(DashboardSellerRequest) returns (DashboardSellerResponse);
 }
 
 //====================================== Category ======================================//
@@ -160,38 +158,6 @@ message DeleteAttributeRequest {
   optional string deletedById = 3;
 }
 
-//======================================== ShipsFrom =========================================//
-message ShipsFromResponse {
-  string id = 1;
-  string address = 2;
-  string createdById = 3;
-  string updatedById = 4;
-  string deletedById = 5;
-  string deletedAt = 6;
-  string createdAt = 7;
-  string updatedAt = 8;
-}
-//==================== CreateShipsFromRequest ====================//
-message CreateShipsFromRequest {
-  optional string processId = 1;
-  string address = 2;
-  optional string createdById = 3;
-}
-
-//==================== UpdateShipsFromRequest ====================//
-message UpdateShipsFromRequest {
-  optional string processId = 1;
-  string id = 2;
-  string address = 3;
-  optional string updatedById = 4;
-}
-
-//==================== DeleteShipsFromRequest ====================//
-message DeleteShipsFromRequest {
-  optional string processId = 1;
-  string id = 2;
-  optional string deletedById = 3;
-}
 
 //======================================== Product =========================================//
 message Variant {
@@ -233,11 +199,20 @@ message CreateProductRequest {
   string shopId = 10;
   string description = 11;
   optional string sizeGuide = 12;
-  string shipsFromId = 13;
-  string status = 14;
-  repeated string categories = 15;
-  repeated SKUInput skus = 16;
-  repeated AttributeProduct attributes = 17;
+
+  int32 provinceId = 13;
+  string provinceName = 14;
+
+  int32 districtId = 15;
+  string districtName = 16;
+
+  int32 wardId = 17;
+  string wardName = 18;
+
+  string status = 19;
+  repeated string categories = 20;
+  repeated SKUInput skus = 21;
+  repeated AttributeProduct attributes = 22;
 }
 
 //==================== UpdateProductRequest ====================//
@@ -254,12 +229,21 @@ message UpdateProductRequest {
   string shopId = 10;
   string description = 11;
   optional string sizeGuide = 12;
-  string shipsFromId = 13;
-  string status = 14;
-  repeated string categories = 15;
-  repeated SKUInput skus = 16;
-  repeated AttributeProduct attributes = 17;
-  string id = 18;
+
+  optional int32 provinceId = 13;
+  optional string provinceName = 14;
+
+  optional int32 districtId = 15;
+  optional string districtName = 16;
+
+  optional int32 wardId = 17;
+  optional string wardName = 18;
+
+  string status = 19;
+  repeated string categories = 20;
+  repeated SKUInput skus = 21;
+  repeated AttributeProduct attributes = 22;
+  string id = 23;
 }
 
 //==================== DeleteProductRequest ====================//
@@ -275,36 +259,39 @@ message ProductResponse {
   string id = 1;
   string name = 2;
   string description = 3;
-  string shipsFromId = 4;
-  optional string sizeGuide = 5;
-  double basePrice = 6;
-  double virtualPrice = 7;
-  string status = 8;
-  string brandId = 9;
-  repeated string images = 10;
-  repeated Variant variants = 11;
-  repeated string reviewIds = 12;
-  string shopId = 13;
-  int32 likeCount = 14;
-  int32 ratingCount = 15;
-  int32 ratingSum = 16;
-  double averageRate = 17;
-  repeated AttributeProduct attributes = 18;
-  int32 soldCount = 19;
-  int32 viewCount = 20;
-  bool isApproved = 21;
-  bool isHidden = 22;
-  int32 totalStock = 23;
-  repeated SKU skus = 24;
-  BrandInfo brand = 25;
-  repeated CategoryInfo categories = 26;
-  ShipsFromInfo shipsFrom = 27;
-  string createdById = 28;
-  string updatedById = 29;
-  string deletedById = 30;
-  string deletedAt = 31;
-  string createdAt = 32;
-  string updatedAt = 33;
+
+  int32 provinceId = 4;
+  int32 districtId = 5;
+  int32 wardId = 6;
+
+  optional string sizeGuide = 7;
+  double basePrice = 8;
+  double virtualPrice = 9;
+  string status = 10;
+  string brandId = 11;
+  repeated string images = 12;
+  repeated Variant variants = 13;
+  repeated string reviewIds = 14;
+  string shopId = 15;
+  int32 likeCount = 16;
+  int32 ratingCount = 17;
+  int32 ratingSum = 18;
+  double averageRate = 19;
+  repeated AttributeProduct attributes = 20;
+  int32 soldCount = 21;
+  int32 viewCount = 22;
+  bool isApproved = 23;
+  bool isHidden = 24;
+  int32 totalStock = 25;
+  repeated SKU skus = 26;
+  BrandInfo brand = 27;
+  repeated CategoryInfo categories = 28;
+  string createdById = 29;
+  string updatedById = 30;
+  string deletedById = 31;
+  string deletedAt = 32;
+  string createdAt = 33;
+  string updatedAt = 34;
 }
 
 message BrandInfo {
@@ -318,11 +305,6 @@ message CategoryInfo {
   string name = 2;
   string logo = 3;
   string parentCategoryId = 4;
-}
-
-message ShipsFromInfo {
-  string id = 1;
-  string address = 2;
 }
 
 //====================================================== SKU ======================================//
@@ -382,4 +364,14 @@ message ValidateItemsResponse {
 message ValidateProductsResponse {
   bool isValid = 1;
   repeated ValidateItemsResponse items = 2;
+}
+
+//==================== DashboardSellerRequest ====================//
+message DashboardSellerRequest {
+  optional string processId = 1;
+  string shopId = 2;
+}
+//==================== DashboardSellerResponse ====================//
+message DashboardSellerResponse {
+  int32 totalProducts = 1;
 }

@@ -9,8 +9,15 @@ export const ProductMapper = (
     id: data.id,
     name: data.name,
     description: data.description,
-    shipsFromId: data.shipsFrom.id,
-    shipsFromAddress: data.shipsFrom.address,
+
+    provinceId: data.provinceId,
+    provinceName: data.provinceName,
+
+    districtId: data.districtId,
+    districtName: data.districtName,
+
+    wardId: data.wardId,
+    wardName: data.wardName,
 
     brandId: data.brand ? data.brand.id : undefined,
     brandName: data.brand ? data.brand.name : undefined,

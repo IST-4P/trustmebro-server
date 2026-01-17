@@ -29,6 +29,10 @@ export class ProductRepository {
       };
     }
 
+    if (data.provinceId) {
+      where.provinceId = data.provinceId;
+    }
+
     if (data.brandIds && data.brandIds.length > 0) {
       where.brandId = {
         in: data.brandIds,
@@ -82,7 +86,6 @@ export class ProductRepository {
           status: true,
           averageRate: true,
           soldCount: true,
-          shipsFromAddress: true,
         },
       }),
     ]);

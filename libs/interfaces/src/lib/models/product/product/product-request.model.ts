@@ -32,6 +32,7 @@ export const GetManyProductsRequestSchema = z
     minPrice: z.coerce.number().int().positive(),
     maxPrice: z.coerce.number().int().positive(),
     shopId: z.uuid(),
+    provinceId: z.number().int(),
   })
   .partial()
   .extend({
@@ -69,7 +70,12 @@ export const CreateProductRequestSchema = ProductSchema.pick({
   shopId: true,
   description: true,
   sizeGuide: true,
-  shipsFromId: true,
+  provinceId: true,
+  provinceName: true,
+  districtId: true,
+  districtName: true,
+  wardId: true,
+  wardName: true,
   status: true,
 })
   .extend({

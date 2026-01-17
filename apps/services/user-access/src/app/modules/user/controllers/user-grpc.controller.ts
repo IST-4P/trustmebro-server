@@ -3,6 +3,7 @@ import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interce
 import {
   CheckParticipantExistsRequest,
   CreateUserRequest,
+  GetManyUsersRequest,
   GetUserRequest,
   UpdateUserRequest,
 } from '@common/interfaces/models/user-access';
@@ -18,6 +19,11 @@ export class UserGrpcController {
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetUser')
   getUser(data: GetUserRequest) {
     return this.userService.find(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetManyUsers')
+  getManyUsers(data: GetManyUsersRequest) {
+    return this.userService.list(data);
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'CreateUser')

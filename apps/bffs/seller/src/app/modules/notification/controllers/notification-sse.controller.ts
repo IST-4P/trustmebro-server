@@ -4,7 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Observable, filter, map } from 'rxjs';
 import { NotificationSubscriber } from '../subscribers/notification.subscriber';
 
-@Controller('notification-seller')
+@Controller('notification')
 export class NotificationSseController {
   constructor(private readonly sub: NotificationSubscriber) {}
 

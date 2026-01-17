@@ -61,12 +61,46 @@ export interface PaymentResponse {
   updatedAt: string;
 }
 
+/** ==================== GetManyPayments ====================// */
+export interface GetManyPaymentsRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  createdAt?: string | undefined;
+  code?: string | undefined;
+  userId?: string | undefined;
+  method?: string | undefined;
+  status?: string | undefined;
+  amount?: number | undefined;
+}
+
+/** ==================== GetManyPaymentsResponse ====================// */
+export interface GetManyPaymentsResponse {
+  payments: PaymentResponse[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+/** ==================== UpdatePaymentStatus ====================// */
+export interface UpdatePaymentStatusRequest {
+  processId?: string | undefined;
+  id: string;
+  status: string;
+  updatedById: string;
+}
+
 export const PAYMENT_SERVICE_PACKAGE_NAME = "PAYMENT_SERVICE";
 
 export interface PaymentServiceClient {
   receiver(request: WebhookTransactionRequest): Observable<WebhookTransactionResponse>;
 
+  getManyPayments(request: GetManyPaymentsRequest): Observable<GetManyPaymentsResponse>;
+
   createPayment(request: CreatePaymentRequest): Observable<PaymentResponse>;
+
+  updatePaymentStatus(request: UpdatePaymentStatusRequest): Observable<PaymentResponse>;
 }
 
 export interface PaymentServiceController {
@@ -74,14 +108,22 @@ export interface PaymentServiceController {
     request: WebhookTransactionRequest,
   ): Promise<WebhookTransactionResponse> | Observable<WebhookTransactionResponse> | WebhookTransactionResponse;
 
+  getManyPayments(
+    request: GetManyPaymentsRequest,
+  ): Promise<GetManyPaymentsResponse> | Observable<GetManyPaymentsResponse> | GetManyPaymentsResponse;
+
   createPayment(
     request: CreatePaymentRequest,
+  ): Promise<PaymentResponse> | Observable<PaymentResponse> | PaymentResponse;
+
+  updatePaymentStatus(
+    request: UpdatePaymentStatusRequest,
   ): Promise<PaymentResponse> | Observable<PaymentResponse> | PaymentResponse;
 }
 
 export function PaymentServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["receiver", "createPayment"];
+    const grpcMethods: string[] = ["receiver", "getManyPayments", "createPayment", "updatePaymentStatus"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentService", method)(constructor.prototype[method], method, descriptor);

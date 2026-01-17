@@ -142,7 +142,7 @@ namespace Report.Infrastructure.Persistence
 
     #region DELETE Methods
 
-    public async Task<bool> DeleteAsync(string reportId)
+    public async Task<bool> SoftDeleteAsync(string reportId)
     {
       var result = await _dbContext.Reports
         .Where(r => r.Id == reportId)
@@ -151,6 +151,36 @@ namespace Report.Infrastructure.Persistence
           .SetProperty(r => r.DeletedAt, DateTime.UtcNow));
 
       return result > 0;
+    }
+
+    public async Task<bool> HardDeleteAsync(string reportId)
+    {
+      var report = await _dbContext.Reports
+        .IgnoreQueryFilters()
+        .Include(r => r.Evidences)
+        .Include(r => r.Comments)
+        .Include(r => r.History)
+        .Include(r => r.Actions)
+        .FirstOrDefaultAsync(r => r.Id == reportId);
+
+      if (report == null)
+        return false;
+
+      _dbContext.Reports.Remove(report);
+      await _dbContext.SaveChangesAsync();
+      return true;
+    }
+
+    public async Task<ReportEntity?> GetReportByIdIncludingDeletedAsync(string reportId)
+    {
+      return await _dbContext.Reports
+        .IgnoreQueryFilters()
+        .Include(r => r.Evidences.OrderByDescending(e => e.CreatedAt))
+        .Include(r => r.Comments.OrderByDescending(c => c.CreatedAt))
+        .Include(r => r.History.OrderByDescending(h => h.CreatedAt))
+        .Include(r => r.Actions.OrderByDescending(a => a.CreatedAt))
+        .AsNoTracking()
+        .FirstOrDefaultAsync(r => r.Id == reportId);
     }
 
     #endregion

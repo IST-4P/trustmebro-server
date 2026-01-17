@@ -26,10 +26,13 @@ export class CategoryController {
   @ApiOkResponse({ type: GetManyCategoriesResponseDto })
   @IsPublic()
   async getManyCategories(
-    @Query() query: GetManyCategoriesBodyDto,
+    @Query() queries: GetManyCategoriesBodyDto,
     @ProcessId() processId: string
   ) {
-    return this.categoryReadService.getManyCategories({ ...query, processId });
+    return this.categoryReadService.getManyCategories({
+      ...queries,
+      processId,
+    });
   }
 
   @Get(':id')

@@ -96,6 +96,21 @@ export interface CancelOrderRequest {
   shopId?: string | undefined;
 }
 
+/** ================================= Dashboard seller =================================== */
+export interface DashboardSellerRequest {
+  processId?: string | undefined;
+  userId: string;
+  shopId: string;
+}
+
+export interface DashboardSellerResponse {
+  totalOrders: number;
+  completedOrders: number;
+  pendingOrders: number;
+  confirmedOrders: number;
+  totalRevenue: number;
+}
+
 export const ORDER_SERVICE_PACKAGE_NAME = "ORDER_SERVICE";
 
 export interface OrderServiceClient {
@@ -104,6 +119,8 @@ export interface OrderServiceClient {
   updateStatusOrder(request: UpdateStatusOrderRequest): Observable<Order>;
 
   cancelOrder(request: CancelOrderRequest): Observable<Order>;
+
+  dashboardSeller(request: DashboardSellerRequest): Observable<DashboardSellerResponse>;
 }
 
 export interface OrderServiceController {
@@ -114,11 +131,15 @@ export interface OrderServiceController {
   updateStatusOrder(request: UpdateStatusOrderRequest): Promise<Order> | Observable<Order> | Order;
 
   cancelOrder(request: CancelOrderRequest): Promise<Order> | Observable<Order> | Order;
+
+  dashboardSeller(
+    request: DashboardSellerRequest,
+  ): Promise<DashboardSellerResponse> | Observable<DashboardSellerResponse> | DashboardSellerResponse;
 }
 
 export function OrderServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createOrder", "updateStatusOrder", "cancelOrder"];
+    const grpcMethods: string[] = ["createOrder", "updateStatusOrder", "cancelOrder", "dashboardSeller"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("OrderService", method)(constructor.prototype[method], method, descriptor);

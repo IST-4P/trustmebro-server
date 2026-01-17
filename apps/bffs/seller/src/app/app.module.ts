@@ -15,7 +15,9 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
 import { ChatModule } from './modules/chat/chat.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { HealthModule } from './modules/health/health.module';
+import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
 import { ProductModule } from './modules/product/product.module';
@@ -36,6 +38,8 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     OrderModule,
     NotificationModule,
     ChatModule,
+    DashboardModule,
+    MediaModule,
   ],
   providers: [
     WebSocketService,

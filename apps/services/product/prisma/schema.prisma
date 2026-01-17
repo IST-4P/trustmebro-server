@@ -60,27 +60,20 @@ model Brand {
     @@index([deletedAt])
 }
 
-model ShipsFrom {
-    id          String    @id @default(uuid())
-    products    Product[]
-    address     String    @unique
-    createdById String?
-    updatedById String?
-    deletedById String?
-
-    deletedAt DateTime?
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-
-    @@index([deletedAt])
-}
-
 model Product {
-    id           String     @id @default(uuid())
-    name         String
-    description  String     @db.Text
-    shipsFromId  String
-    shipsFrom    ShipsFrom  @relation(fields: [shipsFromId], references: [id])
+    id          String @id @default(uuid())
+    name        String
+    description String @db.Text
+
+    provinceId   Int
+    provinceName String
+
+    districtId   Int
+    districtName String
+
+    wardId   Int
+    wardName String
+
     sizeGuide    String?    @db.Text
     basePrice    Float      @default(0)
     virtualPrice Float      @default(0)
@@ -122,6 +115,8 @@ model Product {
     @@index([createdById])
     @@index([name])
     @@index([deletedAt])
+    @@index([provinceId])
+    @@index([districtId])
 }
 
 model Attribute {

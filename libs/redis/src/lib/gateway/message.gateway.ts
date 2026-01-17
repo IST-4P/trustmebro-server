@@ -51,9 +51,11 @@ export class MessageGateway implements OnGatewayConnection, OnModuleInit {
     @ConnectedSocket() client: Socket
   ) {
     const senderId = client.data['userId'];
+    const conversationId = client.handshake.query['conversationId'];
     const newMessage = await firstValueFrom(
       this.chatService.createMessage({
         ...message,
+        conversationId: conversationId as string,
         senderId,
       })
     );

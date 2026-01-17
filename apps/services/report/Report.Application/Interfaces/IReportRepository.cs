@@ -11,6 +11,7 @@ namespace Report.Application.Interfaces
     Task<List<ReportEntity>> FilterReportsAsync(ReportFilterDtos filter);
     Task<List<ReportEntity>> GetReportsByReporterIdAsync(string reporterId);
     Task<ReportEntity?> GetReportByIdAsync(string reportId);
+    Task<ReportEntity?> GetReportByIdIncludingDeletedAsync(string reportId);
     Task<List<ReportHistory>> GetReportHistoryAsync(string reportId);
 
     // CREATE
@@ -25,7 +26,9 @@ namespace Report.Application.Interfaces
     Task UpdateAsync(ReportEntity updated);
     Task UpdateStatusAsync(string reportId, ReportStatus status);
 
-    Task<bool> DeleteAsync(string reportId);
+    // DELETE
+    Task<bool> SoftDeleteAsync(string reportId);
+    Task<bool> HardDeleteAsync(string reportId);
 
     // Dashboard
     Task<int> CountAllAsync();

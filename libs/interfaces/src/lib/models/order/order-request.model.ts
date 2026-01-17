@@ -72,6 +72,15 @@ export const UpdateStatusOrderRequestSchema = OrderSchema.pick({
   })
   .strict();
 
+export const DashboardSellerRequestSchema = OrderSchema.pick({
+  shopId: true,
+  userId: true,
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
+
 export type CreateOrderRequest = z.infer<typeof CreateOrderRequestSchema>;
 export type CreateOrderRepository = z.infer<typeof CreateOrderRepositorySchema>;
 export type CancelOrderRequest = z.infer<typeof CancelOrderRequestSchema>;
@@ -79,4 +88,7 @@ export type GetManyOrdersRequest = z.infer<typeof GetManyOrdersRequestSchema>;
 export type GetOrderRequest = z.infer<typeof GetOrderRequestSchema>;
 export type UpdateStatusOrderRequest = z.infer<
   typeof UpdateStatusOrderRequestSchema
+>;
+export type DashboardSellerRequest = z.infer<
+  typeof DashboardSellerRequestSchema
 >;

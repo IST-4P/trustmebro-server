@@ -25,7 +25,7 @@ async function bootstrap() {
   app.enableCors({ origin: '*' });
 
   const config = new DocumentBuilder()
-    .setTitle('TrustMeBro-Web API')
+    .setTitle('TrustMeBro-Admin API')
     .setDescription('Quỳ xuống mà xin API đi bro')
     .setVersion('1.0.0')
     .addBearerAuth({

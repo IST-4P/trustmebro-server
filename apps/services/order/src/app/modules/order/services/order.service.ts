@@ -5,6 +5,8 @@ import {
   CancelOrderRequest,
   CreateOrderRequest,
   CreateOrderResponse,
+  DashboardSellerRequest,
+  DashboardSellerResponse,
   UpdateStatusOrderRequest,
 } from '@common/interfaces/models/order';
 import {
@@ -232,5 +234,11 @@ export class OrderService implements OnModuleInit {
       }
       throw error;
     }
+  }
+
+  async dashboardSeller(
+    data: DashboardSellerRequest
+  ): Promise<DashboardSellerResponse> {
+    return this.orderRepository.dashboardSeller(data);
   }
 }

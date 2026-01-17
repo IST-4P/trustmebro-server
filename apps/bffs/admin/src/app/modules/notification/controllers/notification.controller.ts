@@ -5,10 +5,12 @@ import {
   GetManyNotificationsRequestDto,
 } from '@common/interfaces/dtos/notification';
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { NotificationReadService } from '../services/notification-read.service';
 import { NotificationWriteService } from '../services/notification-write.service';
 
-@Controller('notification-admin')
+@Controller('notification')
+@ApiTags('Notification')
 export class NotificationController {
   constructor(
     private readonly notificationWriteService: NotificationWriteService,
@@ -17,11 +19,11 @@ export class NotificationController {
 
   @Get()
   async getManyNotifications(
-    @Query() query: GetManyNotificationsRequestDto,
+    @Query() queries: GetManyNotificationsRequestDto,
     @ProcessId() processId: string
   ) {
     return this.notificationReadService.getManyNotifications({
-      ...query,
+      ...queries,
       processId,
     });
   }

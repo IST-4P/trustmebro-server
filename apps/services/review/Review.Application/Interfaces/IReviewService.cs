@@ -32,9 +32,16 @@ namespace Review.Application.Interfaces
     Task<ReviewResponseClientDto> UpdateReview(string reviewId, UpdateReviewRequestDto dto);
     Task<ReviewResponseClientDto> UpdateReply(string replyId, UpdateReplyRequestDto dto);
 
-    //Delete
+    //Delete (Soft Delete for User/Seller)
     Task<bool> DeleteReview(string reviewId);
     Task<bool> DeleteReply(string replyId);
+    
+    //Admin Delete
+    Task<bool> AdminHardDeleteReview(string reviewId);
+    Task<bool> AdminHardDeleteReply(string replyId);
+    
+    //Admin Get Deleted Items
+    Task<PageResult<ReviewListAdminDto>> GetDeletedReviews();
 
   }
 }

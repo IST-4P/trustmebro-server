@@ -69,8 +69,19 @@ export const GetManyOrdersResponseSchema = PaginationQueryResponseSchema.extend(
   }
 );
 
+export const DashboardSellerResponseSchema = z.object({
+  totalOrders: z.number(),
+  completedOrders: z.number(),
+  pendingOrders: z.number(),
+  confirmedOrders: z.number(),
+  totalRevenue: z.number(),
+});
+
 export type OrderItemResponse = z.infer<typeof OrderItemResponseSchema>;
 export type OrderResponse = z.infer<typeof OrderResponseSchema>;
 export type GetManyOrdersResponse = z.infer<typeof GetManyOrdersResponseSchema>;
 export type GetOrderResponse = z.infer<typeof GetOrderResponseSchema>;
 export type CreateOrderResponse = z.infer<typeof CreateOrderResponseSchema>;
+export type DashboardSellerResponse = z.infer<
+  typeof DashboardSellerResponseSchema
+>;

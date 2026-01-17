@@ -3,15 +3,8 @@ import { AttributeModule } from './attribute/attribute.module';
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
-import { ShipsFromModule } from './ships-from/ships-from.module';
 
 @Module({
-  imports: [
-    CategoryModule,
-    BrandModule,
-    AttributeModule,
-    ShipsFromModule,
-    ProductModule,
-  ],
+  imports: [CategoryModule, BrandModule, AttributeModule, ProductModule],
 })
 export class ProductCoreModule {}

@@ -142,40 +142,6 @@ export interface DeleteAttributeRequest {
   deletedById?: string | undefined;
 }
 
-/** ======================================== ShipsFrom =========================================// */
-export interface ShipsFromResponse {
-  id: string;
-  address: string;
-  createdById: string;
-  updatedById: string;
-  deletedById: string;
-  deletedAt: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-/** ==================== CreateShipsFromRequest ====================// */
-export interface CreateShipsFromRequest {
-  processId?: string | undefined;
-  address: string;
-  createdById?: string | undefined;
-}
-
-/** ==================== UpdateShipsFromRequest ====================// */
-export interface UpdateShipsFromRequest {
-  processId?: string | undefined;
-  id: string;
-  address: string;
-  updatedById?: string | undefined;
-}
-
-/** ==================== DeleteShipsFromRequest ====================// */
-export interface DeleteShipsFromRequest {
-  processId?: string | undefined;
-  id: string;
-  deletedById?: string | undefined;
-}
-
 /** ======================================== Product =========================================// */
 export interface Variant {
   value: string;
@@ -216,7 +182,12 @@ export interface CreateProductRequest {
   shopId: string;
   description: string;
   sizeGuide?: string | undefined;
-  shipsFromId: string;
+  provinceId: number;
+  provinceName: string;
+  districtId: number;
+  districtName: string;
+  wardId: number;
+  wardName: string;
   status: string;
   categories: string[];
   skus: SKUInput[];
@@ -237,7 +208,12 @@ export interface UpdateProductRequest {
   shopId: string;
   description: string;
   sizeGuide?: string | undefined;
-  shipsFromId: string;
+  provinceId?: number | undefined;
+  provinceName?: string | undefined;
+  districtId?: number | undefined;
+  districtName?: string | undefined;
+  wardId?: number | undefined;
+  wardName?: string | undefined;
   status: string;
   categories: string[];
   skus: SKUInput[];
@@ -258,7 +234,9 @@ export interface ProductResponse {
   id: string;
   name: string;
   description: string;
-  shipsFromId: string;
+  provinceId: number;
+  districtId: number;
+  wardId: number;
   sizeGuide?: string | undefined;
   basePrice: number;
   virtualPrice: number;
@@ -281,7 +259,6 @@ export interface ProductResponse {
   skus: SKU[];
   brand: BrandInfo | undefined;
   categories: CategoryInfo[];
-  shipsFrom: ShipsFromInfo | undefined;
   createdById: string;
   updatedById: string;
   deletedById: string;
@@ -301,11 +278,6 @@ export interface CategoryInfo {
   name: string;
   logo: string;
   parentCategoryId: string;
-}
-
-export interface ShipsFromInfo {
-  id: string;
-  address: string;
 }
 
 /**
@@ -367,6 +339,17 @@ export interface ValidateProductsResponse {
   items: ValidateItemsResponse[];
 }
 
+/** ==================== DashboardSellerRequest ====================// */
+export interface DashboardSellerRequest {
+  processId?: string | undefined;
+  shopId: string;
+}
+
+/** ==================== DashboardSellerResponse ====================// */
+export interface DashboardSellerResponse {
+  totalProducts: number;
+}
+
 export const PRODUCT_SERVICE_PACKAGE_NAME = "PRODUCT_SERVICE";
 
 export interface ProductServiceClient {
@@ -388,12 +371,6 @@ export interface ProductServiceClient {
 
   deleteAttribute(request: DeleteAttributeRequest): Observable<AttributeResponse>;
 
-  createShipsFrom(request: CreateShipsFromRequest): Observable<ShipsFromResponse>;
-
-  updateShipsFrom(request: UpdateShipsFromRequest): Observable<ShipsFromResponse>;
-
-  deleteShipsFrom(request: DeleteShipsFromRequest): Observable<ShipsFromResponse>;
-
   createProduct(request: CreateProductRequest): Observable<ProductResponse>;
 
   updateProduct(request: UpdateProductRequest): Observable<ProductResponse>;
@@ -403,6 +380,8 @@ export interface ProductServiceClient {
   getSku(request: GetSKURequest): Observable<SKUResponse>;
 
   validateProducts(request: ValidateProductsRequest): Observable<ValidateProductsResponse>;
+
+  dashboardSeller(request: DashboardSellerRequest): Observable<DashboardSellerResponse>;
 }
 
 export interface ProductServiceController {
@@ -436,18 +415,6 @@ export interface ProductServiceController {
     request: DeleteAttributeRequest,
   ): Promise<AttributeResponse> | Observable<AttributeResponse> | AttributeResponse;
 
-  createShipsFrom(
-    request: CreateShipsFromRequest,
-  ): Promise<ShipsFromResponse> | Observable<ShipsFromResponse> | ShipsFromResponse;
-
-  updateShipsFrom(
-    request: UpdateShipsFromRequest,
-  ): Promise<ShipsFromResponse> | Observable<ShipsFromResponse> | ShipsFromResponse;
-
-  deleteShipsFrom(
-    request: DeleteShipsFromRequest,
-  ): Promise<ShipsFromResponse> | Observable<ShipsFromResponse> | ShipsFromResponse;
-
   createProduct(
     request: CreateProductRequest,
   ): Promise<ProductResponse> | Observable<ProductResponse> | ProductResponse;
@@ -465,6 +432,10 @@ export interface ProductServiceController {
   validateProducts(
     request: ValidateProductsRequest,
   ): Promise<ValidateProductsResponse> | Observable<ValidateProductsResponse> | ValidateProductsResponse;
+
+  dashboardSeller(
+    request: DashboardSellerRequest,
+  ): Promise<DashboardSellerResponse> | Observable<DashboardSellerResponse> | DashboardSellerResponse;
 }
 
 export function ProductServiceControllerMethods() {
@@ -479,14 +450,12 @@ export function ProductServiceControllerMethods() {
       "createAttribute",
       "updateAttribute",
       "deleteAttribute",
-      "createShipsFrom",
-      "updateShipsFrom",
-      "deleteShipsFrom",
       "createProduct",
       "updateProduct",
       "deleteProduct",
       "getSku",
       "validateProducts",
+      "dashboardSeller",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

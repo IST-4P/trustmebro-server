@@ -3,19 +3,24 @@ import { ClientProviderOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import z from 'zod';
 
+const grpcUrlSchema = z
+  .string()
+  .transform((val) => val.replace(/^https?:\/\//, ''));
+
 export const GrpcConfigurationSchema = z.object({
   PROTO_PATH: z.string(),
 
-  USER_ACCESS_SERVICE_GRPC_URL: z.string(),
-  MEDIA_SERVICE_GRPC_URL: z.string(),
-  ROLE_SERVICE_GRPC_URL: z.string(),
-  PRODUCT_SERVICE_GRPC_URL: z.string(),
-  QUERY_SERVICE_GRPC_URL: z.string(),
-  NOTIFICATION_SERVICE_GRPC_URL: z.string(),
-  CHAT_SERVICE_GRPC_URL: z.string(),
-  CART_SERVICE_GRPC_URL: z.string(),
-  ORDER_SERVICE_GRPC_URL: z.string(),
-  PAYMENT_SERVICE_GRPC_URL: z.string(),
+  USER_ACCESS_SERVICE_GRPC_URL: grpcUrlSchema,
+  MEDIA_SERVICE_GRPC_URL: grpcUrlSchema,
+  ROLE_SERVICE_GRPC_URL: grpcUrlSchema,
+  PRODUCT_SERVICE_GRPC_URL: grpcUrlSchema,
+  QUERY_SERVICE_GRPC_URL: grpcUrlSchema,
+  NOTIFICATION_SERVICE_GRPC_URL: grpcUrlSchema,
+  CHAT_SERVICE_GRPC_URL: grpcUrlSchema,
+  CART_SERVICE_GRPC_URL: grpcUrlSchema,
+  ORDER_SERVICE_GRPC_URL: grpcUrlSchema,
+  PAYMENT_SERVICE_GRPC_URL: grpcUrlSchema,
+  // REVIEW_SERVICE_GRPC_URL: grpcUrlSchema,
 });
 
 const configServer = GrpcConfigurationSchema.safeParse(process.env);

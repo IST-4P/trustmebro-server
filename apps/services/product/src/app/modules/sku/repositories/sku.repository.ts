@@ -43,12 +43,6 @@ export class SKURepository {
             parentCategory: true,
           },
         },
-        shipsFrom: {
-          select: {
-            id: true,
-            address: true,
-          },
-        },
       },
     });
   }

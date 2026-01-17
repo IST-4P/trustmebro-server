@@ -3,6 +3,7 @@ import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interce
 import {
   CancelOrderRequest,
   CreateOrderRequest,
+  DashboardSellerRequest,
   UpdateStatusOrderRequest,
 } from '@common/interfaces/models/order';
 import { Controller, UseInterceptors } from '@nestjs/common';
@@ -27,5 +28,10 @@ export class OrderGrpcController {
   @GrpcMethod(GrpcServiceName.ORDER_SERVICE, 'UpdateStatusOrder')
   updateStatusOrder(data: UpdateStatusOrderRequest) {
     return this.orderService.updateStatus(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.ORDER_SERVICE, 'DashboardSeller')
+  dashboardSeller(data: DashboardSellerRequest) {
+    return this.orderService.dashboardSeller(data);
   }
 }

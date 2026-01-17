@@ -17,10 +17,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CategoryReadService } from '../services/category/category-read.service';
 import { CategoryWriteService } from '../services/category/category-write.service';
 
-@Controller('category-admin')
+@Controller('category')
+@ApiTags('Product')
 export class CategoryController {
   constructor(
     private readonly categoryReadService: CategoryReadService,
@@ -29,10 +31,13 @@ export class CategoryController {
 
   @Get()
   async getManyCategories(
-    @Query() query: GetManyCategoriesRequestDto,
+    @Query() queries: GetManyCategoriesRequestDto,
     @ProcessId() processId: string
   ) {
-    return this.categoryReadService.getManyCategories({ ...query, processId });
+    return this.categoryReadService.getManyCategories({
+      ...queries,
+      processId,
+    });
   }
 
   @Get(':id')

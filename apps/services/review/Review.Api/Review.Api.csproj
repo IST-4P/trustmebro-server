@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Protobuf Include="Protos\review.proto" GrpcServices="Server" />
-    <Protobuf Include="..\..\..\..\libs\interfaces\src\lib\protos\query.proto" GrpcServices="Client" />
   </ItemGroup>
 
   <ItemGroup>

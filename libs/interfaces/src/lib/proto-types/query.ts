@@ -116,32 +116,6 @@ export interface GetManyAttributesResponse {
   totalPages: number;
 }
 
-/**
- * ====================================== ShipsFrom ======================================//
- * ==================== GetShipsFromRequest ====================//
- */
-export interface GetShipsFromRequest {
-  processId?: string | undefined;
-  id: string;
-}
-
-export interface GetShipsFromResponse {
-  id: string;
-  address: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-/** ==================== GetManyShipsFromRequest ====================// */
-export interface GetManyShipsFromRequest {
-  processId?: string | undefined;
-  address?: string | undefined;
-}
-
-export interface GetManyShipsFromResponse {
-  shipsFromList: GetShipsFromResponse[];
-}
-
 /** ====================================== Product ======================================// */
 export interface Variant {
   value: string;
@@ -172,8 +146,9 @@ export interface GetProductResponse {
   id: string;
   name: string;
   description?: string | undefined;
-  shipsFromId: string;
-  shipsFromAddress: string;
+  provinceId: number;
+  districtId: number;
+  wardId: number;
   brandId?: string | undefined;
   brandName?: string | undefined;
   brandLogo?: string | undefined;
@@ -361,6 +336,67 @@ export interface GetOrderResponse {
   updatedAt: string;
 }
 
+/**
+ * ====================================== Video ======================================//
+ * ==================== GetVideoRequest ====================//
+ */
+export interface GetVideoRequest {
+  processId?: string | undefined;
+  id: string;
+  status?: string | undefined;
+}
+
+export interface VideoResponse {
+  id: string;
+  storageBucket: string;
+  storageKey: string;
+  filetype: string;
+  size: number;
+  status: string;
+  duration: number;
+  width: number;
+  height: number;
+  createdAt: string;
+  updatedAt: string;
+  title: string;
+  likeCount: number;
+  commentCount: number;
+  authorId: string;
+  authorUsername?: string | undefined;
+  authorAvatar?: string | undefined;
+}
+
+/** ==================== GetManyVideosRequest ====================// */
+export interface GetManyVideosRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  userId?: string | undefined;
+  status?: string | undefined;
+  title?: string | undefined;
+}
+
+export interface VideoBasicInfo {
+  id: string;
+  size: number;
+  duration: number;
+  width: number;
+  height: number;
+  status: string;
+  title: string;
+  likeCount: number;
+  commentCount: number;
+  authorId: string;
+}
+
+export interface GetManyVideosResponse {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  videos: VideoBasicInfo[];
+}
+
 export const QUERY_SERVICE_PACKAGE_NAME = "QUERY_SERVICE";
 
 export interface QueryServiceClient {
@@ -376,10 +412,6 @@ export interface QueryServiceClient {
 
   getManyAttributes(request: GetManyAttributesRequest): Observable<GetManyAttributesResponse>;
 
-  getShipsFrom(request: GetShipsFromRequest): Observable<GetShipsFromResponse>;
-
-  getManyShipsFrom(request: GetManyShipsFromRequest): Observable<GetManyShipsFromResponse>;
-
   getProduct(request: GetProductRequest): Observable<GetProductResponse>;
 
   getManyProducts(request: GetManyProductsRequest): Observable<GetManyProductsResponse>;
@@ -391,6 +423,10 @@ export interface QueryServiceClient {
   getManyOrders(request: GetManyOrdersRequest): Observable<GetManyOrdersResponse>;
 
   getOrder(request: GetOrderRequest): Observable<GetOrderResponse>;
+
+  getManyVideos(request: GetManyVideosRequest): Observable<GetManyVideosResponse>;
+
+  getVideo(request: GetVideoRequest): Observable<VideoResponse>;
 }
 
 export interface QueryServiceController {
@@ -416,14 +452,6 @@ export interface QueryServiceController {
     request: GetManyAttributesRequest,
   ): Promise<GetManyAttributesResponse> | Observable<GetManyAttributesResponse> | GetManyAttributesResponse;
 
-  getShipsFrom(
-    request: GetShipsFromRequest,
-  ): Promise<GetShipsFromResponse> | Observable<GetShipsFromResponse> | GetShipsFromResponse;
-
-  getManyShipsFrom(
-    request: GetManyShipsFromRequest,
-  ): Promise<GetManyShipsFromResponse> | Observable<GetManyShipsFromResponse> | GetManyShipsFromResponse;
-
   getProduct(
     request: GetProductRequest,
   ): Promise<GetProductResponse> | Observable<GetProductResponse> | GetProductResponse;
@@ -445,6 +473,12 @@ export interface QueryServiceController {
   ): Promise<GetManyOrdersResponse> | Observable<GetManyOrdersResponse> | GetManyOrdersResponse;
 
   getOrder(request: GetOrderRequest): Promise<GetOrderResponse> | Observable<GetOrderResponse> | GetOrderResponse;
+
+  getManyVideos(
+    request: GetManyVideosRequest,
+  ): Promise<GetManyVideosResponse> | Observable<GetManyVideosResponse> | GetManyVideosResponse;
+
+  getVideo(request: GetVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
 }
 
 export function QueryServiceControllerMethods() {
@@ -456,14 +490,14 @@ export function QueryServiceControllerMethods() {
       "getManyBrands",
       "getAttribute",
       "getManyAttributes",
-      "getShipsFrom",
-      "getManyShipsFrom",
       "getProduct",
       "getManyProducts",
       "getNotification",
       "getManyNotifications",
       "getManyOrders",
       "getOrder",
+      "getManyVideos",
+      "getVideo",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

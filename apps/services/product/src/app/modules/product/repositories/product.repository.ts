@@ -1,4 +1,5 @@
 import { ProductStatusValues } from '@common/constants/product.constant';
+import { DashboardSellerRequest } from '@common/interfaces/models/order';
 import {
   CreateProductRequest,
   DeleteProductRequest,
@@ -55,7 +56,7 @@ export class ProductRepository {
 
   async create(data: CreateProductRequest) {
     await this.validateAttributes(data.attributes);
-    const { skus, categories, shipsFromId, brandId, ...productData } = data;
+    const { skus, categories, brandId, ...productData } = data;
     return this.prismaService.product.create({
       data: {
         ...productData,
@@ -65,9 +66,6 @@ export class ProductRepository {
               connect: { id: data.brandId },
             }
           : undefined,
-        shipsFrom: {
-          connect: { id: shipsFromId },
-        },
         categories: {
           connect: categories.map((category) => ({ id: category })),
         },
@@ -111,19 +109,13 @@ export class ProductRepository {
             parentCategory: true,
           },
         },
-        shipsFrom: {
-          select: {
-            id: true,
-            address: true,
-          },
-        },
       },
     });
   }
 
   async update(request: UpdateProductRequest) {
     await this.validateAttributes(request.attributes);
-    const { skus, categories, shipsFromId, brandId, ...productData } = request;
+    const { skus, categories, brandId, ...productData } = request;
 
     //Lấy danh sách SKU hiện tại trong DB
     const existingSkus = await this.prismaService.sKU.findMany({
@@ -180,9 +172,6 @@ export class ProductRepository {
                 connect: { id: brandId },
               }
             : undefined,
-          shipsFrom: {
-            connect: { id: shipsFromId },
-          },
           categories: {
             connect: categories.map((category) => ({ id: category })),
           },
@@ -216,12 +205,6 @@ export class ProductRepository {
               name: true,
               logo: true,
               parentCategory: true,
-            },
-          },
-          shipsFrom: {
-            select: {
-              id: true,
-              address: true,
             },
           },
         },
@@ -438,5 +421,15 @@ export class ProductRepository {
       isValid: isAllValid,
       items: results,
     };
+  }
+
+  async dashboardSeller(data: DashboardSellerRequest) {
+    const totalProducts = await this.prismaService.product.count({
+      where: {
+        shopId: data.shopId,
+        isHidden: false,
+      },
+    });
+    return { totalProducts };
   }
 }

@@ -1,5 +1,4 @@
 import { ProcessId } from '@common/decorators/process-id.decorator';
-import { UserData } from '@common/decorators/user-data.decorator';
 import {
   CancelOrderRequestDto,
   GetManyOrdersRequestDto,
@@ -17,31 +16,28 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOkResponse, OmitType } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags, OmitType } from '@nestjs/swagger';
 import { OrderReadService } from '../services/order-read.service';
 import { OrderWriteService } from '../services/order-write.service';
 
 class GetManyOrdersBodyDto extends OmitType(GetManyOrdersRequestDto, [
-  'shopId',
-  'userId',
   'processId',
 ]) {}
 class GetOrderBodyDto extends OmitType(GetOrderRequestDto, [
-  'shopId',
-  'userId',
   'processId',
+  'userId',
+  'shopId',
 ]) {}
 class UpdateOrderStatusBodyDto extends OmitType(UpdateOrderStatusRequestDto, [
-  'shopId',
   'processId',
 ]) {}
 class CancelOrderBodyDto extends OmitType(CancelOrderRequestDto, [
-  'shopId',
   'userId',
   'processId',
 ]) {}
 
-@Controller('order-admin')
+@Controller('order')
+@ApiTags('Order')
 export class OrderController {
   constructor(
     private readonly orderWriteService: OrderWriteService,
@@ -52,13 +48,11 @@ export class OrderController {
   @ApiOkResponse({ type: GetManyOrdersResponseDto })
   async getManyOrders(
     @Query() queries: GetManyOrdersBodyDto,
-    @ProcessId() processId: string,
-    @UserData('shopId') shopId: string
+    @ProcessId() processId: string
   ) {
     return this.orderReadService.getManyOrders({
       ...queries,
       processId,
-      shopId,
     });
   }
 
@@ -66,36 +60,31 @@ export class OrderController {
   @ApiOkResponse({ type: GetOrderResponseDto })
   async getOrder(
     @Param() params: GetOrderBodyDto,
-    @ProcessId() processId: string,
-    @UserData('shopId') shopId: string
+    @ProcessId() processId: string
   ) {
-    return this.orderReadService.getOrder({ ...params, processId, shopId });
+    return this.orderReadService.getOrder({ ...params, processId });
   }
 
   @Put()
   async updateOrderStatus(
     @Body() body: UpdateOrderStatusBodyDto,
-    @ProcessId() processId: string,
-    @UserData('shopId') shopId: string
+    @ProcessId() processId: string
   ) {
     return this.orderWriteService.updateStatusOrder({
       ...body,
       orderId: body.id,
       processId,
-      shopId,
     });
   }
 
   @Delete(':orderId')
   async cancelOrder(
     @Param() params: CancelOrderBodyDto,
-    @ProcessId() processId: string,
-    @UserData('shopId') shopId: string
+    @ProcessId() processId: string
   ) {
     return this.orderWriteService.cancelOrder({
       ...params,
       processId,
-      shopId,
     });
   }
 }

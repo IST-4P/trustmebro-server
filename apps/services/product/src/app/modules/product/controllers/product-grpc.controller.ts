@@ -1,5 +1,6 @@
 import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
+import { DashboardSellerRequest } from '@common/interfaces/models/order/order-request.model';
 import {
   CreateProductRequest,
   DeleteProductRequest,
@@ -33,5 +34,10 @@ export class ProductGrpcController {
   @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'ValidateProducts')
   validateProducts(data: ValidateProductsRequest) {
     return this.productService.validateProducts(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.PRODUCT_SERVICE, 'DashboardSeller')
+  dashboardSeller(data: DashboardSellerRequest) {
+    return this.productService.dashboardSeller(data);
   }
 }

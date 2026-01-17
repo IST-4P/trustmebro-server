@@ -7,6 +7,8 @@ service OrderService {
   rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
   rpc UpdateStatusOrder(UpdateStatusOrderRequest) returns (Order);
   rpc CancelOrder(CancelOrderRequest) returns (Order);
+
+  rpc DashboardSeller(DashboardSellerRequest) returns (DashboardSellerResponse);
 }
 
 message CreateOrderRequest {
@@ -95,3 +97,17 @@ message CancelOrderRequest {
   optional string shopId = 4;
 }
 
+// ================================= Dashboard seller ===================================
+message DashboardSellerRequest {
+  optional string processId = 1;
+  string userId = 2;
+  string shopId = 3;
+}
+
+message DashboardSellerResponse {
+  int32 totalOrders = 1;
+  int32 completedOrders = 2;
+  int32 pendingOrders = 3;
+  int32 confirmedOrders = 4;
+  int32 totalRevenue = 5;
+}
