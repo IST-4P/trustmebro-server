@@ -8,6 +8,8 @@ service PromotionService {
   rpc CreatePromotion(CreatePromotionRequest) returns (PromotionResponse);
   rpc UpdatePromotion(UpdatePromotionRequest) returns (PromotionResponse);
   rpc DeletePromotion(DeletePromotionRequest) returns (PromotionResponse);
+
+  rpc CheckPromotion(CheckPromotionRequest) returns (PromotionResponse);
 }
 
 // Request Messages
@@ -114,3 +116,12 @@ message GetManyPromotionsResponse {
   int32 totalPages = 4;
   repeated PromotionListItem promotions = 5;
 }
+
+// Check Promotion Request
+message CheckPromotionRequest {
+  optional string processId = 1;
+  string code = 2;
+  string userId = 3;
+}
+
+//============================================ Redemption Messages ===================================//

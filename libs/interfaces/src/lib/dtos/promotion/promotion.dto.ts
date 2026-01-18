@@ -20,7 +20,7 @@ export class GetPromotionRequestDto extends createZodDto(
 ) {}
 
 export class CreatePromotionRequestDto extends createZodDto(
-  CreatePromotionRequestSchema.omit({ processId: true })
+  CreatePromotionRequestSchema.omit({ processId: true, createdById: true })
 ) {}
 
 export class UpdatePromotionRequestDto extends createZodDto(

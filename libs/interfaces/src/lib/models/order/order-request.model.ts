@@ -8,7 +8,7 @@ export const CreateOrderRequestSchema = z
   .object({
     processId: z.uuid().optional(),
     shippingFee: z.number(),
-    discount: z.number(),
+    discountCode: z.string().optional(),
     paymentMethod: PaymentMethodEnums,
     userId: z.uuid(),
     receiver: ReceiverSchema,
@@ -24,12 +24,13 @@ export const CreateOrderRequestSchema = z
 export const CreateOrderRepositorySchema = z.object({
   userId: z.uuid(),
   shippingFee: z.number(),
-  discount: z.number(),
   paymentMethod: PaymentMethodEnums,
   receiver: ReceiverSchema,
   paymentId: z.uuid(),
   orders: z.array(
     z.object({
+      itemTotal: z.number().optional(),
+      discount: z.number(),
       shopId: z.uuid(),
       items: z.array(ValidateItemResultSchema),
     })

@@ -14,7 +14,7 @@ export interface CreateOrderRequest {
   processId?: string | undefined;
   userId: string;
   shippingFee: number;
-  discount: number;
+  discountCode?: string | undefined;
   paymentMethod: string;
   receiver: Receiver | undefined;
   orders: OrderGroup[];
@@ -83,9 +83,10 @@ export interface Order {
 /** ================================= Update status order =================================== */
 export interface UpdateStatusOrderRequest {
   processId?: string | undefined;
-  orderId: string;
+  id: string;
   userId?: string | undefined;
   shopId?: string | undefined;
+  status: string;
 }
 
 /** ================================= Cancel order =================================== */

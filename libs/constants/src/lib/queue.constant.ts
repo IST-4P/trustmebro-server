@@ -17,6 +17,7 @@ export enum QueueGroups {
   ORDER_GROUP = 'order-group',
   PAYMENT_GROUP = 'payment-group',
   MEDIA_GROUP = 'media-group',
+  PROMOTION_GROUP = 'promotion-group',
 }
 
 enum CategoryQueueTopics {
@@ -84,6 +85,10 @@ enum MediaQueueTopics {
   VIDEO_UPLOADED = 'video_uploaded',
 }
 
+enum PromotionQueueTopics {
+  CREATE_REDEMPTION = 'create_redemption',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -96,4 +101,5 @@ export const QueueTopics = {
   ORDER: OrderQueueTopics,
   PAYMENT: PaymentQueueTopics,
   MEDIA: MediaQueueTopics,
+  PROMOTION: PromotionQueueTopics,
 } as const;

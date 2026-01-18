@@ -20,5 +20,5 @@ kafka-topics.sh --create \
  --if-not-exists
 done
 
-kafka-topics.sh --create --topic upsert_video --bootstrap-server localhost:9092
-kafka-topics.sh --delete --topic upsert_video --bootstrap-server localhost:9092
+kafka-topics.sh --create --topic cancel_order_by_payment --bootstrap-server localhost:9092
+kafka-topics.sh --delete --topic cancel_order_by_payment --bootstrap-server localhost:9092

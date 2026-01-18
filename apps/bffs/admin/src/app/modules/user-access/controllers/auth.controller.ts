@@ -33,7 +33,7 @@ const cookieOptions: CookieOptions = {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login-postman')
+  @Post('login')
   @ApiOkResponse({ type: LoginPostmanResponseDto })
   @IsPublic()
   async loginDirectAccessGrants(

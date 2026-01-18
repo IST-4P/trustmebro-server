@@ -1,8 +1,14 @@
+import { PromotionStatusValues } from '@common/constants/promotion.constant';
 import {
+  CheckPromotionRequest,
   GetManyPromotionsRequest,
   GetPromotionRequest,
 } from '@common/interfaces/models/promotion';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma-client/promotion';
 import { PrismaService } from '../../../prisma/prisma.service';
 
@@ -101,5 +107,45 @@ export class PromotionRepository {
             deletedById: data.deletedById as string,
           },
         });
+  }
+
+  async check(data: CheckPromotionRequest) {
+    // Check promotion có tồn tại không
+    const promotion = await this.prismaService.promotion.findUnique({
+      where: {
+        code: data.code,
+      },
+    });
+
+    if (!promotion) {
+      throw new NotFoundException('Error.PromotionNotFound');
+    }
+
+    // Check promotion đã được sử dụng chưa
+    const redemption = await this.prismaService.promotionRedemption.findUnique({
+      where: {
+        code_userId: {
+          code: data.code,
+          userId: data.userId,
+        },
+      },
+    });
+
+    if (redemption && redemption.usedAt !== null) {
+      throw new BadRequestException('Error.PromotionAlreadyUsing');
+    }
+
+    // Check promotion có hoạt động không
+    if (promotion.status !== PromotionStatusValues.ACTIVE) {
+      throw new BadRequestException('Error.PromotionInactive');
+    }
+
+    // Check thời gian áp dụng khuyến mãi
+    const now = new Date();
+    if (promotion.startsAt > now || promotion.endsAt < now) {
+      throw new BadRequestException('Error.PromotionNotInValidTime');
+    }
+
+    return promotion;
   }
 }

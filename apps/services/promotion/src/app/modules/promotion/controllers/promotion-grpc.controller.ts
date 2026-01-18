@@ -1,6 +1,7 @@
 import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
+  CheckPromotionRequest,
   CreatePromotionRequest,
   DeletePromotionRequest,
   GetManyPromotionsRequest,
@@ -39,5 +40,10 @@ export class PromotionGrpcController {
   @GrpcMethod(GrpcServiceName.PROMOTION_SERVICE, 'DeletePromotion')
   deletePromotion(data: DeletePromotionRequest) {
     return this.promotionService.delete(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.PROMOTION_SERVICE, 'CheckPromotion')
+  checkPromotion(data: CheckPromotionRequest) {
+    return this.promotionService.check(data);
   }
 }

@@ -18,10 +18,14 @@ export class OrderRepository {
     const orders = await this.prismaService.$transaction(async (tx) => {
       return Promise.all(
         data.orders.map((shopOrder) => {
-          const itemTotal = shopOrder.items.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-          );
+          const itemTotal =
+            shopOrder.itemTotal ||
+            shopOrder.items.reduce(
+              (sum, item) => sum + item.price * item.quantity,
+              0
+            );
+          const discount = shopOrder.discount || 0;
+
           return tx.order.create({
             data: {
               code: generateCode('ORDER'),
@@ -33,9 +37,9 @@ export class OrderRepository {
 
               shippingFee: data.shippingFee,
 
-              discount: data.discount,
+              discount: discount,
 
-              grandTotal: itemTotal + data.shippingFee + data.discount,
+              grandTotal: itemTotal + data.shippingFee + discount,
 
               receiver: data.receiver,
               paymentMethod: data.paymentMethod,

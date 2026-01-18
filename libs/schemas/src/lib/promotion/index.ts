@@ -26,7 +26,7 @@ export const PromotionRedemptionSchema = z.object({
   id: z.uuid(),
   promotionId: z.uuid(),
   userId: z.uuid(),
-  orderId: z.uuid(),
+  orderIds: z.array(z.uuid()),
   code: z.string(),
   discountType: DiscountTypeEnums,
   discountValue: z.number().int(),

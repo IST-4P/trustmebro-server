@@ -47,7 +47,7 @@ model Promotion {
 
     // Discount
     discountType  DiscountType
-    discountValue Int // PERCENT: 1..10000 (basis points) hoặc 1..100 (%). Khuyến nghị basis points.
+    discountValue Int // PERCENT: 100 = 1%, 10000 = 100%.
     maxDiscount   Int? // trần giảm (hữu ích cho percent)
 
     // Giới hạn số lượng
@@ -76,8 +76,8 @@ model PromotionRedemption {
     promotionId String
     promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
 
-    userId  String
-    orderId String @unique // mỗi order chỉ gắn 1 redemption
+    userId   String
+    orderIds String[]
 
     code             String
     discountType     DiscountType
@@ -91,5 +91,5 @@ model PromotionRedemption {
     createdAt   DateTime  @default(now())
 
     @@unique([promotionId, userId])
-    @@index([promotionId, userId])
+    @@unique([code, userId])
 }

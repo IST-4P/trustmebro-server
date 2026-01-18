@@ -37,6 +37,11 @@ module.exports = {
           input: 'libs/interfaces/src/lib/protos',
           output: './proto',
         },
+        {
+          glob: 'promotion.proto',
+          input: 'libs/interfaces/src/lib/protos',
+          output: './proto',
+        },
       ],
       optimization: false,
       outputHashing: 'none',

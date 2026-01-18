@@ -71,6 +71,14 @@ export const DeletePromotionRequestSchema = PromotionSchema.pick({
   })
   .strict();
 
+export const CheckPromotionRequestSchema = z
+  .object({
+    code: z.string(),
+    userId: z.uuid(),
+    processId: z.uuid().optional(),
+  })
+  .strict();
+
 export type GetManyPromotionsRequest = z.infer<
   typeof GetManyPromotionsRequestSchema
 >;
@@ -84,3 +92,4 @@ export type UpdatePromotionRequest = z.infer<
 export type DeletePromotionRequest = z.infer<
   typeof DeletePromotionRequestSchema
 >;
+export type CheckPromotionRequest = z.infer<typeof CheckPromotionRequestSchema>;

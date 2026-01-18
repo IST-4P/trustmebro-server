@@ -1,5 +1,6 @@
 import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
+  CheckPromotionRequest,
   CreatePromotionRequest,
   DeletePromotionRequest,
   GetManyPromotionsRequest,
@@ -74,6 +75,15 @@ export class PromotionService {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
         throw new NotFoundException('Error.PromotionNotFound');
       }
+      throw error;
+    }
+  }
+
+  async check(data: CheckPromotionRequest): Promise<PromotionResponse> {
+    try {
+      const promotion = await this.promotionRepository.check(data);
+      return promotion;
+    } catch (error) {
       throw error;
     }
   }

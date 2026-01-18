@@ -115,6 +115,13 @@ export interface GetManyPromotionsResponse {
   promotions: PromotionListItem[];
 }
 
+/** Check Promotion Request */
+export interface CheckPromotionRequest {
+  processId?: string | undefined;
+  code: string;
+  userId: string;
+}
+
 export const PROMOTION_SERVICE_PACKAGE_NAME = "PROMOTION_SERVICE";
 
 export interface PromotionServiceClient {
@@ -127,6 +134,8 @@ export interface PromotionServiceClient {
   updatePromotion(request: UpdatePromotionRequest): Observable<PromotionResponse>;
 
   deletePromotion(request: DeletePromotionRequest): Observable<PromotionResponse>;
+
+  checkPromotion(request: CheckPromotionRequest): Observable<PromotionResponse>;
 }
 
 export interface PromotionServiceController {
@@ -149,6 +158,10 @@ export interface PromotionServiceController {
   deletePromotion(
     request: DeletePromotionRequest,
   ): Promise<PromotionResponse> | Observable<PromotionResponse> | PromotionResponse;
+
+  checkPromotion(
+    request: CheckPromotionRequest,
+  ): Promise<PromotionResponse> | Observable<PromotionResponse> | PromotionResponse;
 }
 
 export function PromotionServiceControllerMethods() {
@@ -159,6 +172,7 @@ export function PromotionServiceControllerMethods() {
       "createPromotion",
       "updatePromotion",
       "deletePromotion",
+      "checkPromotion",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

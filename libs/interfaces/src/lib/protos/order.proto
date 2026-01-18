@@ -15,7 +15,7 @@ message CreateOrderRequest {
   optional string processId = 1;
   string userId = 2;
   int32 shippingFee = 3;
-  int32 discount = 4;
+  optional string discountCode = 4;
   string paymentMethod = 5;
   Receiver receiver = 6;
   repeated OrderGroup orders = 7;
@@ -84,9 +84,10 @@ message Order {
 // ================================= Update status order ===================================
 message UpdateStatusOrderRequest {
   optional string processId = 1;
-  string orderId = 2;
+  string id = 2;
   optional string userId = 3;
   optional string shopId = 4;
+  string status = 5;
 }
 
 // ================================= Cancel order ===================================
