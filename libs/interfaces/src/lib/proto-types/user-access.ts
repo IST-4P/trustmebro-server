@@ -321,6 +321,13 @@ export interface AddressResponse {
   updatedAt: string;
 }
 
+/** ==================== SendVerificationCodeRequest ====================// */
+export interface SendVerificationCodeRequest {
+  processId?: string | undefined;
+  email: string;
+  type: string;
+}
+
 export const USER_ACCESS_SERVICE_PACKAGE_NAME = "USER_ACCESS_SERVICE";
 
 export interface UserAccessServiceClient {
@@ -335,6 +342,8 @@ export interface UserAccessServiceClient {
   verifyToken(request: VerifyTokenRequest): Observable<VerifyTokenResponse>;
 
   changePassword(request: ChangePasswordRequest): Observable<MessageResponse>;
+
+  sendOtp(request: SendVerificationCodeRequest): Observable<MessageResponse>;
 
   getUser(request: GetUserRequest): Observable<UserResponse>;
 
@@ -380,6 +389,10 @@ export interface UserAccessServiceController {
 
   changePassword(
     request: ChangePasswordRequest,
+  ): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
+
+  sendOtp(
+    request: SendVerificationCodeRequest,
   ): Promise<MessageResponse> | Observable<MessageResponse> | MessageResponse;
 
   getUser(request: GetUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
@@ -437,6 +450,7 @@ export function UserAccessServiceControllerMethods() {
       "register",
       "verifyToken",
       "changePassword",
+      "sendOtp",
       "getUser",
       "getManyUser",
       "updateUser",

@@ -8,6 +8,7 @@ import {
   RefreshTokenRequest,
   RefreshTokenResponse,
   RegisterRequest,
+  SendVerificationCodeRequest,
   VerifyTokenRequest,
   VerifyTokenResponse,
 } from '@common/interfaces/models/auth';
@@ -19,11 +20,15 @@ import {
 } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from '../services/auth.service';
+import { VerificationCodeService } from '../services/verification-code.service';
 
 @Controller()
 @UseInterceptors(GrpcLoggingInterceptor)
 export class AuthGrpcController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly verificationCodeService: VerificationCodeService
+  ) {}
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'Register')
   async register(data: RegisterRequest): Promise<MessageResponse> {
@@ -42,7 +47,7 @@ export class AuthGrpcController {
       };
     } catch (error) {
       if (error.status && error.status === 401) {
-        throw new UnauthorizedException('Error.InvalidCredentials');
+        throw new UnauthorizedException('Error.UsernameOrPasswordInvalid');
       }
     }
   }
@@ -71,5 +76,10 @@ export class AuthGrpcController {
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'VerifyToken')
   async verifyToken(data: VerifyTokenRequest): Promise<VerifyTokenResponse> {
     return this.authService.verifyToken(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'SendOtp')
+  async sendOtp(data: SendVerificationCodeRequest) {
+    return this.verificationCodeService.send(data);
   }
 }

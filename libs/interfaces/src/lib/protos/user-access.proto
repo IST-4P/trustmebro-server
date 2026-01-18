@@ -9,6 +9,7 @@ service UserAccessService {
   rpc Register(RegisterRequest) returns (MessageResponse);
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
   rpc ChangePassword(ChangePasswordRequest) returns (MessageResponse);
+  rpc SendOtp(SendVerificationCodeRequest) returns (MessageResponse);
 
   rpc GetUser(GetUserRequest) returns (UserResponse);
   rpc GetManyUser(GetManyUsersRequest) returns (GetManyUsersResponse);
@@ -332,4 +333,11 @@ message AddressResponse {
   bool isDefault = 8;
   string createdAt = 9;
   string updatedAt = 10;
+}
+
+//==================== SendVerificationCodeRequest ====================//
+message SendVerificationCodeRequest {
+  optional string processId = 1;
+  string email = 2;
+  string type = 3;
 }
