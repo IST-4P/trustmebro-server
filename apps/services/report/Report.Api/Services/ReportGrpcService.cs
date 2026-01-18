@@ -408,6 +408,36 @@ namespace Report.Api.Services
                 throw new RpcException(new Status(StatusCode.Internal, "An error occurred while permanently deleting the report"));
             }
         }
+
+        public override async Task<GetDashboardResponse> GetDashboard(GetDashboardRequest request, ServerCallContext context)
+        {
+            try
+            {
+                _logger.LogInformation("Getting dashboard statistics");
+
+                var adminId = context.RequestHeaders.GetValue("user_id") ?? "anonymous";
+                var result = await _reportService.GetDashboardAsync(adminId);
+
+                return new GetDashboardResponse
+                {
+                    TotalReports = result.TotalReports,
+                    PendingReports = result.PendingReports,
+                    InProgressReports = result.InProgressReports,
+                    ResolvedReports = result.ResolvedReports,
+                    RejectedReports = result.RejectedReports
+                };
+            }
+            catch (ReportAccessDeniedException ex)
+            {
+                _logger.LogWarning(ex, "Access denied for dashboard - admin only");
+                throw new RpcException(new Status(StatusCode.PermissionDenied, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting dashboard statistics");
+                throw new RpcException(new Status(StatusCode.Internal, "An error occurred while retrieving dashboard statistics"));
+            }
+        }
     }
 
 
