@@ -126,7 +126,7 @@ namespace Report.Api.Services
                 _logger.LogInformation("Listing reports with filters");
 
                 var userId = context.RequestHeaders.GetValue("user_id") ?? "anonymous";
-                var role = context.RequestHeaders.GetValue("user-role") ?? "user";
+                var role = context.RequestHeaders.GetValue("user_role") ?? "user";
 
                 var filter = new ReportFilterDtos
                 {
@@ -382,7 +382,7 @@ namespace Report.Api.Services
             {
                 _logger.LogInformation("Hard deleting report {ReportId}", request.ReportId);
 
-                var adminId = context.RequestHeaders.GetValue("user_id") ?? request.AdminId;
+                var adminId = context.RequestHeaders.GetValue("user_id") ?? "anonymous";
 
                 await _reportService.HardDeleteReportAsync(request.ReportId, adminId);
 

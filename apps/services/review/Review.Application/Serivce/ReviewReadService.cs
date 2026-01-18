@@ -7,12 +7,10 @@ namespace Review.Application.Service
   public partial class ReviewService
   {
    #region Dashboard
-    public async Task<DashboardReviewStatsDto> GetDashboard()
+    public async Task<DashboardReviewStatsDto> GetDashboard(string adminId)
     {
-      var adminId = _currentUser.UserId
-          ?? throw new UnauthorizedAccessException();
-      if (!_currentUser.Roles.Contains("admin"))
-        throw new ReviewAccessDeniedException("Dashboard access denied", adminId);
+      if (string.IsNullOrWhiteSpace(adminId))
+        throw new UnauthorizedAccessException("Admin ID is required");
 
       var totalTask = _repo.CountAllAsync();
       var oneTask = _repo.CountByRatingAsync(1);
@@ -36,12 +34,11 @@ namespace Review.Application.Service
       };
     }
 
-    public async Task<DashboardSellerReviewStatsDto> GetDashboardSeller()
+    public async Task<DashboardSellerReviewStatsDto> GetDashboardSeller(string sellerId)
     {
-      var sellerId = _currentUser.UserId
-          ?? throw new UnauthorizedAccessException();
-      if (!_currentUser.Roles.Contains("seller"))
-        throw new ReviewAccessDeniedException("Dashboard access denied", sellerId);
+      if (string.IsNullOrWhiteSpace(sellerId))
+        throw new UnauthorizedAccessException("Seller ID is required");
+
       var totalTask = _repo.CountAllAsync();
       var oneTask = _repo.CountByRatingAsync(1);
       var twoTask = _repo.CountByRatingAsync(2);
@@ -69,14 +66,13 @@ namespace Review.Application.Service
 
     #region Get
     // Get My Reviews
-    public async Task<PageResult<ReviewResponseClientDto>> GetMyReviews(MyReviewFilterDto dto)
+    public async Task<PageResult<ReviewResponseClientDto>> GetMyReviews(MyReviewFilterDto dto, string userId)
     {
-      var userId = _currentUser.UserId
-          ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(userId))
+        throw new UnauthorizedAccessException("User ID is required");
 
       var filter = new ReviewFilterInternal
       {
-
         UserId = userId,       
         ProductId = dto.ProductId,
         FromDate = dto.FromDate,
@@ -119,22 +115,22 @@ namespace Review.Application.Service
     }
 
     // Admin Get Review by Id
-    public async Task<ReviewDetailResponseAdminDto> GetReviewByIdAdmin(string reviewId)
+    public async Task<ReviewDetailResponseAdminDto> GetReviewByIdAdmin(string reviewId, string adminId)
     {
-      if (!_currentUser.IsAdmin)
-        throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(adminId))
+        throw new UnauthorizedAccessException("Admin ID is required");
 
       var review = await _repo.GetByIdAsync(reviewId)
-    ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
+        ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
 
-     return _mapper.Map<ReviewDetailResponseAdminDto>(review);
-
+      return _mapper.Map<ReviewDetailResponseAdminDto>(review);
     }
+    
     // Admin Get Reviews with filter
-    public async Task<PageResult<ReviewListAdminDto>> GetReviewsAdmin(AdminReviewFilterDto filter)
+    public async Task<PageResult<ReviewListAdminDto>> GetReviewsAdmin(AdminReviewFilterDto filter, string adminId)
     {
-      if (!_currentUser.IsAdmin)
-        throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(adminId))
+        throw new UnauthorizedAccessException("Admin ID is required");
 
       var filters = new ReviewFilterInternal
       {
@@ -206,23 +202,21 @@ namespace Review.Application.Service
       };
     }
     // Get Review by Id
-    public async Task<ReviewResponseClientDto> GetReviewByIdClient(string reviewId)
+    public async Task<ReviewResponseClientDto> GetReviewByIdClient(string reviewId, string userId)
     {
-      var userId = _currentUser.UserId
-          ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(userId))
+        throw new UnauthorizedAccessException("User ID is required");
+
       var review = await _repo.GetByIdAsync(reviewId)
           ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
       return _mapper.Map<ReviewResponseClientDto>(review);
     }
 
     // Admin Get Deleted Reviews
-    public async Task<PageResult<ReviewListAdminDto>> GetDeletedReviews()
+    public async Task<PageResult<ReviewListAdminDto>> GetDeletedReviews(string adminId)
     {
-      var adminId = _currentUser.UserId
-          ?? throw new UnauthorizedAccessException();
-          
-      if (!_currentUser.IsAdmin)
-        throw new UnauthorizedAccessException("Admin access required");
+      if (string.IsNullOrWhiteSpace(adminId))
+        throw new UnauthorizedAccessException("Admin ID is required");
 
       var deletedReviews = await _repo.GetDeletedReviewsAsync();
 
