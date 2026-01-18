@@ -23,10 +23,10 @@ import { AuthService } from '../services/auth.service';
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: 'none',
+  secure: false,
+  sameSite: 'lax',
   ...(BaseConfiguration.NODE_ENV !== 'development' && {
-    domain: 'hacmieu.xyz',
+    domain: '.hacmieu.xyz',
   }),
   path: '/',
 };

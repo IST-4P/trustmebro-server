@@ -32,7 +32,8 @@
       "@common/redis/*": ["libs/redis/src/lib/*"],
       "@common/observability/*": ["libs/observability/src/lib/*"],
       "@common/health": ["libs/health/src/index.ts"],
-      "@common/pipes/*": ["libs/pipes/src/lib/*"]
+      "@common/pipes/*": ["libs/pipes/src/lib/*"],
+      "@common/locations": ["libs/locations/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

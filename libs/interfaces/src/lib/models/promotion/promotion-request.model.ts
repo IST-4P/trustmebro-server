@@ -14,6 +14,8 @@ export const GetManyPromotionsRequestSchema = PromotionSchema.pick({
   .partial()
   .extend({
     processId: z.uuid().optional(),
+    includeUsed: z.boolean().default(false),
+    userId: z.uuid().optional(),
     page: PaginationQueryRequestSchema.shape.page,
     limit: PaginationQueryRequestSchema.shape.limit,
   })
