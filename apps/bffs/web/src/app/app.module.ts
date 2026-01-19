@@ -19,6 +19,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { CartModule } from './modules/cart/cart.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { HealthModule } from './modules/health/health.module';
+import { LocationModule } from './modules/location/location.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
@@ -47,6 +48,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     OrderModule,
     PaymentModule,
     PromotionModule,
+    LocationModule,
   ],
   providers: [
     WebSocketService,
