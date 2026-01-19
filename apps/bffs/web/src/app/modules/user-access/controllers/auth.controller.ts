@@ -24,7 +24,7 @@ import { AuthService } from '../services/auth.service';
 const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: false,
-  sameSite: 'lax',
+  sameSite: 'none',
   ...(BaseConfiguration.NODE_ENV !== 'development' && {
     domain: '.hacmieu.xyz',
   }),
