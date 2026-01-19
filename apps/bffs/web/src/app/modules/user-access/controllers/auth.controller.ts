@@ -1,4 +1,3 @@
-import { BaseConfiguration } from '@common/configurations/base.config';
 import { IsPublic } from '@common/decorators/auth.decorator';
 import { ProcessId } from '@common/decorators/process-id.decorator';
 import {
@@ -23,8 +22,8 @@ import { AuthService } from '../services/auth.service';
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: BaseConfiguration.NODE_ENV === 'production', // true cho production, false cho dev
-  sameSite: BaseConfiguration.NODE_ENV === 'production' ? 'none' : 'lax',
+  // secure: BaseConfiguration.NODE_ENV === 'production', // true cho production, false cho dev
+  // sameSite: BaseConfiguration.NODE_ENV === 'production' ? 'none' : 'lax',
   // ...(BaseConfiguration.NODE_ENV !== 'development' && {
   //   // domain: '.hacmieu.xyz',
   // }),
