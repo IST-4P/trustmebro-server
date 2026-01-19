@@ -277,18 +277,6 @@ message GetDashboardSellerReviewStatsResponse {
   DashboardSellerReviewStats stats = 1;
 }
 
-//  ========================== Validation ==========================
-
-message HasUserReviewedOrderRequest {
-  string user_id = 1;
-  string order_id = 2;
-}
-
-message HasUserReviewedOrderResponse {
-  bool has_reviewed = 1;
-}
-
-
 service ReviewService {
 
   // Admin get
@@ -318,7 +306,4 @@ service ReviewService {
   // Dashboard
   rpc GetDashboardReviewStats(GetDashboardReviewStatsRequest) returns (GetDashboardReviewStatsResponse);
   rpc GetDashboardSellerReviewStats(GetDashboardSellerReviewStatsRequest) returns (GetDashboardSellerReviewStatsResponse);
-
-  // Validation
-  rpc HasUserReviewedOrder(HasUserReviewedOrderRequest) returns (HasUserReviewedOrderResponse);
 }

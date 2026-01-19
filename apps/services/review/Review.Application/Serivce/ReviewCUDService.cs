@@ -113,6 +113,11 @@ namespace Review.Application.Service
         throw new ReviewNotFoundException("Error.ProductNotFound");
       }
 
+      // Check if user already reviewed this order
+      var existingOrderReview = await _repo.GetOrderReviewAsync(dto.OrderId, userId);
+      if (existingOrderReview is not null)
+        throw new ReviewAlreadyExistsException($"Order {dto.OrderId} has already been reviewed");
+
       var existingReview = await _repo.GetOrderItemAsync(dto.OrderItemId, userId);
       if (existingReview is not null)
         throw new ReviewAlreadyExistsException(dto.OrderItemId);

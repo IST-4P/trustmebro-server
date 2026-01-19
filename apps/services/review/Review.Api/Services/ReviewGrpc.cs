@@ -313,25 +313,6 @@ namespace Review.Api.Services
     }
     #endregion
 
-    #region Validation
-    public override async Task<HasUserReviewedOrderResponse> HasUserReviewedOrder(HasUserReviewedOrderRequest request, ServerCallContext context)
-    {
-      try
-      {
-        var hasReviewed = await _service.HasUserReviewedOrder(request.OrderId, request.UserId);
-        return new HasUserReviewedOrderResponse
-        {
-          HasReviewed = hasReviewed
-        };
-      }
-      catch (Exception ex)
-      {
-        _logger.LogError(ex, "Error.CheckingReviewStatus");
-        throw new RpcException(new Status(StatusCode.Internal, "Internal server error"));
-      }
-    }
-    #endregion
-
 
     }
 }
