@@ -105,12 +105,13 @@ message PageInfo {
 // --- Create ---
 
 message CreateReviewRequest {
-  string order_item_id = 1;
-  string order_id = 2;
+  string user_id = 1;
+  string order_item_id = 2;
+  string order_id = 3;
 
-  ReviewRating rating = 3;
-  string content = 4;
-  repeated string medias = 5;
+  ReviewRating rating = 4;
+  string content = 5;
+  repeated string medias = 6;
 }
 
 message CreateReviewResponse {
@@ -118,8 +119,9 @@ message CreateReviewResponse {
 }
 
 message CreateReplyRequest {
-  string review_id = 1;
-  string content = 2;
+  string seller_id = 1;
+  string review_id = 2;
+  string content = 3;
 }
 
 message CreateReplyResponse {
@@ -129,10 +131,11 @@ message CreateReplyResponse {
 // --- Update ---
 
 message UpdateReviewRequest {
-  string id = 1;
-  optional ReviewRating rating = 2;
-  optional string content = 3;
-  repeated string medias = 4;
+  string user_id = 1;
+  string id = 2;
+  optional ReviewRating rating = 3;
+  optional string content = 4;
+  repeated string medias = 5;
 }
 
 message UpdateReviewResponse {
@@ -140,8 +143,9 @@ message UpdateReviewResponse {
 }
 
 message UpdateReplyRequest {
-  string id = 1; 
-  string content = 2;
+  string seller_id = 1;
+  string id = 2; 
+  string content = 3;
 }
 
 message UpdateReplyResponse {
@@ -151,7 +155,8 @@ message UpdateReplyResponse {
 // --- Delete ---
 
 message DeleteReviewRequest {
-  string id = 1;
+  string user_id = 1;
+  string id = 2;
 }
 
 message DeleteReviewResponse {
@@ -159,7 +164,8 @@ message DeleteReviewResponse {
 }
 
 message DeleteReplyRequest {
-  string id = 1;
+  string seller_id = 1;
+  string id = 2;
 }
 
 message DeleteReplyResponse {
@@ -169,7 +175,8 @@ message DeleteReplyResponse {
 // --- Get single review (client) ---
 
 message GetReviewRequest {
-  string id = 1;
+  string user_id = 1;
+  string id = 2;
 }
 
 message GetReviewResponse {
@@ -181,18 +188,19 @@ message GetReviewResponse {
 // ==========================
 
 message GetMyReviewsRequest {
-  string product_id = 1;
+  string user_id = 1;
+  string product_id = 2;
 
-  string from_date = 2; 
-  string to_date = 3;
+  string from_date = 3; 
+  string to_date = 4;
 
-  int32 min_rating = 4;
-  int32 max_rating = 5;
+  int32 min_rating = 5;
+  int32 max_rating = 6;
 
-  string sort_by = 6;
+  string sort_by = 7;
 
-  int32 page = 7;
-  int32 limit = 8;
+  int32 page = 8;
+  int32 limit = 9;
 }
 
 message GetMyReviewsResponse {
@@ -201,19 +209,20 @@ message GetMyReviewsResponse {
 }
 
 message GetReviewsAdminRequest {
-  string user_id = 1;
-  string seller_id = 2;
-  string product_id = 3;
+  string admin_id = 1;
+  string user_id = 2;
+  string seller_id = 3;
+  string product_id = 4;
 
-  string from_date = 4;
-  string to_date = 5;
+  string from_date = 5;
+  string to_date = 6;
 
-  int32 min_rating = 6;
-  int32 max_rating = 7;
+  int32 min_rating = 7;
+  int32 max_rating = 8;
 
-  string sort_by = 8;
-  int32 page = 9;
-  int32 limit = 10;
+  string sort_by = 9;
+  int32 page = 10;
+  int32 limit = 11;
 }
 
 message GetReviewsAdminResponse {
@@ -223,7 +232,8 @@ message GetReviewsAdminResponse {
 
 // Map với GetReviewByIdAdmin(string reviewId)
 message GetReviewByIdAdminRequest {
-  string id = 1;
+  string admin_id = 1;
+  string id = 2;
 }
 
 message GetReviewByIdAdminResponse {
@@ -250,7 +260,9 @@ message GetSellerRatingResponse {
 
 //  ========================== Dashboard ==========================
 
-message GetDashboardReviewStatsRequest {}
+message GetDashboardReviewStatsRequest {
+  string admin_id = 1;
+}
 
 message GetDashboardReviewStatsResponse {
   DashboardReviewStats stats = 1;
@@ -258,10 +270,22 @@ message GetDashboardReviewStatsResponse {
 
 message GetDashboardSellerReviewStatsRequest {
   string seller_id = 1;
+  string seller_id_auth = 2;
 }
 
 message GetDashboardSellerReviewStatsResponse {
   DashboardSellerReviewStats stats = 1;
+}
+
+//  ========================== Validation ==========================
+
+message HasUserReviewedOrderRequest {
+  string user_id = 1;
+  string order_id = 2;
+}
+
+message HasUserReviewedOrderResponse {
+  bool has_reviewed = 1;
 }
 
 
@@ -294,4 +318,7 @@ service ReviewService {
   // Dashboard
   rpc GetDashboardReviewStats(GetDashboardReviewStatsRequest) returns (GetDashboardReviewStatsResponse);
   rpc GetDashboardSellerReviewStats(GetDashboardSellerReviewStatsRequest) returns (GetDashboardSellerReviewStatsResponse);
+
+  // Validation
+  rpc HasUserReviewedOrder(HasUserReviewedOrderRequest) returns (HasUserReviewedOrderResponse);
 }

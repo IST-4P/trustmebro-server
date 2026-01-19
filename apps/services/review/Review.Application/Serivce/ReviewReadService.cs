@@ -230,6 +230,19 @@ namespace Review.Application.Service
         Limit = items.Count
       };
     }
+
+    // Validate if user has reviewed order
+    public async Task<bool> HasUserReviewedOrder(string orderId, string userId)
+    {
+      if (string.IsNullOrWhiteSpace(userId))
+        throw new UnauthorizedAccessException("User ID is required");
+
+      if (string.IsNullOrWhiteSpace(orderId))
+        throw new ArgumentException("Order ID is required");
+
+      var review = await _repo.GetOrderReviewAsync(orderId, userId);
+      return review != null;
+    }
     #endregion
   }
 }

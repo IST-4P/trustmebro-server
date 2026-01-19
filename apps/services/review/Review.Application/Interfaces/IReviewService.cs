@@ -18,6 +18,9 @@ namespace Review.Application.Interfaces
 
     Task<ReviewResponseClientDto> GetReviewByIdClient(string reviewId, string userId);
 
+    // Validate
+    Task<bool> HasUserReviewedOrder(string orderId, string userId);
+
 
     // Dashboard
     Task<DashboardReviewStatsDto> GetDashboard(string adminId);
