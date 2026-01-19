@@ -21,21 +21,12 @@ namespace Review.Api.Services
       _service = service;
     }
 
-    // Helper method to get user ID from context
-    private string GetUserId(ServerCallContext context)
-    {
-      var userId = context.RequestHeaders.GetValue("user_id");
-      if (string.IsNullOrWhiteSpace(userId))
-        throw new RpcException(new Status(StatusCode.Unauthenticated, "User ID not found in headers"));
-      return userId;
-    }
-
     #region Create
     public override async Task<CreateReviewResponse> CreateReview(CreateReviewRequest request, ServerCallContext context)
     {
       try
       {
-        var userId = GetUserId(context);
+        var userId = request.UserId;
         var dto = _mapper.Map<CreateReviewRequestDto>(request);
         var result = await _service.CreateReview(dto, userId);
         return new CreateReviewResponse
@@ -55,7 +46,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var sellerId = GetUserId(context);
+        var sellerId = request.SellerId;
         var dto = _mapper.Map<CreateReplyRequestDto>(request);
         var result = await _service.CreateReply(dto, sellerId);
         return new CreateReplyResponse
@@ -78,7 +69,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var userId = GetUserId(context);
+        var userId = request.UserId;
         var result = await _service.GetReviewByIdClient(request.Id, userId);
 
         return new GetReviewResponse
@@ -115,7 +106,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var userId = GetUserId(context);
+        var userId = request.UserId;
         var filterDto = _mapper.Map<MyReviewFilterDto>(request);
         var pageResult = await _service.GetMyReviews(filterDto, userId);
         var response = new GetMyReviewsResponse();
@@ -161,7 +152,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var adminId = GetUserId(context);
+        var adminId = request.AdminId;
         var filterDto = _mapper.Map<AdminReviewFilterDto>(request);
         var pageResult = await _service.GetReviewsAdmin(filterDto, adminId);
         var response = new GetReviewsAdminResponse();
@@ -189,7 +180,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var adminId = GetUserId(context);
+        var adminId = request.AdminId;
         var result = await _service.GetReviewByIdAdmin(request.Id, adminId);
 
         return new GetReviewByIdAdminResponse
@@ -211,7 +202,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var userId = GetUserId(context);
+        var userId = request.UserId;
         var dto = _mapper.Map<UpdateReviewRequestDto>(request);
         var update = await _service.UpdateReview(request.Id, dto, userId);
         return new UpdateReviewResponse()
@@ -231,7 +222,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var sellerId = GetUserId(context);
+        var sellerId = request.SellerId;
         var dto = _mapper.Map<UpdateReplyRequestDto>(request);
         var result = await _service.UpdateReply(request.Id, dto, sellerId);
         return new UpdateReplyResponse()
@@ -252,7 +243,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var userId = GetUserId(context);
+        var userId = request.UserId;
         var success = await _service.DeleteReview(request.Id, userId);
         return new DeleteReviewResponse()
         {
@@ -270,7 +261,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var sellerId = GetUserId(context);
+        var sellerId = request.SellerId;
         var success = await _service.DeleteReply(request.Id, sellerId);
         return new DeleteReplyResponse()
         {
@@ -290,7 +281,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var adminId = GetUserId(context);
+        var adminId = request.AdminId;
         var result = await _service.GetDashboard(adminId);
         return new GetDashboardReviewStatsResponse()
         {
@@ -307,7 +298,7 @@ namespace Review.Api.Services
     {
       try
       {
-        var sellerId = GetUserId(context);
+        var sellerId = request.SellerIdAuth;
         var result = await _service.GetDashboardSeller(sellerId);
         return new GetDashboardSellerReviewStatsResponse()
         {
@@ -320,7 +311,7 @@ namespace Review.Api.Services
         throw new RpcException(new Status(StatusCode.Internal, "Internal server error"));
       }
     }
-      #endregion
+    #endregion
 
 
     }

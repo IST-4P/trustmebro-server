@@ -96,6 +96,7 @@ export interface PageInfo {
 }
 
 export interface CreateReviewRequest {
+  userId: string;
   orderItemId: string;
   orderId: string;
   rating: ReviewRating;
@@ -108,6 +109,7 @@ export interface CreateReviewResponse {
 }
 
 export interface CreateReplyRequest {
+  sellerId: string;
   reviewId: string;
   content: string;
 }
@@ -117,6 +119,7 @@ export interface CreateReplyResponse {
 }
 
 export interface UpdateReviewRequest {
+  userId: string;
   id: string;
   rating?: ReviewRating | undefined;
   content?: string | undefined;
@@ -128,6 +131,7 @@ export interface UpdateReviewResponse {
 }
 
 export interface UpdateReplyRequest {
+  sellerId: string;
   id: string;
   content: string;
 }
@@ -137,6 +141,7 @@ export interface UpdateReplyResponse {
 }
 
 export interface DeleteReviewRequest {
+  userId: string;
   id: string;
 }
 
@@ -145,6 +150,7 @@ export interface DeleteReviewResponse {
 }
 
 export interface DeleteReplyRequest {
+  sellerId: string;
   id: string;
 }
 
@@ -153,6 +159,7 @@ export interface DeleteReplyResponse {
 }
 
 export interface GetReviewRequest {
+  userId: string;
   id: string;
 }
 
@@ -161,6 +168,7 @@ export interface GetReviewResponse {
 }
 
 export interface GetMyReviewsRequest {
+  userId: string;
   productId: string;
   fromDate: string;
   toDate: string;
@@ -177,6 +185,7 @@ export interface GetMyReviewsResponse {
 }
 
 export interface GetReviewsAdminRequest {
+  adminId: string;
   userId: string;
   sellerId: string;
   productId: string;
@@ -196,6 +205,7 @@ export interface GetReviewsAdminResponse {
 
 /** Map với GetReviewByIdAdmin(string reviewId) */
 export interface GetReviewByIdAdminRequest {
+  adminId: string;
   id: string;
 }
 
@@ -220,6 +230,7 @@ export interface GetSellerRatingResponse {
 }
 
 export interface GetDashboardReviewStatsRequest {
+  adminId: string;
 }
 
 export interface GetDashboardReviewStatsResponse {
@@ -228,6 +239,7 @@ export interface GetDashboardReviewStatsResponse {
 
 export interface GetDashboardSellerReviewStatsRequest {
   sellerId: string;
+  sellerIdAuth: string;
 }
 
 export interface GetDashboardSellerReviewStatsResponse {

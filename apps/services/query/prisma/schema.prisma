@@ -295,3 +295,83 @@ model OrderView {
     @@index([shopId, status, createdAt(sort: Desc)])
     @@index([status])
 }
+
+// =================================================================================================
+
+enum ReviewType {
+    PRODUCT
+    SELLER
+}
+
+model ReviewView {
+    id String @id
+
+    userId      String
+    productId   String?
+    sellerId    String?
+    orderId     String?
+    orderItemId String?
+
+    targetType ReviewType
+
+    rating  Int
+    content String? @db.Text
+
+    medias String[]
+
+    reply ReviewReplyView?
+
+    createdAt DateTime
+    updatedAt DateTime?
+
+    @@index([productId, createdAt(sort: Desc)])
+    @@index([sellerId, createdAt(sort: Desc)])
+    @@index([userId, createdAt(sort: Desc)])
+    @@index([orderId])
+    @@index([orderItemId])
+}
+
+model ReviewReplyView {
+    id       String @id // replyId
+    reviewId String @unique
+    sellerId String
+    content  String @db.Text
+
+    createdAt DateTime
+    updatedAt DateTime
+
+    review ReviewView @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+    @@index([sellerId, createdAt(sort: Desc)])
+}
+
+// ----------------------------
+// AGGREGATE VIEWS (Rating Stats)
+// ----------------------------
+model ProductRatingView {
+    productId     String @id
+    averageRating Float  @default(0)
+    totalReviews  Int    @default(0)
+
+    oneStarCount   Int @default(0)
+    twoStarCount   Int @default(0)
+    threeStarCount Int @default(0)
+    fourStarCount  Int @default(0)
+    fiveStarCount  Int @default(0)
+
+    updatedAt DateTime @updatedAt
+}
+
+model SellerRatingView {
+    sellerId      String @id
+    averageRating Float  @default(0)
+    totalReviews  Int    @default(0)
+
+    oneStarCount   Int @default(0)
+    twoStarCount   Int @default(0)
+    threeStarCount Int @default(0)
+    fourStarCount  Int @default(0)
+    fiveStarCount  Int @default(0)
+
+    updatedAt DateTime @updatedAt
+}

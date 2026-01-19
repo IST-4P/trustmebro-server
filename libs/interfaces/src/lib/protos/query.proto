@@ -25,6 +25,8 @@ service QueryService {
 
   rpc GetManyVideos(GetManyVideosRequest) returns (GetManyVideosResponse);
   rpc GetVideo(GetVideoRequest) returns (VideoResponse);
+
+  rpc GetManyProductReviews(GetManyProductReviewsRequest) returns (GetManyProductReviewsResponse);
 }
 
 //====================================== Category ======================================//
@@ -411,4 +413,53 @@ message GetManyVideosResponse {
   int32 totalItems = 3;
   int32 totalPages = 4;
   repeated VideoBasicInfo videos = 5;
+}
+
+//====================================== Reviews ======================================//
+//==================== GetManyProductReviewsRequest ====================//
+message GetManyProductReviewsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  string productId = 4;
+  int32 rating = 5;
+}
+
+message ReviewReply {
+  string id = 1;
+  string sellerId = 2;
+  string content = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message ReviewItem {
+  string id = 1;
+  string userId = 2;
+  int32 rating = 3;
+  string content = 4;
+  repeated string medias = 5;
+  optional ReviewReply reply = 6;
+  string createdAt = 7;
+  optional string updatedAt = 8;
+}
+
+message ProductRatingStats {
+  string productId = 1;
+  double averageRating = 2;
+  int32 totalReviews = 3;
+  int32 oneStarCount = 4;
+  int32 twoStarCount = 5;
+  int32 threeStarCount = 6;
+  int32 fourStarCount = 7;
+  int32 fiveStarCount = 8;
+}
+
+message GetManyProductReviewsResponse {
+  repeated ReviewItem reviews = 1;
+  ProductRatingStats rating = 2;
+  int32 page = 3;
+  int32 limit = 4;
+  int32 totalItems = 5;
+  int32 totalPages = 6;
 }

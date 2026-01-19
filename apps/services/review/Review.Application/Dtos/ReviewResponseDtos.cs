@@ -6,6 +6,7 @@ namespace Review.Application.Dtos
 
   public class ReviewResponseClientDto
   {
+    public string Id { get; set; } = string.Empty;
     public string UserId { get; set; } = string.Empty;
     public string ProductId { get; set; } = string.Empty;
     public string OrderItemId { get; set; } = string.Empty;
@@ -14,7 +15,7 @@ namespace Review.Application.Dtos
     public string? Content { get; set; }
     public List<string>? Medias { get; set; }
 
-    public List<ReviewReplyDto>? Replies { get; set; }
+    public ReviewReplyDto? Replies { get; set; }
 
     public long LikeCount { get; set; }
 

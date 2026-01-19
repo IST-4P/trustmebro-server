@@ -89,6 +89,10 @@ enum PromotionQueueTopics {
   CREATE_REDEMPTION = 'create_redemption',
 }
 
+enum ReviewQueueTopics {
+  CREATE_REVIEW = 'review.created',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -102,4 +106,5 @@ export const QueueTopics = {
   PAYMENT: PaymentQueueTopics,
   MEDIA: MediaQueueTopics,
   PROMOTION: PromotionQueueTopics,
+  REVIEW: ReviewQueueTopics,
 } as const;
