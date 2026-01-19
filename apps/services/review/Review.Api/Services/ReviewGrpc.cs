@@ -13,6 +13,7 @@ namespace Review.Api.Services
     private readonly ILogger<ReviewGrpcService> _logger;
     private readonly IReviewService _service;
     private readonly IMapper _mapper;
+    
     public ReviewGrpcService(ILogger<ReviewGrpcService> logger, IReviewService service, IMapper mapper)
     {
       _logger = logger;
@@ -20,13 +21,23 @@ namespace Review.Api.Services
       _service = service;
     }
 
+    // Helper method to get user ID from context
+    private string GetUserId(ServerCallContext context)
+    {
+      var userId = context.RequestHeaders.GetValue("user_id");
+      if (string.IsNullOrWhiteSpace(userId))
+        throw new RpcException(new Status(StatusCode.Unauthenticated, "User ID not found in headers"));
+      return userId;
+    }
+
     #region Create
     public override async Task<CreateReviewResponse> CreateReview(CreateReviewRequest request, ServerCallContext context)
     {
       try
       {
+        var userId = GetUserId(context);
         var dto = _mapper.Map<CreateReviewRequestDto>(request);
-        var result = await _service.CreateReview(dto);
+        var result = await _service.CreateReview(dto, userId);
         return new CreateReviewResponse
         {
           Review = _mapper.Map<Review.Grpc.Review>(result)
@@ -39,12 +50,14 @@ namespace Review.Api.Services
         throw new RpcException(new Status(StatusCode.Internal, "Internal server error"));
       }
     }
+    
     public override async Task<CreateReplyResponse> CreateReply(CreateReplyRequest request, ServerCallContext context)
     {
       try
       {
+        var sellerId = GetUserId(context);
         var dto = _mapper.Map<CreateReplyRequestDto>(request);
-        var result = await _service.CreateReply(dto);
+        var result = await _service.CreateReply(dto, sellerId);
         return new CreateReplyResponse
         {
           Review = _mapper.Map<Review.Grpc.Review>(result)
@@ -65,7 +78,8 @@ namespace Review.Api.Services
     {
       try
       {
-        var result = await _service.GetReviewByIdClient(request.Id);
+        var userId = GetUserId(context);
+        var result = await _service.GetReviewByIdClient(request.Id, userId);
 
         return new GetReviewResponse
         {
@@ -101,8 +115,9 @@ namespace Review.Api.Services
     {
       try
       {
+        var userId = GetUserId(context);
         var filterDto = _mapper.Map<MyReviewFilterDto>(request);
-        var pageResult = await _service.GetMyReviews(filterDto);
+        var pageResult = await _service.GetMyReviews(filterDto, userId);
         var response = new GetMyReviewsResponse();
         response.Items.AddRange(
             _mapper.Map<IEnumerable<Review.Grpc.Review>>(pageResult.Items)
@@ -146,8 +161,9 @@ namespace Review.Api.Services
     {
       try
       {
+        var adminId = GetUserId(context);
         var filterDto = _mapper.Map<AdminReviewFilterDto>(request);
-        var pageResult = await _service.GetReviewsAdmin(filterDto);
+        var pageResult = await _service.GetReviewsAdmin(filterDto, adminId);
         var response = new GetReviewsAdminResponse();
         response.Items.AddRange(
             _mapper.Map<IEnumerable<Review.Grpc.Review>>(pageResult.Items)
@@ -173,7 +189,8 @@ namespace Review.Api.Services
     {
       try
       {
-        var result = await _service.GetReviewByIdAdmin(request.Id);
+        var adminId = GetUserId(context);
+        var result = await _service.GetReviewByIdAdmin(request.Id, adminId);
 
         return new GetReviewByIdAdminResponse
         {
@@ -194,8 +211,9 @@ namespace Review.Api.Services
     {
       try
       {
+        var userId = GetUserId(context);
         var dto = _mapper.Map<UpdateReviewRequestDto>(request);
-        var update = await _service.UpdateReview(request.Id, dto);
+        var update = await _service.UpdateReview(request.Id, dto, userId);
         return new UpdateReviewResponse()
         {
           Review = _mapper.Map<Grpc.Review>(update)
@@ -213,8 +231,9 @@ namespace Review.Api.Services
     {
       try
       {
+        var sellerId = GetUserId(context);
         var dto = _mapper.Map<UpdateReplyRequestDto>(request);
-        var result = await _service.UpdateReply(request.Id, dto);
+        var result = await _service.UpdateReply(request.Id, dto, sellerId);
         return new UpdateReplyResponse()
         {
           Review = _mapper.Map<Grpc.Review>(result)
@@ -233,7 +252,8 @@ namespace Review.Api.Services
     {
       try
       {
-        var success = await _service.DeleteReview(request.Id);
+        var userId = GetUserId(context);
+        var success = await _service.DeleteReview(request.Id, userId);
         return new DeleteReviewResponse()
         {
           Success = success
@@ -250,7 +270,8 @@ namespace Review.Api.Services
     {
       try
       {
-        var success = await _service.DeleteReply(request.Id);
+        var sellerId = GetUserId(context);
+        var success = await _service.DeleteReply(request.Id, sellerId);
         return new DeleteReplyResponse()
         {
           Success = success
@@ -269,7 +290,8 @@ namespace Review.Api.Services
     {
       try
       {
-        var result = await _service.GetDashboard();
+        var adminId = GetUserId(context);
+        var result = await _service.GetDashboard(adminId);
         return new GetDashboardReviewStatsResponse()
         {
           Stats = _mapper.Map<DashboardReviewStats>(result)
@@ -285,7 +307,8 @@ namespace Review.Api.Services
     {
       try
       {
-        var result = await _service.GetDashboardSeller();
+        var sellerId = GetUserId(context);
+        var result = await _service.GetDashboardSeller(sellerId);
         return new GetDashboardSellerReviewStatsResponse()
         {
           Stats = _mapper.Map<DashboardSellerReviewStats>(result)

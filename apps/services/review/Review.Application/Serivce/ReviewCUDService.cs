@@ -5,7 +5,6 @@ using Review.Application.Contracts;
 using Review.Application.Dtos;
 using Review.Application.Exceptions;
 using Review.Application.Interfaces;
-using SharedKernel.Interfaces;
 using static Review.Application.Validators.ReviewValidators;
 using SharedInfrastructure.Kafka.Abstractions;
 
@@ -14,7 +13,6 @@ namespace Review.Application.Service
   public partial class ReviewService : IReviewService
   {
     private readonly IReviewRepository _repo;
-    private readonly ICurrentUserService _currentUser;
     private readonly IMapper _mapper;
     private readonly Query.QueryService.QueryServiceClient _queryService;
     private readonly IKafkaProducer _kafka;
@@ -23,23 +21,20 @@ namespace Review.Application.Service
       IReviewRepository reviewRepository,
       IMapper mapper,
       Query.QueryService.QueryServiceClient queryService,
-      ICurrentUserService currentUser,
       IKafkaProducer kafka)
     {
       _repo = reviewRepository;
       _mapper = mapper;
       _queryService = queryService;
-      _currentUser = currentUser;
       _kafka = kafka;
-
     }
 
     #region Create
     // Reply
-    public async Task<ReviewResponseClientDto> CreateReply(CreateReplyRequestDto dto)
+    public async Task<ReviewResponseClientDto> CreateReply(CreateReplyRequestDto dto, string sellerId)
     {
-      var sellerId = _currentUser.UserId
-          ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(sellerId))
+        throw new UnauthorizedAccessException("Seller ID is required");
 
       var validationResult = CreateReplyValidator.Validate(dto);
       if (!validationResult.IsValid)
@@ -74,12 +69,12 @@ namespace Review.Application.Service
       return _mapper.Map<ReviewResponseClientDto>(reply);
 
     }
+    
     // Review
-    public async Task<ReviewResponseClientDto> CreateReview( CreateReviewRequestDto dto )
+    public async Task<ReviewResponseClientDto> CreateReview(CreateReviewRequestDto dto, string userId)
     {
-      var userId = _currentUser.UserId
-        ?? throw new UnauthorizedAccessException();
-
+      if (string.IsNullOrWhiteSpace(userId))
+        throw new UnauthorizedAccessException("User ID is required");
 
       var validationResult = CreateReviewValidator.Validate(dto);
       if (!validationResult.IsValid)
@@ -94,7 +89,7 @@ namespace Review.Application.Service
         order = await _queryService.GetOrderAsync(new GetOrderRequest
         {
           OrderId = dto.OrderId,
-          UserId = _currentUser.UserId!       
+          UserId = userId
         });
       }
       catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
@@ -118,11 +113,9 @@ namespace Review.Application.Service
         throw new ReviewNotFoundException("Error.ProductNotFound");
       }
 
-
       var existingReview = await _repo.GetOrderItemAsync(dto.OrderItemId, userId);
       if (existingReview is not null)
         throw new ReviewAlreadyExistsException(dto.OrderItemId);
-
 
       var review = new Domain.Entities.Review
       {
@@ -159,10 +152,10 @@ namespace Review.Application.Service
 
     #region Delete
     // Reply - Soft Delete for Seller
-    public async Task<bool> DeleteReply(string replyId)
+    public async Task<bool> DeleteReply(string replyId, string sellerId)
     {
-      var sellerId = _currentUser.UserId
-         ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(sellerId))
+        throw new UnauthorizedAccessException("Seller ID is required");
 
       var reply = await _repo.GetReplyByIdAsync(replyId)
           ?? throw new ReviewNotFoundException("Error.ReviewReplyNotFound");
@@ -186,10 +179,10 @@ namespace Review.Application.Service
     }
 
     // Review - Soft Delete for User
-    public async Task<bool> DeleteReview(string reviewId)
+    public async Task<bool> DeleteReview(string reviewId, string userId)
     {
-      var userId = _currentUser.UserId
-        ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(userId))
+        throw new UnauthorizedAccessException("User ID is required");
 
       var review = await _repo.GetByIdAsync(reviewId)
           ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
@@ -213,12 +206,11 @@ namespace Review.Application.Service
     }
 
     // Admin Hard Delete - Permanent Delete
-    public async Task<bool> AdminHardDeleteReview(string reviewId)
+    public async Task<bool> AdminHardDeleteReview(string reviewId, string adminId)
     {
-      var adminId = _currentUser.UserId
-        ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(adminId))
+        throw new UnauthorizedAccessException("Admin ID is required");
 
-      // Check if user is admin (you might want to add role checking here)
       var review = await _repo.GetByIdAsync(reviewId)
           ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
 
@@ -237,10 +229,10 @@ namespace Review.Application.Service
       return result;
     }
 
-    public async Task<bool> AdminHardDeleteReply(string replyId)
+    public async Task<bool> AdminHardDeleteReply(string replyId, string adminId)
     {
-      var adminId = _currentUser.UserId
-         ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(adminId))
+        throw new UnauthorizedAccessException("Admin ID is required");
 
       var reply = await _repo.GetReplyByIdAsync(replyId)
           ?? throw new ReviewNotFoundException("Error.ReviewReplyNotFound");
@@ -263,10 +255,10 @@ namespace Review.Application.Service
     #endregion
 
     #region Update
-    public async Task<ReviewResponseClientDto> UpdateReply(string replyId, UpdateReplyRequestDto dto)
+    public async Task<ReviewResponseClientDto> UpdateReply(string replyId, UpdateReplyRequestDto dto, string sellerId)
     {
-      var sellerId = _currentUser.UserId
-        ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(sellerId))
+        throw new UnauthorizedAccessException("Seller ID is required");
 
       var validationResult = UpdateReplyValidator.Validate(dto);
       if (!validationResult.IsValid)
@@ -295,19 +287,18 @@ namespace Review.Application.Service
          ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
 
       return _mapper.Map<ReviewResponseClientDto>(review);
-
-
     }
 
-    public async Task<ReviewResponseClientDto> UpdateReview(string reviewId, UpdateReviewRequestDto dto)
+    public async Task<ReviewResponseClientDto> UpdateReview(string reviewId, UpdateReviewRequestDto dto, string userId)
     {
-      var userId = _currentUser.UserId
-        ?? throw new UnauthorizedAccessException();
+      if (string.IsNullOrWhiteSpace(userId))
+        throw new UnauthorizedAccessException("User ID is required");
 
       var validationResult = UpdateReviewValidator.Validate(dto);
-      if (!validationResult.IsValid) throw new ReviewValidationException(validationResult.ErrorMessage);
+      if (!validationResult.IsValid) 
+        throw new ReviewValidationException(validationResult.ErrorMessage);
 
-      var review = await _repo .GetByIdAsync(reviewId)
+      var review = await _repo.GetByIdAsync(reviewId)
           ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
 
       if (review.UserId != userId)
@@ -335,8 +326,6 @@ namespace Review.Application.Service
          ?? throw new ReviewNotFoundException("Error.ReviewNotFound");
 
       return _mapper.Map<ReviewResponseClientDto>(updatedReview);
-
-
     }
 
     #endregion
