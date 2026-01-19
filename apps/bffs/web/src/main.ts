@@ -26,7 +26,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://tusd.hacmieu.xyz'],
+    origin: ['https://localhost:3000', 'https://tusd.hacmieu.xyz'],
     credentials: true, // Cho phép gửi cookies/credentials
   });
 
