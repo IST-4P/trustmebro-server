@@ -35,8 +35,8 @@ RUN dotnet publish Review.Api/Review.Api.csproj -c Release -o /app/publish /p:Us
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
-# Install curl for health checks
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Install netcat for health checks
+RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
 
 # Copy published app từ build stage
 COPY --from=build /app/publish .
@@ -50,7 +50,7 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:5011/health || exit 1
+  CMD nc -z localhost 5011 || exit 1
 
 # Run the application
 ENTRYPOINT ["dotnet", "Review.Api.dll"]
