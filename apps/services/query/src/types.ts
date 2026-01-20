@@ -27,5 +27,12 @@ declare global {
       | 'price'
       | 'productId'
     >[];
+    type Reply = {
+      id: string;
+      reviewId: string;
+      shopId: string;
+      content: string;
+      createdAt: string;
+    };
   }
 }

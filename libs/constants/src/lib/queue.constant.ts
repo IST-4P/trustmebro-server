@@ -91,6 +91,12 @@ enum PromotionQueueTopics {
 
 enum ReviewQueueTopics {
   CREATE_REVIEW = 'review.created',
+  UPDATE_REVIEW = 'review.updated',
+  DELETE_REVIEW = 'review.deleted',
+
+  CREATE_REPLY = 'reply.created',
+  UPDATE_REPLY = 'reply.updated',
+  DELETE_REPLY = 'reply.deleted',
 }
 
 export const QueueTopics = {

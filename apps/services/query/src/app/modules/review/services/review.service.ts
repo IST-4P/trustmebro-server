@@ -1,10 +1,14 @@
 import {
+  CreateReviewResponse,
   GetManyProductReviewsRequest,
   GetManyProductReviewsResponse,
-  ReviewResponse,
+  UpdateReviewResponse,
 } from '@common/interfaces/models/review';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { ReviewMapper } from '../mappers/review.mapper';
+import { Injectable } from '@nestjs/common';
+import {
+  CreateReviewMapper,
+  UpdateReviewMapper,
+} from '../mappers/review.mapper';
 import { ReviewRepository } from '../repositories/review.repository';
 
 @Injectable()
@@ -15,24 +19,18 @@ export class ReviewService {
     data: GetManyProductReviewsRequest
   ): Promise<GetManyProductReviewsResponse> {
     const reviews = await this.reviewRepository.list(data);
-    if (reviews.totalItems === 0) {
-      throw new NotFoundException('Error.ReviewsNotFound');
-    }
     return reviews;
   }
 
-  create(data: ReviewResponse) {
-    return this.reviewRepository.create(ReviewMapper(data));
+  create(data: CreateReviewResponse) {
+    return this.reviewRepository.create(CreateReviewMapper(data));
   }
 
-  // cancel(data: { orderId: string }) {
-  //   return this.orderRepository.update({
-  //     id: data.orderId,
-  //     status: OrderStatusValues.CANCELLED,
-  //   });
-  // }
+  update(data: UpdateReviewResponse) {
+    return this.reviewRepository.update(UpdateReviewMapper(data));
+  }
 
-  // update(data: OrderResponse) {
-  //   return this.orderRepository.update(OrderMapper(data));
-  // }
+  delete(data: { ReviewId: string }) {
+    return this.reviewRepository.delete({ id: data.ReviewId });
+  }
 }

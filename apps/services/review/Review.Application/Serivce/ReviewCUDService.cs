@@ -77,7 +77,7 @@ namespace Review.Application.Service
       }
 
       review = await _repo.GetByIdAsync(dto.ReviewId) ?? review;
-      return _mapper.Map<ReviewResponseClientDto>(reply);
+      return _mapper.Map<ReviewResponseClientDto>(review);
 
     }
     
@@ -182,8 +182,10 @@ namespace Review.Application.Service
       if (string.IsNullOrWhiteSpace(sellerId))
         throw new UnauthorizedAccessException("Seller ID is required");
 
+      _logger.LogInformation("Attempting to delete reply with ID: {ReplyId} by seller: {SellerId}", replyId, sellerId);
+
       var reply = await _repo.GetReplyByIdAsync(replyId)
-          ?? throw new ReviewNotFoundException("Error.ReviewReplyNotFound");
+          ?? throw new ReviewNotFoundException($"Reply with ID '{replyId}' was not found or already deleted");
 
       if (reply.SellerId != sellerId)
         throw new ReviewAccessDeniedException(replyId, sellerId);

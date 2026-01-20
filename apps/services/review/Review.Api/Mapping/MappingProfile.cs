@@ -26,6 +26,7 @@ namespace Review.Api.Mapping
                    .MapFrom(src => src.Medias.Count > 0 ? src.Medias.ToList() : new List<string>()))
           .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
       CreateMap<CreateReplyRequest, CreateReplyRequestDto>();
+      CreateMap<UpdateReplyRequest, UpdateReplyRequestDto>();
 
 
       //Dto to Entity

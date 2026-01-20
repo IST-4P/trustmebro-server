@@ -3,8 +3,10 @@ import { PaginationQueryRequestSchema } from '../common/pagination.model';
 
 export const GetManyProductReviewsRequestSchema =
   PaginationQueryRequestSchema.extend({
-    productId: z.uuid(),
+    productId: z.uuid().optional(),
     rating: z.coerce.number().min(1).max(5).default(1),
+    userId: z.uuid().optional(),
+    shopId: z.uuid().optional(),
   })
     .extend({
       processId: z.uuid().optional(),
@@ -23,9 +25,30 @@ export const CreateProductReviewRequestSchema = z
   })
   .strict();
 
+export const UpdateProductReviewsRequestSchema = z.object({
+  id: z.uuid(),
+  userId: z.uuid(),
+  rating: z.number().min(1).max(5).optional(),
+  content: z.string().max(500).optional(),
+  medias: z.array(z.string()),
+  processId: z.uuid().optional(),
+});
+
+export const DeleteProductReviewRequestSchema = z.object({
+  id: z.uuid(),
+  userId: z.uuid(),
+  processId: z.uuid().optional(),
+});
+
 export type GetManyProductReviewsRequest = z.infer<
   typeof GetManyProductReviewsRequestSchema
 >;
 export type CreateProductReviewRequest = z.infer<
   typeof CreateProductReviewRequestSchema
+>;
+export type UpdateProductReviewsRequest = z.infer<
+  typeof UpdateProductReviewsRequestSchema
+>;
+export type DeleteProductReviewRequest = z.infer<
+  typeof DeleteProductReviewRequestSchema
 >;

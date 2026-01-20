@@ -1,10 +1,8 @@
 import {
-  CreateReviewRequest,
   DeleteReviewRequest,
   REVIEW_SERVICE_NAME,
   REVIEW_SERVICE_PACKAGE_NAME,
   ReviewServiceClient,
-  UpdateReviewRequest,
 } from '@common/interfaces/proto-types/review';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -22,20 +20,6 @@ export class ReviewWriteService implements OnModuleInit {
   onModuleInit() {
     this.reviewService =
       this.reviewClient.getService<ReviewServiceClient>(REVIEW_SERVICE_NAME);
-  }
-
-  async createReview(data: CreateReviewRequest) {
-    const createdReview = await firstValueFrom(
-      this.reviewService.createReview(data)
-    );
-    return createdReview.review;
-  }
-
-  async updateReview(data: UpdateReviewRequest) {
-    const updatedReview = await firstValueFrom(
-      this.reviewService.updateReview(data)
-    );
-    return updatedReview.review;
   }
 
   async deleteReview(data: DeleteReviewRequest) {

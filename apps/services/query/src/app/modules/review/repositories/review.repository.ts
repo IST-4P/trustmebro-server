@@ -11,10 +11,15 @@ export class ReviewRepository {
     const skip = (data.page - 1) * data.limit;
     const take = data.limit;
 
-    const where: Prisma.ReviewViewWhereInput = {
-      productId: data.productId,
-      rating: data.rating,
+    let where: Prisma.ReviewViewWhereInput = {
+      productId: data?.productId || undefined,
+      userId: data?.userId || undefined,
+      shopId: data?.shopId || undefined,
     };
+
+    if (data.productId && data.rating) {
+      where.rating = data.rating;
+    }
 
     const [totalItems, reviews, rating] = await Promise.all([
       this.prismaService.reviewView.count({
@@ -27,25 +32,22 @@ export class ReviewRepository {
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
+          productId: true,
           userId: true,
           rating: true,
           content: true,
           medias: true,
-          reply: {
-            select: {
-              id: true,
-              sellerId: true,
-              content: true,
+          reply: true,
+        },
+      }),
+      data.productId
+        ? this.prismaService.productRatingView.findUnique({
+            where: { productId: data.productId },
+            omit: {
+              updatedAt: true,
             },
-          },
-        },
-      }),
-      this.prismaService.productRatingView.findUnique({
-        where: { productId: data.productId },
-        omit: {
-          updatedAt: true,
-        },
-      }),
+          })
+        : null,
     ]);
     return {
       reviews,
@@ -67,8 +69,8 @@ export class ReviewRepository {
         await this.updateProductRating(data.productId, tx);
       }
 
-      if (data.sellerId) {
-        await this.updateSellerRating(data.sellerId, tx);
+      if (data.shopId) {
+        await this.updateShopRating(data.shopId, tx);
       }
 
       return review;
@@ -127,15 +129,15 @@ export class ReviewRepository {
     });
   }
 
-  private async updateSellerRating(
-    sellerId: string,
+  private async updateShopRating(
+    shopId: string,
     tx?: Prisma.TransactionClient
   ) {
     const prisma = tx || this.prismaService;
 
-    // Get all reviews for this seller
+    // Get all reviews for this shop
     const reviews = await prisma.reviewView.findMany({
-      where: { sellerId },
+      where: { shopId },
       select: { rating: true },
     });
 
@@ -154,11 +156,11 @@ export class ReviewRepository {
     const fourStarCount = reviews.filter((r) => r.rating === 4).length;
     const fiveStarCount = reviews.filter((r) => r.rating === 5).length;
 
-    // Upsert SellerRatingView
-    await prisma.sellerRatingView.upsert({
-      where: { sellerId },
+    // Upsert ShopRatingView
+    await prisma.shopRatingView.upsert({
+      where: { shopId },
       create: {
-        sellerId,
+        shopId,
         averageRating,
         totalReviews,
         oneStarCount,
@@ -179,10 +181,22 @@ export class ReviewRepository {
     });
   }
 
-  update(data: Prisma.ReviewViewUpdateInput) {
-    return this.prismaService.reviewView.update({
-      where: { id: data.id as string },
-      data,
+  async update(data: Prisma.ReviewViewUpdateInput) {
+    return this.prismaService.$transaction(async (tx) => {
+      const review = await tx.reviewView.update({
+        where: { id: data.id as string },
+        data,
+      });
+
+      if (review.productId) {
+        await this.updateProductRating(review.productId, tx);
+      }
+
+      if (review.shopId) {
+        await this.updateShopRating(review.shopId, tx);
+      }
+
+      return review;
     });
   }
 

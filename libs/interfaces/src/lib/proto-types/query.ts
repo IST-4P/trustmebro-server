@@ -405,16 +405,18 @@ export interface GetManyProductReviewsRequest {
   processId?: string | undefined;
   page: number;
   limit: number;
-  productId: string;
+  productId?: string | undefined;
   rating: number;
+  userId?: string | undefined;
+  shopId?: string | undefined;
 }
 
 export interface ReviewReply {
   id: string;
-  sellerId: string;
+  reviewId: string;
+  shopId: string;
   content: string;
   createdAt: string;
-  updatedAt: string;
 }
 
 export interface ReviewItem {
@@ -426,6 +428,7 @@ export interface ReviewItem {
   reply?: ReviewReply | undefined;
   createdAt: string;
   updatedAt?: string | undefined;
+  productId: string;
 }
 
 export interface ProductRatingStats {
@@ -441,7 +444,7 @@ export interface ProductRatingStats {
 
 export interface GetManyProductReviewsResponse {
   reviews: ReviewItem[];
-  rating: ProductRatingStats | undefined;
+  rating?: ProductRatingStats | undefined;
   page: number;
   limit: number;
   totalItems: number;

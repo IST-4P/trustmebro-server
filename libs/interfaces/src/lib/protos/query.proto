@@ -421,16 +421,18 @@ message GetManyProductReviewsRequest {
   optional string processId = 1;
   int32 page = 2;
   int32 limit = 3;
-  string productId = 4;
+  optional string productId = 4;
   int32 rating = 5;
+  optional string userId = 6;
+  optional string shopId = 7;
 }
 
 message ReviewReply {
   string id = 1;
-  string sellerId = 2;
-  string content = 3;
-  string createdAt = 4;
-  string updatedAt = 5;
+  string reviewId = 2;
+  string shopId = 3;
+  string content = 4;
+  string createdAt = 5;
 }
 
 message ReviewItem {
@@ -442,6 +444,7 @@ message ReviewItem {
   optional ReviewReply reply = 6;
   string createdAt = 7;
   optional string updatedAt = 8;
+  string productId = 9;
 }
 
 message ProductRatingStats {
@@ -457,7 +460,7 @@ message ProductRatingStats {
 
 message GetManyProductReviewsResponse {
   repeated ReviewItem reviews = 1;
-  ProductRatingStats rating = 2;
+  optional ProductRatingStats rating = 2;
   int32 page = 3;
   int32 limit = 4;
   int32 totalItems = 5;
