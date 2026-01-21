@@ -397,6 +397,112 @@ export interface GetManyVideosResponse {
   videos: VideoBasicInfo[];
 }
 
+/**
+ * ====================================== Reviews ======================================//
+ * ==================== GetManyProductReviewsRequest ====================//
+ */
+export interface GetManyProductReviewsRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  productId?: string | undefined;
+  rating: number;
+  userId?: string | undefined;
+  shopId?: string | undefined;
+}
+
+export interface ReviewReply {
+  id: string;
+  reviewId: string;
+  shopId: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface ReviewItem {
+  id: string;
+  userId: string;
+  rating: number;
+  content: string;
+  medias: string[];
+  reply?: ReviewReply | undefined;
+  createdAt: string;
+  updatedAt?: string | undefined;
+  productId: string;
+}
+
+export interface ProductRatingStats {
+  productId: string;
+  averageRating: number;
+  totalReviews: number;
+  oneStarCount: number;
+  twoStarCount: number;
+  threeStarCount: number;
+  fourStarCount: number;
+  fiveStarCount: number;
+}
+
+export interface GetManyProductReviewsResponse {
+  reviews: ReviewItem[];
+  rating?: ProductRatingStats | undefined;
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+/**
+ * ====================================== Report ======================================//
+ * ==================== GetReportRequest ====================//
+ */
+export interface GetReportRequest {
+  processId?: string | undefined;
+  id: string;
+}
+
+export interface ReportResponse {
+  id: string;
+  reporterId: string;
+  targetId: string;
+  targetType: string;
+  category: string;
+  title: string;
+  description: string;
+  status: string;
+  note?: string | undefined;
+  createdAt: string;
+  updatedAt?: string | undefined;
+}
+
+/** ==================== GetManyReportsRequest ====================// */
+export interface GetManyReportsRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  reporterId?: string | undefined;
+  targetId?: string | undefined;
+  targetType?: string | undefined;
+  category?: string | undefined;
+  status?: string | undefined;
+}
+
+export interface ReportListItem {
+  id: string;
+  reporterId: string;
+  targetType: string;
+  category: string;
+  title: string;
+  status: string;
+}
+
+export interface GetManyReportsResponse {
+  reports: ReportListItem[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
 export const QUERY_SERVICE_PACKAGE_NAME = "QUERY_SERVICE";
 
 export interface QueryServiceClient {
@@ -427,6 +533,12 @@ export interface QueryServiceClient {
   getManyVideos(request: GetManyVideosRequest): Observable<GetManyVideosResponse>;
 
   getVideo(request: GetVideoRequest): Observable<VideoResponse>;
+
+  getManyProductReviews(request: GetManyProductReviewsRequest): Observable<GetManyProductReviewsResponse>;
+
+  getReport(request: GetReportRequest): Observable<ReportResponse>;
+
+  getManyReports(request: GetManyReportsRequest): Observable<GetManyReportsResponse>;
 }
 
 export interface QueryServiceController {
@@ -479,6 +591,16 @@ export interface QueryServiceController {
   ): Promise<GetManyVideosResponse> | Observable<GetManyVideosResponse> | GetManyVideosResponse;
 
   getVideo(request: GetVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
+
+  getManyProductReviews(
+    request: GetManyProductReviewsRequest,
+  ): Promise<GetManyProductReviewsResponse> | Observable<GetManyProductReviewsResponse> | GetManyProductReviewsResponse;
+
+  getReport(request: GetReportRequest): Promise<ReportResponse> | Observable<ReportResponse> | ReportResponse;
+
+  getManyReports(
+    request: GetManyReportsRequest,
+  ): Promise<GetManyReportsResponse> | Observable<GetManyReportsResponse> | GetManyReportsResponse;
 }
 
 export function QueryServiceControllerMethods() {
@@ -498,6 +620,9 @@ export function QueryServiceControllerMethods() {
       "getOrder",
       "getManyVideos",
       "getVideo",
+      "getManyProductReviews",
+      "getReport",
+      "getManyReports",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

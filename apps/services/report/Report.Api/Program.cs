@@ -8,21 +8,8 @@ using Report.Application.Service;
 using Report.Infrastructure.Persistence;
 using SharedInfrastructure.Kafka;
 
+Env.Load(Path.Combine("..", "..", "..", "..", ".env"));
 var builder = WebApplication.CreateBuilder(args);
-
-var envPath = Path.GetFullPath(
-    Path.Combine(builder.Environment.ContentRootPath, "..", ".env")
-);
-
-if (File.Exists(envPath))
-{
-  Env.Load(envPath);
-  Console.WriteLine($".env loaded from: {envPath}");
-}
-else
-{
-  Console.WriteLine($".env NOT FOUND at: {envPath}");
-}
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -32,22 +19,14 @@ builder.WebHost.ConfigureKestrel(options =>
   });
 });
 
-var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings_DefaultConnection");
+var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+var db = Environment.GetEnvironmentVariable("DB_NAME_REPORT") ?? "report";
+var user = Environment.GetEnvironmentVariable("DB_USERNAME") ?? "postgres";
+var pass = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "";
 
-if (string.IsNullOrEmpty(connectionString))
-{
-  connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-  if (!string.IsNullOrEmpty(connectionString))
-  {
-    connectionString = connectionString
-        .Replace("${DB_HOST}", Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost")
-        .Replace("${DB_PORT}", Environment.GetEnvironmentVariable("DB_PORT") ?? "5432")
-        .Replace("${DB_NAME}", Environment.GetEnvironmentVariable("DB_NAME") ?? "trustmebro")
-        .Replace("${DB_USERNAME}", Environment.GetEnvironmentVariable("DB_USERNAME") ?? "postgres")
-        .Replace("${DB_PASSWORD}", Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "");
-  }
-}
+var connectionString =
+    $"Host={host};Port={port};Database={db};Username={user};Password={pass};SSL Mode=Disable";
 
 Console.WriteLine($"Database Connection: {connectionString?.Split("Password=")[0]}Password=***");
 

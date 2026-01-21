@@ -72,7 +72,6 @@ export class OrderController {
   ) {
     return this.orderWriteService.updateStatusOrder({
       ...body,
-      orderId: body.id,
       processId,
     });
   }

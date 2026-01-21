@@ -47,6 +47,6 @@ export class OrderService {
   }
 
   update(data: OrderResponse) {
-    return this.orderRepository.update(data);
+    return this.orderRepository.update(OrderMapper(data));
   }
 }

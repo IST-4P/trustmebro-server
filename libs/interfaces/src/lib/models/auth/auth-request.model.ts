@@ -42,7 +42,11 @@ export const VerifyTokenRequestSchema = z.object({
 export const SendVerificationCodeRequestSchema = VerificationCodeSchema.pick({
   email: true,
   type: true,
-}).strict();
+})
+  .extend({
+    processId: z.uuid().optional(),
+  })
+  .strict();
 
 export const ValidateVerificationCodeRequestSchema =
   VerificationCodeSchema.pick({

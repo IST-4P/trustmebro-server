@@ -17,6 +17,7 @@ export enum QueueGroups {
   ORDER_GROUP = 'order-group',
   PAYMENT_GROUP = 'payment-group',
   MEDIA_GROUP = 'media-group',
+  PROMOTION_GROUP = 'promotion-group',
 }
 
 enum CategoryQueueTopics {
@@ -84,6 +85,26 @@ enum MediaQueueTopics {
   VIDEO_UPLOADED = 'video_uploaded',
 }
 
+enum PromotionQueueTopics {
+  CREATE_REDEMPTION = 'create_redemption',
+}
+
+enum ReviewQueueTopics {
+  CREATE_REVIEW = 'review.created',
+  UPDATE_REVIEW = 'review.updated',
+  DELETE_REVIEW = 'review.deleted',
+
+  CREATE_REPLY = 'reply.created',
+  UPDATE_REPLY = 'reply.updated',
+  DELETE_REPLY = 'reply.deleted',
+}
+
+enum ReportQueueTopics {
+  CREATE_REPORT = 'report.created',
+  UPDATE_STATUS = 'report.status-updated',
+  DELETE_REPORT = 'report.deleted',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -96,4 +117,7 @@ export const QueueTopics = {
   ORDER: OrderQueueTopics,
   PAYMENT: PaymentQueueTopics,
   MEDIA: MediaQueueTopics,
+  PROMOTION: PromotionQueueTopics,
+  REVIEW: ReviewQueueTopics,
+  REPORT: ReportQueueTopics,
 } as const;

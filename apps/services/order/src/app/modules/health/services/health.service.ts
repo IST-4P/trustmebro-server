@@ -21,6 +21,7 @@ export class HealthService {
         GrpcService.CART_SERVICE,
         GrpcService.ORDER_SERVICE,
         GrpcService.USER_ACCESS_SERVICE,
+        GrpcService.PROMOTION_SERVICE,
       ],
       redis: null,
       prismaClient: this.prismaService,

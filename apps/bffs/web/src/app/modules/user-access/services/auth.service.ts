@@ -1,18 +1,14 @@
-import { QueueTopics } from '@common/constants/queue.constant';
 import {
   ChangePasswordRequest,
-  SendVerificationCodeRequest,
-} from '@common/interfaces/models/auth';
-import {
   LoginRequest,
   LogoutRequest,
   RefreshTokenRequest,
   RegisterRequest,
+  SendVerificationCodeRequest,
   USER_ACCESS_SERVICE_NAME,
   USER_ACCESS_SERVICE_PACKAGE_NAME,
   UserAccessServiceClient,
 } from '@common/interfaces/proto-types/user-access';
-import { KafkaService } from '@common/kafka/kafka.service';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
@@ -23,8 +19,7 @@ export class AuthService implements OnModuleInit {
 
   constructor(
     @Inject(USER_ACCESS_SERVICE_PACKAGE_NAME)
-    private userAccessClient: ClientGrpc,
-    private readonly kafkaService: KafkaService
+    private userAccessClient: ClientGrpc
   ) {}
 
   onModuleInit() {
@@ -54,7 +49,7 @@ export class AuthService implements OnModuleInit {
     return firstValueFrom(this.userAccessService.changePassword(data));
   }
 
-  sendVerificationCode(data: SendVerificationCodeRequest) {
-    this.kafkaService.emit(QueueTopics.USER_ACCESS.SEND_OTP, data);
+  async sendVerificationCode(data: SendVerificationCodeRequest) {
+    return firstValueFrom(this.userAccessService.sendOtp(data));
   }
 }

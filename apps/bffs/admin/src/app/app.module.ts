@@ -16,6 +16,9 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
 import { PaymentModule } from './modules/payment/payment.module';
 import { ProductModule } from './modules/product/product.module';
+import { PromotionModule } from './modules/promotion/promotion.module';
+import { ReportModule } from './modules/report/report.module';
+import { ReviewModule } from './modules/review/review.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
 @Module({
@@ -33,6 +36,9 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     MediaModule,
     PaymentModule,
     OrderModule,
+    PromotionModule,
+    ReviewModule,
+    ReportModule,
   ],
   providers: [
     AccessTokenGuard,

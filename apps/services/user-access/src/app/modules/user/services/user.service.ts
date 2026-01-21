@@ -19,9 +19,6 @@ export class UserService {
 
   async find(data: GetUserRequest): Promise<UserResponse> {
     const user = await this.userRepository.find(data);
-    if (!user) {
-      throw new NotFoundException('Error.UserNotFound');
-    }
     return user;
   }
 

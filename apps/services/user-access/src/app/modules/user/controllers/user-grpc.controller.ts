@@ -7,7 +7,7 @@ import {
   GetUserRequest,
   UpdateUserRequest,
 } from '@common/interfaces/models/user-access';
-import { Controller, UseInterceptors } from '@nestjs/common';
+import { Controller, NotFoundException, UseInterceptors } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { UserService } from '../services/user.service';
 
@@ -17,8 +17,12 @@ export class UserGrpcController {
   constructor(private readonly userService: UserService) {}
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetUser')
-  getUser(data: GetUserRequest) {
-    return this.userService.find(data);
+  async getUser(data: GetUserRequest) {
+    const user = await this.userService.find(data);
+    if (!user) {
+      throw new NotFoundException('Error.UserNotFound');
+    }
+    return user;
   }
 
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetManyUsers')

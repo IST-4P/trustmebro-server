@@ -168,7 +168,7 @@ namespace Review.Infrastructure.Repository
     // Get by Id
     public async Task<Domain.Entities.Review?> GetByIdAsync(string id)
     {
-      return await _db.Reviews.AsNoTracking().Include(r => r.Replies).Include(m => m.Medias).FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
+      return await _db.Reviews.AsNoTracking().Include(r => r.Replies).FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted);
     }
 
     // Get Product Rating Summary
@@ -189,6 +189,14 @@ namespace Review.Infrastructure.Repository
       return await _db.Reviews.AsNoTracking()
           .FirstOrDefaultAsync(r => r.OrderItemId == orderItemId && r.UserId == userId);
     }
+
+    // Verify if user has reviewed order
+    public async Task<Domain.Entities.Review?> GetOrderReviewAsync(string orderId, string userId)
+    {
+      return await _db.Reviews.AsNoTracking()
+          .FirstOrDefaultAsync(r => r.OrderId == orderId && r.UserId == userId);
+    }
+
     // Get Reply by Id
     public async Task<ReviewReply?> GetReplyByIdAsync(string replyId)
     {
@@ -316,8 +324,6 @@ namespace Review.Infrastructure.Repository
 
       await _db.SaveChangesAsync();
     }
-
-
     #endregion
   }
 }

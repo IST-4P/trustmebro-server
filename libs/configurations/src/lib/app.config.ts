@@ -14,6 +14,7 @@ export const AppConfigurationSchema = z.object({
   CART_SERVICE_PORT: z.coerce.number(),
   ORDER_SERVICE_PORT: z.coerce.number(),
   PAYMENT_SERVICE_PORT: z.coerce.number(),
+  PROMOTION_SERVICE_PORT: z.coerce.number(),
 });
 
 const configServer = AppConfigurationSchema.safeParse(process.env);

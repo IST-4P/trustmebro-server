@@ -76,6 +76,12 @@ jobs:
             secret: COOLIFY_APP_ROLE
           - name: user-access
             secret: COOLIFY_APP_USER_ACCESS
+          - name: promotion
+            secret: COOLIFY_APP_PROMOTION
+          - name: review
+            secret: COOLIFY_APP_REVIEW
+          - name: report
+            secret: COOLIFY_APP_REPORT
 
     steps:
       - uses: actions/checkout@v4

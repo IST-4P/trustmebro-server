@@ -24,15 +24,17 @@ export class RefreshTokenResponseDto extends createZodDto(
 ) {}
 
 export class SendVerificationCodeRequestDto extends createZodDto(
-  SendVerificationCodeRequestSchema
+  SendVerificationCodeRequestSchema.omit({ processId: true })
 ) {}
 
 export class LogoutRequestDto extends createZodDto(LogoutRequestSchema) {}
 
-export class RegisterRequestDto extends createZodDto(RegisterRequestSchema) {}
+export class RegisterRequestDto extends createZodDto(
+  RegisterRequestSchema.omit({ processId: true })
+) {}
 
 export class ChangePasswordRequestDto extends createZodDto(
-  ChangePasswordRequestSchema
+  ChangePasswordRequestSchema.omit({ processId: true })
 ) {}
 
 export class LoginPostmanResponseDto extends createZodDto(

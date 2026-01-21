@@ -12,6 +12,7 @@ namespace Review.Application.Interfaces
     Task<ProductRating?> GetProductRatingSummaryAsync(string productId);
     Task<SellerRating?> GetSellerRatingSummaryAsync(string sellerId);
     Task<ReviewEntity?> GetOrderItemAsync(string orderItemId, string userId);
+    Task<ReviewEntity?> GetOrderReviewAsync(string orderId, string userId);
 
     // Reply
     Task <ReviewReply> AddReplyAsync( ReviewReply reply);
