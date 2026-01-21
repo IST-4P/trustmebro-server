@@ -42,7 +42,7 @@ RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/l
 COPY --from=build /app/publish .
 
 # Expose gRPC port
-EXPOSE 5011
+EXPOSE 5010
 
 # Set environment variables
 ENV ASPNETCORE_URLS=http://+:5010
