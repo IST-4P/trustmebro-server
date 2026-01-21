@@ -34,5 +34,35 @@ declare global {
       content: string;
       createdAt: string;
     };
+    // type ReportEvidence = {
+    //   reportId: string;
+    //   url: string;
+    //   evidenceType: string; // ví dụ: IMAGE | VIDEO | AUDIO | TEXT | OTHER
+    //   note?: string | null;
+    //   createdAt: string; // ISO
+    //   updatedAt: string; // ISO
+    // }[];
+    // type ReportAction = {
+    //   reportId: string;
+    //   adminId: string;
+    //   actionType: ReportActionType;
+    //   reason?: string | null;
+    //   createdAt: string;
+    // }[];
+    // type ReportHistory = {
+    //   reportId: string;
+    //   oldStatus: ReportStatusType;
+    //   newStatus: ReportStatusType;
+    //   adminId: string;
+    //   note?: string | null;
+    //   createdAt: string;
+    // }[];
+    // type ReportComment = {
+    //   reportId: string;
+    //   userId: string;
+    //   role: string;
+    //   comment: string;
+    //   createdAt: string;
+    // }[];
   }
 }

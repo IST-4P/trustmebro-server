@@ -99,6 +99,12 @@ enum ReviewQueueTopics {
   DELETE_REPLY = 'reply.deleted',
 }
 
+enum ReportQueueTopics {
+  CREATE_REPORT = 'report.created',
+  UPDATE_STATUS = 'report.status-updated',
+  DELETE_REPORT = 'report.deleted',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -113,4 +119,5 @@ export const QueueTopics = {
   MEDIA: MediaQueueTopics,
   PROMOTION: PromotionQueueTopics,
   REVIEW: ReviewQueueTopics,
+  REPORT: ReportQueueTopics,
 } as const;

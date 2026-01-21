@@ -362,3 +362,72 @@ model ShopRatingView {
 
     updatedAt DateTime @updatedAt
 }
+
+// =======================================================================================================
+enum ReportTargetType {
+    USER
+    SELLER
+    PRODUCT
+    ORDER
+    MESSAGE
+    REVIEW
+}
+
+enum ReportCategory {
+    SCAM
+    FRAUD
+    FAKE
+    HARASSMENT
+    SPAM
+}
+
+enum ReportStatus {
+    PENDING
+    REVIEWING
+    RESOLVED
+    REJECTED
+}
+
+enum ReportActionType {
+    UNKNOWN
+    WARN
+    HIDE
+    REMOVE
+    BAN
+    NO_ACTION
+}
+
+model ReportView {
+    id String @id @db.Uuid
+
+    reporterId String
+    targetId   String
+    targetType ReportTargetType
+    category   ReportCategory
+
+    title       String
+    description String
+
+    status ReportStatus @default(PENDING)
+
+    note String? @db.Text
+
+    // /// [ReportEvidence]
+    // evidences Json @default("[]")
+
+    // /// [ReportAction]
+    // actions Json @default("[]")
+
+    // /// [ReportHistory]
+    // history Json @default("[]")
+
+    // /// [ReportComment]
+    // comments Json @default("[]")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([status, updatedAt])
+    @@index([targetType, targetId])
+    @@index([reporterId, createdAt])
+}

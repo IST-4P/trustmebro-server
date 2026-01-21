@@ -15,6 +15,7 @@ create_order update_order cancel_order create_payment_by_order cancel_order_by_p
 video_uploaded upsert_video delete_video \
 create_redemption \
 review.created review.updated review.deleted reply.created reply.updated reply.deleted \
+report.created report.status-updated report.deleted \
 do
 kafka-topics.sh --create \
  --topic "$t" \

@@ -5,6 +5,7 @@ import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
 import { ProductCoreModule } from './modules/product/product-core.module';
+import { ReportModule } from './modules/report/report.module';
 import { ReviewModule } from './modules/review/review.module';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -18,6 +19,7 @@ import { PrismaModule } from './prisma/prisma.module';
     MediaModule,
     OrderModule,
     ReviewModule,
+    ReportModule,
   ],
 })
 export class AppModule {}

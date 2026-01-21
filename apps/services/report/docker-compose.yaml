@@ -1,15 +1,15 @@
 services:
-  promotion:
-    image: caophi562005/trustmebro-promotion
+  report:
+    image: caophi562005/trustmebro-report
     pull_policy: always
     mem_limit: 256m
     memswap_limit: 512m
     env_file:
       - .env
     environment:
-      - PROMOTION_SERVICE_GRPC_URL=0.0.0.0:5012
+      - REPORT_SERVICE_GRPC_URL=0.0.0.0:5010
     # ports:
-    #   - "3003:3003"
+    #   - "3002:3002"
     # depends_on:
     #   kafka:
     #     condition: service_healthy
@@ -17,11 +17,7 @@ services:
     networks:
       - trustmebro-network
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'node -e "fetch(''http://localhost:3012/api/v1/health/readiness'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
-        ]
+      test: ["CMD", "nc", "-z", "localhost", "5011"]
       interval: 60s
       timeout: 20s
       retries: 3

@@ -27,6 +27,9 @@ service QueryService {
   rpc GetVideo(GetVideoRequest) returns (VideoResponse);
 
   rpc GetManyProductReviews(GetManyProductReviewsRequest) returns (GetManyProductReviewsResponse);
+
+  rpc GetReport(GetReportRequest) returns (ReportResponse);
+  rpc GetManyReports(GetManyReportsRequest) returns (GetManyReportsResponse);
 }
 
 //====================================== Category ======================================//
@@ -465,4 +468,54 @@ message GetManyProductReviewsResponse {
   int32 limit = 4;
   int32 totalItems = 5;
   int32 totalPages = 6;
+}
+
+//====================================== Report ======================================//
+//==================== GetReportRequest ====================//
+message GetReportRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message ReportResponse {
+  string id = 1;
+  string reporterId = 2;
+  string targetId = 3;
+  string targetType = 4;
+  string category = 5;
+  string title = 6;
+  string description = 7;
+  string status = 8;
+  optional string note = 9;
+  string createdAt = 10;
+  optional string updatedAt = 11;
+}
+
+//==================== GetManyReportsRequest ====================//
+message GetManyReportsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string reporterId = 4;
+  optional string targetId = 5;
+  optional string targetType = 6;
+  optional string category = 7;
+  optional string status = 8;
+}
+
+message ReportListItem {
+  string id = 1;
+  string reporterId = 2;
+  string targetType = 3;
+  string category = 4;
+  string title = 5;
+  string status = 6;
+}
+
+message GetManyReportsResponse {
+  repeated ReportListItem reports = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
 }

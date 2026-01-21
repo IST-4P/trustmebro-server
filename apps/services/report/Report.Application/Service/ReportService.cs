@@ -365,7 +365,7 @@ namespace Report.Application.Service
       // Define valid transitions
       var validTransitions = new Dictionary<ReportStatus, ReportStatus[]>
       {
-        { ReportStatus.Pending, new[] { ReportStatus.Reviewing, ReportStatus.Rejected } },
+        { ReportStatus.Pending, new[] { ReportStatus.Reviewing, ReportStatus.Rejected, ReportStatus.Resolved } },
         { ReportStatus.Reviewing, new[] { ReportStatus.Resolved, ReportStatus.Rejected, ReportStatus.Pending } },
         { ReportStatus.Resolved, Array.Empty<ReportStatus>() },
         { ReportStatus.Rejected, new[] { ReportStatus.Reviewing } }

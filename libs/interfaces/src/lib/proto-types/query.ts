@@ -451,6 +451,58 @@ export interface GetManyProductReviewsResponse {
   totalPages: number;
 }
 
+/**
+ * ====================================== Report ======================================//
+ * ==================== GetReportRequest ====================//
+ */
+export interface GetReportRequest {
+  processId?: string | undefined;
+  id: string;
+}
+
+export interface ReportResponse {
+  id: string;
+  reporterId: string;
+  targetId: string;
+  targetType: string;
+  category: string;
+  title: string;
+  description: string;
+  status: string;
+  note?: string | undefined;
+  createdAt: string;
+  updatedAt?: string | undefined;
+}
+
+/** ==================== GetManyReportsRequest ====================// */
+export interface GetManyReportsRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  reporterId?: string | undefined;
+  targetId?: string | undefined;
+  targetType?: string | undefined;
+  category?: string | undefined;
+  status?: string | undefined;
+}
+
+export interface ReportListItem {
+  id: string;
+  reporterId: string;
+  targetType: string;
+  category: string;
+  title: string;
+  status: string;
+}
+
+export interface GetManyReportsResponse {
+  reports: ReportListItem[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
 export const QUERY_SERVICE_PACKAGE_NAME = "QUERY_SERVICE";
 
 export interface QueryServiceClient {
@@ -483,6 +535,10 @@ export interface QueryServiceClient {
   getVideo(request: GetVideoRequest): Observable<VideoResponse>;
 
   getManyProductReviews(request: GetManyProductReviewsRequest): Observable<GetManyProductReviewsResponse>;
+
+  getReport(request: GetReportRequest): Observable<ReportResponse>;
+
+  getManyReports(request: GetManyReportsRequest): Observable<GetManyReportsResponse>;
 }
 
 export interface QueryServiceController {
@@ -539,6 +595,12 @@ export interface QueryServiceController {
   getManyProductReviews(
     request: GetManyProductReviewsRequest,
   ): Promise<GetManyProductReviewsResponse> | Observable<GetManyProductReviewsResponse> | GetManyProductReviewsResponse;
+
+  getReport(request: GetReportRequest): Promise<ReportResponse> | Observable<ReportResponse> | ReportResponse;
+
+  getManyReports(
+    request: GetManyReportsRequest,
+  ): Promise<GetManyReportsResponse> | Observable<GetManyReportsResponse> | GetManyReportsResponse;
 }
 
 export function QueryServiceControllerMethods() {
@@ -559,6 +621,8 @@ export function QueryServiceControllerMethods() {
       "getManyVideos",
       "getVideo",
       "getManyProductReviews",
+      "getReport",
+      "getManyReports",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
