@@ -429,6 +429,8 @@ export interface ReviewItem {
   createdAt: string;
   updatedAt?: string | undefined;
   productId: string;
+  username?: string | undefined;
+  avatar?: string | undefined;
 }
 
 export interface ProductRatingStats {
