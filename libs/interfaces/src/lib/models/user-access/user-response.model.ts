@@ -34,3 +34,17 @@ export type CheckParticipantExistsResponse = z.infer<
   typeof CheckParticipantExistsResponseSchema
 >;
 export type GetManyUsersResponse = z.infer<typeof GetManyUsersResponseSchema>;
+
+export const GetManyInformationUsersResponseSchema = z.object({
+  users: z.record(
+    z.string(),
+    z.object({
+      username: z.string(),
+      avatar: z.string().optional(),
+    })
+  ),
+});
+
+export type GetManyInformationUsersResponse = z.infer<
+  typeof GetManyInformationUsersResponseSchema
+>;

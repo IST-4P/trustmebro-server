@@ -16,6 +16,7 @@ service UserAccessService {
   rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
+  rpc GetManyInformationUsers(GetManyInformationUsersRequest) returns (GetManyInformationUsersResponse);
 
   rpc GetShop(GetShopRequest) returns (ShopResponse);
   rpc CreateShop(CreateShopRequest) returns (ShopResponse);
@@ -200,6 +201,21 @@ message UserBasicInfo {
   string gender = 6;
   string status = 7;
   string roleName = 8;
+}
+
+//==================== GetManyInformationUsers ====================//
+message GetManyInformationUsersRequest {
+  optional string processId = 1;
+  repeated string userIds = 2;
+}
+
+message GetManyInformationUsersResponse {
+  map<string, UserInformation> users = 1;
+}
+
+message UserInformation {
+  string username = 1;
+  optional string avatar = 2;
 }
 
 //==================== GetShop ====================//
