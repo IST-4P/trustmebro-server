@@ -448,6 +448,8 @@ message ReviewItem {
   string createdAt = 7;
   optional string updatedAt = 8;
   string productId = 9;
+  optional string username = 10;
+  optional string avatar = 11;
 }
 
 message ProductRatingStats {

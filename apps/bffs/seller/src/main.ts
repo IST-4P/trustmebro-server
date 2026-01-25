@@ -26,13 +26,7 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.enableCors({
-    origin: [
-      'https://localhost:3000',
-      'http://localhost:3000',
-      'http://localhost:4200',
-      'https://tusd.hacmieu.xyz',
-      'https://trustmebro-seller.hacmieu.xyz',
-    ],
+    origin: ['https://localhost:3000', 'https://tusd.hacmieu.xyz'],
     credentials: true,
   });
 

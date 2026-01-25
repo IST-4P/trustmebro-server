@@ -188,6 +188,26 @@ export interface UserBasicInfo {
   roleName: string;
 }
 
+/** ==================== GetManyInformationUsers ====================// */
+export interface GetManyInformationUsersRequest {
+  processId?: string | undefined;
+  userIds: string[];
+}
+
+export interface GetManyInformationUsersResponse {
+  users: { [key: string]: UserInformation };
+}
+
+export interface GetManyInformationUsersResponse_UsersEntry {
+  key: string;
+  value: UserInformation | undefined;
+}
+
+export interface UserInformation {
+  username: string;
+  avatar?: string | undefined;
+}
+
 /** ==================== GetShop ====================// */
 export interface GetShopRequest {
   processId?: string | undefined;
@@ -355,6 +375,8 @@ export interface UserAccessServiceClient {
 
   checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
 
+  getManyInformationUsers(request: GetManyInformationUsersRequest): Observable<GetManyInformationUsersResponse>;
+
   getShop(request: GetShopRequest): Observable<ShopResponse>;
 
   createShop(request: CreateShopRequest): Observable<ShopResponse>;
@@ -412,6 +434,13 @@ export interface UserAccessServiceController {
     | Observable<CheckParticipantExistsResponse>
     | CheckParticipantExistsResponse;
 
+  getManyInformationUsers(
+    request: GetManyInformationUsersRequest,
+  ):
+    | Promise<GetManyInformationUsersResponse>
+    | Observable<GetManyInformationUsersResponse>
+    | GetManyInformationUsersResponse;
+
   getShop(request: GetShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 
   createShop(request: CreateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
@@ -456,6 +485,7 @@ export function UserAccessServiceControllerMethods() {
       "updateUser",
       "createUser",
       "checkParticipantExists",
+      "getManyInformationUsers",
       "getShop",
       "createShop",
       "updateShop",

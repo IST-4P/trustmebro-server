@@ -6,7 +6,6 @@ import {
 } from '@common/interfaces/dtos/review';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags, OmitType } from '@nestjs/swagger';
-import { ReplyWriteService } from '../services/reply-write.service';
 import { ReviewReadService } from '../services/review-read.service';
 
 class GetManyProductReviewsBodyDto extends OmitType(
@@ -17,10 +16,7 @@ class GetManyProductReviewsBodyDto extends OmitType(
 @Controller('review')
 @ApiTags('Review')
 export class ReviewController {
-  constructor(
-    private readonly replyWriteService: ReplyWriteService,
-    private readonly reviewReadService: ReviewReadService
-  ) {}
+  constructor(private readonly reviewReadService: ReviewReadService) {}
 
   @Get()
   @ApiOkResponse({ type: GetManyProductReviewsResponseDto })

@@ -55,6 +55,8 @@ export const GetManyProductReviewsResponseSchema =
           rating: z.number(),
           id: z.uuid(),
           userId: z.uuid(),
+          username: z.string().optional(),
+          avatar: z.string().optional(),
           content: z.string(),
           medias: z.array(z.string()),
           reply: z.object({
