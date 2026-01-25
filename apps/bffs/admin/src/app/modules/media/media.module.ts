@@ -8,7 +8,10 @@ import { VideoWriteService } from './services/video-write.service';
 
 @Module({
   imports: [
-    ClientsModule.register([GrpcClientProvider(GrpcService.QUERY_SERVICE)]),
+    ClientsModule.register([
+      GrpcClientProvider(GrpcService.QUERY_SERVICE),
+      GrpcClientProvider(GrpcService.MEDIA_SERVICE),
+    ]),
   ],
   controllers: [VideoController],
   providers: [VideoReadService, VideoWriteService],
