@@ -4,12 +4,13 @@ import { Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
 import { VideoController } from './controllers/video.controller';
 import { VideoReadService } from './services/video-read.service';
+import { VideoWriteService } from './services/video-write.service';
 
 @Module({
   imports: [
     ClientsModule.register([GrpcClientProvider(GrpcService.QUERY_SERVICE)]),
   ],
   controllers: [VideoController],
-  providers: [VideoReadService],
+  providers: [VideoReadService, VideoWriteService],
 })
 export class MediaModule {}
