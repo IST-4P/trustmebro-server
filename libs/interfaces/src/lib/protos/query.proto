@@ -450,6 +450,7 @@ message ReviewItem {
   string productId = 9;
   optional string username = 10;
   optional string avatar = 11;
+  string productName = 12;
 }
 
 message ProductRatingStats {

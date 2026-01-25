@@ -38,6 +38,7 @@ export class ReviewRepository {
           content: true,
           medias: true,
           reply: true,
+          createdAt: true,
         },
       }),
       data.productId
@@ -49,8 +50,22 @@ export class ReviewRepository {
           })
         : null,
     ]);
+
+    const productIds = reviews.map((review) => review.productId);
+    const products = await this.prismaService.productView.findMany({
+      where: { id: { in: productIds } },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
     return {
-      reviews,
+      reviews: reviews.map((review) => ({
+        ...review,
+        productName: products.find((product) => product.id === review.productId)
+          ?.name,
+      })),
       rating,
       totalItems,
       page: data.page,

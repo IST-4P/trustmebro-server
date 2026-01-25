@@ -431,6 +431,7 @@ export interface ReviewItem {
   productId: string;
   username?: string | undefined;
   avatar?: string | undefined;
+  productName: string;
 }
 
 export interface ProductRatingStats {
