@@ -29,7 +29,7 @@ async function bootstrap() {
     origin: [
       'https://localhost:3000',
       'https://tusd.hacmieu.xyz',
-      'https://8653f4a47aea.ngrok-free.app',
+      'https://boatless-feebly-leslie.ngrok-free.dev',
     ],
     credentials: true, // Cho phép gửi cookies/credentials
   });
