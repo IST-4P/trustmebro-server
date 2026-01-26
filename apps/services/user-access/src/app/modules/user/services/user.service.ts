@@ -66,6 +66,7 @@ export class UserService {
   }: UpdateUserRequest): Promise<UserResponse> {
     try {
       const user = await this.userRepository.update(data);
+      this.cacheManager.del(generateUserCacheKey(user.id));
       return user;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
@@ -83,6 +84,7 @@ export class UserService {
   async updateRole({ processId, ...data }: UpdateRoleRequest) {
     try {
       const user = await this.userRepository.update(data);
+      this.cacheManager.del(generateUserCacheKey(user.id));
       return user;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
