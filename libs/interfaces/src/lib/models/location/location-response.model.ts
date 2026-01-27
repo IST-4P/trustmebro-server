@@ -2,24 +2,24 @@ import z from 'zod';
 
 export const GetManyProvincesResponseSchema = z.array(
   z.object({
-    id: z.number().int(),
+    id: z.coerce.number().int(),
     name: z.string(),
   })
 );
 
 export const GetManyDistrictsResponseSchema = z.array(
   z.object({
-    id: z.number().int(),
+    id: z.coerce.number().int(),
     name: z.string(),
-    provinceId: z.number().int(),
+    provinceId: z.coerce.number().int(),
   })
 );
 
 export const GetManyWardsResponseSchema = z.array(
   z.object({
-    id: z.number().int(),
+    id: z.coerce.number().int(),
     name: z.string(),
-    districtId: z.number().int(),
-    provinceId: z.number().int(),
+    districtId: z.coerce.number().int(),
+    provinceId: z.coerce.number().int(),
   })
 );
