@@ -26,7 +26,11 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.enableCors({
-    origin: ['https://localhost:3000', 'https://tusd.hacmieu.xyz'],
+    origin: [
+      'https://localhost:3000',
+      'https://tusd.hacmieu.xyz',
+      'https://korbin-malacological-densely.ngrok-free.dev',
+    ],
     credentials: true,
   });
 

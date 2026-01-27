@@ -30,6 +30,7 @@ async function bootstrap() {
       'https://localhost:3000',
       'https://tusd.hacmieu.xyz',
       'https://boatless-feebly-leslie.ngrok-free.dev',
+      'https://korbin-malacological-densely.ngrok-free.dev',
     ],
     credentials: true, // Cho phép gửi cookies/credentials
   });
