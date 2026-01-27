@@ -27,7 +27,6 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'https://localhost:3000',
       'https://tusd.hacmieu.xyz',
       'https://korbin-malacological-densely.ngrok-free.dev',
     ],
