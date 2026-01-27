@@ -367,7 +367,7 @@ export interface UserAccessServiceClient {
 
   getUser(request: GetUserRequest): Observable<UserResponse>;
 
-  getManyUser(request: GetManyUsersRequest): Observable<GetManyUsersResponse>;
+  getManyUsers(request: GetManyUsersRequest): Observable<GetManyUsersResponse>;
 
   updateUser(request: UpdateUserRequest): Observable<UserResponse>;
 
@@ -419,7 +419,7 @@ export interface UserAccessServiceController {
 
   getUser(request: GetUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
-  getManyUser(
+  getManyUsers(
     request: GetManyUsersRequest,
   ): Promise<GetManyUsersResponse> | Observable<GetManyUsersResponse> | GetManyUsersResponse;
 
@@ -481,7 +481,7 @@ export function UserAccessServiceControllerMethods() {
       "changePassword",
       "sendOtp",
       "getUser",
-      "getManyUser",
+      "getManyUsers",
       "updateUser",
       "createUser",
       "checkParticipantExists",

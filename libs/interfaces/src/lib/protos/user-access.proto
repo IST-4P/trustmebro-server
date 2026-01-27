@@ -12,7 +12,7 @@ service UserAccessService {
   rpc SendOtp(SendVerificationCodeRequest) returns (MessageResponse);
 
   rpc GetUser(GetUserRequest) returns (UserResponse);
-  rpc GetManyUser(GetManyUsersRequest) returns (GetManyUsersResponse);
+  rpc GetManyUsers(GetManyUsersRequest) returns (GetManyUsersResponse);
   rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc CheckParticipantExists(CheckParticipantExistsRequest) returns (CheckParticipantExistsResponse);
