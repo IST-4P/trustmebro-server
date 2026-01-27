@@ -23,7 +23,10 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.enableCors({
-    origin: ['https://localhost:3000', 'https://tusd.hacmieu.xyz'],
+    origin: [
+      'https://uncoachable-buffable-talisha.ngrok-free.dev',
+      'https://tusd.hacmieu.xyz',
+    ],
     credentials: true,
   });
 

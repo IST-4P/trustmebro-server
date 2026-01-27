@@ -29,6 +29,7 @@ async function bootstrap() {
     origin: [
       'https://tusd.hacmieu.xyz',
       'https://korbin-malacological-densely.ngrok-free.dev',
+      'https://uncoachable-buffable-talisha.ngrok-free.dev',
     ],
     credentials: true,
   });
