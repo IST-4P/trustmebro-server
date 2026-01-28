@@ -1,11 +1,11 @@
 import { UserData } from '@common/decorators/user-data.decorator';
 import { Controller, MessageEvent, Sse } from '@nestjs/common';
 import { Observable, filter, map } from 'rxjs';
-import { NotificationSubscriber } from '../subscribers/notification.subscriber';
+import { PaymentSubscriber } from '../subscribers/payment.subscriber';
 
-@Controller('notification')
-export class NotificationSseController {
-  constructor(private readonly sub: NotificationSubscriber) {}
+@Controller('payment')
+export class PaymentSseController {
+  constructor(private readonly sub: PaymentSubscriber) {}
 
   @Sse('sse')
   handle(@UserData('userId') userId: string): Observable<MessageEvent> {
