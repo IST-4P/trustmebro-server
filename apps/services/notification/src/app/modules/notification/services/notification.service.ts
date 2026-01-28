@@ -29,9 +29,12 @@ export class NotificationService {
       QueueTopics.NOTIFICATION.CREATE_NOTIFICATION,
       createdNotification
     );
+    const unreadCount = await this.notificationRepository.getUnreadCount(
+      data.userId
+    );
     await this.redisService.publish(
       RedisChannel.NOTIFICATION_CHANNEL,
-      JSON.stringify(createdNotification)
+      JSON.stringify({ unreadCount, userId: data.userId })
     );
     return createdNotification;
   }
