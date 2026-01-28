@@ -1,4 +1,7 @@
-import { GetManyProductReviewsRequest } from '@common/interfaces/models/review';
+import {
+  GetManyProductReviewsRequest,
+  GetReviewRequest,
+} from '@common/interfaces/models/review';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/query';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -72,6 +75,12 @@ export class ReviewRepository {
       limit: data.limit,
       totalPages: Math.ceil(totalItems / data.limit),
     };
+  }
+
+  async getReview(data: GetReviewRequest) {
+    return this.prismaService.reviewView.findUnique({
+      where: { id: data.id },
+    });
   }
 
   async create(data: Prisma.ReviewViewCreateInput) {

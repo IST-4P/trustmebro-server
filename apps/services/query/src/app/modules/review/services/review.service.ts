@@ -2,6 +2,8 @@ import {
   CreateReviewResponse,
   GetManyProductReviewsRequest,
   GetManyProductReviewsResponse,
+  GetReviewRequest,
+  ReviewResponse,
   UpdateReviewResponse,
 } from '@common/interfaces/models/review';
 import {
@@ -59,6 +61,10 @@ export class ReviewService {
       ...reviews,
       reviews: newReview,
     };
+  }
+
+  async getReview(data: GetReviewRequest): Promise<ReviewResponse> {
+    return this.reviewRepository.getReview(data);
   }
 
   create(data: CreateReviewResponse) {

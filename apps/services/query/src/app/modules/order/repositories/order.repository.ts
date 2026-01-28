@@ -35,6 +35,7 @@ export class OrderRepository {
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
+          code: true,
           shopId: true,
           shopName: true,
           status: true,
@@ -42,6 +43,7 @@ export class OrderRepository {
           grandTotal: true,
           firstProductImage: true,
           firstProductName: true,
+          createdAt: true,
         },
       }),
     ]);

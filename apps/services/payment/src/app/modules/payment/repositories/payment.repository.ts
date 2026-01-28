@@ -53,9 +53,11 @@ export class PaymentRepository {
     return this.prismaService.payment.update({
       where: {
         id: data.id as string,
-        updatedById: data?.updatedById as string,
       },
-      data,
+      data: {
+        status: data.status,
+        updatedById: data.updatedById as string,
+      },
     });
   }
 
