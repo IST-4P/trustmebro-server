@@ -35,7 +35,10 @@ export class PaymentService {
     if (!payment) {
       throw new NotFoundException('Error.PaymentNotFound');
     }
-    const qrCode = `https://api.vietqr.io/${BankConfiguration.BANK_CODE}/${BankConfiguration.BANK_NUMBER}/${payment.amount}/${payment.code}.png`;
+    let qrCode = undefined;
+    if (payment.method === PaymentMethodValues.ONLINE) {
+      qrCode = `https://api.vietqr.io/${BankConfiguration.BANK_CODE}/${BankConfiguration.BANK_NUMBER}/${payment.amount}/${payment.code}.png`;
+    }
     return { ...payment, qrCode };
   }
 

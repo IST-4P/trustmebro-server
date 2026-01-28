@@ -68,7 +68,7 @@ message PaymentResponse {
   string deletedAt = 11;
   string createdAt = 12;
   string updatedAt = 13;
-  string qrCode = 14;
+  optional string qrCode = 14;
 }
 
 //==================== GetManyPayments ====================//

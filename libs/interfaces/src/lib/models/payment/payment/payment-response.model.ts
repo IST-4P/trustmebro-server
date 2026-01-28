@@ -5,7 +5,7 @@ import { PaginationQueryResponseSchema } from '../../common/pagination.model';
 export const PaymentResponseSchema = PaymentSchema;
 
 export const GetPaymentResponseSchema = PaymentSchema.extend({
-  qrCode: z.string(),
+  qrCode: z.string().optional(),
 });
 
 export const GetManyPaymentsResponseSchema =

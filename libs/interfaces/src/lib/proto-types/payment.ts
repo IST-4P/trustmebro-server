@@ -66,7 +66,7 @@ export interface PaymentResponse {
   deletedAt: string;
   createdAt: string;
   updatedAt: string;
-  qrCode: string;
+  qrCode?: string | undefined;
 }
 
 /** ==================== GetManyPayments ====================// */
