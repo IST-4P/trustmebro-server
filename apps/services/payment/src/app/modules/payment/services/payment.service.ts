@@ -1,3 +1,4 @@
+import { BankConfiguration } from '@common/configurations/bank.config';
 import { PaymentMethodValues } from '@common/constants/payment.constant';
 import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import {
@@ -5,6 +6,8 @@ import {
   DeletePaymentRequest,
   GetManyPaymentsRequest,
   GetManyPaymentsResponse,
+  GetPaymentRequest,
+  GetPaymentResponse,
   PaymentResponse,
   UpdatePaymentStatusRequest,
 } from '@common/interfaces/models/payment';
@@ -25,6 +28,15 @@ export class PaymentService {
       throw new NotFoundException('Error.PaymentsNotFound');
     }
     return payments;
+  }
+
+  async getOne(data: GetPaymentRequest): Promise<GetPaymentResponse> {
+    const payment = await this.paymentRepository.getOne(data);
+    if (!payment) {
+      throw new NotFoundException('Error.PaymentNotFound');
+    }
+    const qrCode = `https://api.vietqr.io/${BankConfiguration.BANK_CODE}/${BankConfiguration.BANK_NUMBER}/${payment.amount}/${payment.code}.png`;
+    return { ...payment, qrCode };
   }
 
   async create({

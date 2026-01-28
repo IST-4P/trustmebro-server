@@ -33,6 +33,13 @@ export interface WebhookTransactionResponse {
   paymentId: string;
 }
 
+/** ==================== GetPayment ====================// */
+export interface GetPaymentRequest {
+  processId?: string | undefined;
+  id: string;
+  userId: string;
+}
+
 /** ==================== CreatePayment ====================// */
 export interface CreatePaymentRequest {
   processId?: string | undefined;
@@ -59,6 +66,7 @@ export interface PaymentResponse {
   deletedAt: string;
   createdAt: string;
   updatedAt: string;
+  qrCode: string;
 }
 
 /** ==================== GetManyPayments ====================// */
@@ -98,6 +106,8 @@ export interface PaymentServiceClient {
 
   getManyPayments(request: GetManyPaymentsRequest): Observable<GetManyPaymentsResponse>;
 
+  getPayment(request: GetPaymentRequest): Observable<PaymentResponse>;
+
   createPayment(request: CreatePaymentRequest): Observable<PaymentResponse>;
 
   updatePaymentStatus(request: UpdatePaymentStatusRequest): Observable<PaymentResponse>;
@@ -112,6 +122,8 @@ export interface PaymentServiceController {
     request: GetManyPaymentsRequest,
   ): Promise<GetManyPaymentsResponse> | Observable<GetManyPaymentsResponse> | GetManyPaymentsResponse;
 
+  getPayment(request: GetPaymentRequest): Promise<PaymentResponse> | Observable<PaymentResponse> | PaymentResponse;
+
   createPayment(
     request: CreatePaymentRequest,
   ): Promise<PaymentResponse> | Observable<PaymentResponse> | PaymentResponse;
@@ -123,7 +135,7 @@ export interface PaymentServiceController {
 
 export function PaymentServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["receiver", "getManyPayments", "createPayment", "updatePaymentStatus"];
+    const grpcMethods: string[] = ["receiver", "getManyPayments", "getPayment", "createPayment", "updatePaymentStatus"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentService", method)(constructor.prototype[method], method, descriptor);

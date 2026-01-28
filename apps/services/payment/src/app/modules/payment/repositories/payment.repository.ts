@@ -1,5 +1,8 @@
 import { PaymentStatusValues } from '@common/constants/payment.constant';
-import { GetManyPaymentsRequest } from '@common/interfaces/models/payment';
+import {
+  GetManyPaymentsRequest,
+  GetPaymentRequest,
+} from '@common/interfaces/models/payment';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/payment';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -41,6 +44,15 @@ export class PaymentRepository {
       limit: data.limit,
       totalPages: Math.ceil(totalItems / data.limit),
     };
+  }
+
+  getOne(data: GetPaymentRequest) {
+    return this.prismaService.payment.findUnique({
+      where: {
+        id: data.id,
+        userId: data?.userId ?? undefined,
+      },
+    });
   }
 
   create(data: Prisma.PaymentCreateInput) {
