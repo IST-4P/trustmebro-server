@@ -23,7 +23,7 @@ async function bootstrap() {
 
   const globalPrefix = BaseConfiguration.GLOBAL_PREFIX || 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = AppConfiguration.PROMOTION_SERVICE_PORT || 3013;
+  const port = AppConfiguration.PROMOTION_SERVICE_PORT || 3012;
 
   app.connectMicroservice(GrpcServerOptions(GrpcService.PROMOTION_SERVICE));
   app.connectMicroservice(KafkaServerOptions(QueueGroups.PROMOTION_GROUP));

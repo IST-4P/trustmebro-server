@@ -1,0 +1,109 @@
+{
+  "name": "report",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/services/report",
+  "projectType": "application",
+  "tags": ["type:app", "platform:dotnet"],
+  "targets": {
+    "restore": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet restore Report.sln",
+        "cwd": "apps/services/report"
+      }
+    },
+    "copy-proto": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "powershell -Command \"if (!(Test-Path 'libs/interfaces/src/lib/protos')) { New-Item -ItemType Directory -Force -Path 'libs/interfaces/src/lib/protos' | Out-Null }; Copy-Item -Path 'apps/services/report/Report.Api/Protos/report.proto' -Destination 'libs/interfaces/src/lib/protos/report.proto' -Force\"",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["restore", "copy-proto"],
+      "outputs": [
+        "{workspaceRoot}/apps/services/report/Report.Api/bin/Release"
+      ],
+      "options": {
+        "command": "dotnet build Report.sln -c Release",
+        "cwd": "apps/services/report"
+      },
+      "configurations": {
+        "development": {
+          "command": "dotnet build Report.sln -c Debug"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "dotnet run --project Report.Api/Report.Api.csproj",
+        "cwd": "apps/services/report"
+      },
+      "configurations": {
+        "development": {
+          "command": "dotnet run --project Report.Api/Report.Api.csproj --environment Development"
+        },
+        "production": {
+          "command": "dotnet run --project Report.Api/Report.Api.csproj --environment Production"
+        }
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "outputs": [
+        "{workspaceRoot}/apps/services/report/Report.Api/bin/Release/net10.0/publish"
+      ],
+      "options": {
+        "command": "dotnet publish Report.Api/Report.Api.csproj -c Release -o Report.Api/bin/Release/net10.0/publish",
+        "cwd": "apps/services/report"
+      }
+    },
+    "docker-build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["publish"],
+      "options": {
+        "command": "docker build -t caophi562005/trustmebro-report:latest -f apps/services/report/Dockerfile .",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "docker-push": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["docker-build"],
+      "options": {
+        "command": "docker push caophi562005/trustmebro-report:latest"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test Report.sln",
+        "cwd": "apps/services/report"
+      }
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet clean Report.sln",
+        "cwd": "apps/services/report"
+      }
+    },
+    "ef-migrations-add": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet ef migrations add {args.name} --project Report.Infrastructure/Report.Infrastructure.csproj --startup-project Report.Api/Report.Api.csproj",
+        "cwd": "apps/services/report"
+      }
+    },
+    "ef-database-update": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet ef database update --project Report.Infrastructure/Report.Infrastructure.csproj --startup-project Report.Api/Report.Api.csproj",
+        "cwd": "apps/services/report"
+      }
+    }
+  }
+}

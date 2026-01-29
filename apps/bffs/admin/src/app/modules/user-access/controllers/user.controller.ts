@@ -35,7 +35,7 @@ export class UserController {
     @ProcessId() processId: string,
     @Query() queries: GetManyUsersBodyDto
   ) {
-    return this.userService.getUser({ ...queries, processId });
+    return this.userService.getManyUsers({ ...queries, processId });
   }
 
   @Get(':id')

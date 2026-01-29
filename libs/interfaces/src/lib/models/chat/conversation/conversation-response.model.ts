@@ -15,6 +15,14 @@ export const GetManyConversationsResponseSchema =
         lastMessageAt: true,
         lastSenderId: true,
         readStatus: true,
+      }).extend({
+        participants: z.array(
+          z.object({
+            id: z.string(),
+            username: z.string(),
+            avatar: z.string(),
+          })
+        ),
       })
     ),
   });

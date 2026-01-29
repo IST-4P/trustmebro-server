@@ -112,7 +112,9 @@ jobs:
             {"name":"query","dockerfile":"apps/services/query/Dockerfile","secret":"COOLIFY_APP_QUERY"},
             {"name":"role","dockerfile":"apps/services/role/Dockerfile","secret":"COOLIFY_APP_ROLE"},
             {"name":"user-access","dockerfile":"apps/services/user-access/Dockerfile","secret":"COOLIFY_APP_USER_ACCESS"},
-            {"name":"promotion","dockerfile":"apps/services/promotion/Dockerfile","secret":"COOLIFY_APP_PROMOTION"}
+            {"name":"promotion","dockerfile":"apps/services/promotion/Dockerfile","secret":"COOLIFY_APP_PROMOTION"},
+            {"name":"review","dockerfile":"apps/services/review/Dockerfile","secret":"COOLIFY_APP_REVIEW"},
+            {"name":"report","dockerfile":"apps/services/report/Dockerfile","secret":"COOLIFY_APP_REPORT"}
           ]'
 
           # 4) filter theo affected để tạo matrix.include
@@ -189,5 +191,5 @@ jobs:
           url: ${{ secrets.COOLIFY_URL }}/api/v1/deploy?uuid=${{ secrets[matrix.secret] }}&force=true
           method: GET
           bearerToken: ${{ secrets.COOLIFY_API_TOKEN }}
-          retry: 3
+          retry: 10
           retryWait: 5000

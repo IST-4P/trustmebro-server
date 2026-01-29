@@ -34,6 +34,16 @@ export class PromotionRepository {
       discountType: data?.discountType || undefined,
     };
 
+    // Nếu includeUsed = false và có userId, chỉ lấy những promotion chưa sử dụng
+    if (data.includeUsed === false && data.userId) {
+      whereClause.redemptions = {
+        none: {
+          userId: data.userId,
+          usedAt: { not: null },
+        },
+      };
+    }
+
     const [totalItems, promotions] = await Promise.all([
       this.prismaService.promotion.count({
         where: whereClause,
@@ -84,7 +94,6 @@ export class PromotionRepository {
     return this.prismaService.promotion.update({
       where: {
         id: data.id as string,
-        updatedById: data?.updatedById as string,
       },
       data,
     });

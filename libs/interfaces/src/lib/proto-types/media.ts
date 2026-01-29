@@ -54,7 +54,7 @@ export interface VideoResponse {
 export interface UpdateVideoRequest {
   processId?: string | undefined;
   id: string;
-  status: string;
+  status?: string | undefined;
   updatedById?: string | undefined;
 }
 

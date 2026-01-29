@@ -22,7 +22,13 @@ async function bootstrap() {
   const globalPrefix = BaseConfiguration.GLOBAL_PREFIX || 'api/v1';
   app.setGlobalPrefix(globalPrefix);
 
-  app.enableCors({ origin: '*' });
+  app.enableCors({
+    origin: [
+      'https://uncoachable-buffable-talisha.ngrok-free.dev',
+      'https://tusd.hacmieu.xyz',
+    ],
+    credentials: true,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('TrustMeBro-Admin API')

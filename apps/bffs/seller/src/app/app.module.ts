@@ -21,6 +21,8 @@ import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { OrderModule } from './modules/order/order.module';
 import { ProductModule } from './modules/product/product.module';
+import { ReportModule } from './modules/report/report.module';
+import { ReviewModule } from './modules/review/review.module';
 import { UserAccessModule } from './modules/user-access/user-access.module';
 
 @Module({
@@ -40,6 +42,8 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     ChatModule,
     DashboardModule,
     MediaModule,
+    ReviewModule,
+    ReportModule,
   ],
   providers: [
     WebSocketService,

@@ -95,4 +95,14 @@ export class UserRepository {
 
     return userCount + shopCount;
   }
+
+  async getManyInformationUsers(userIds: string[]) {
+    return this.prismaService.user.findMany({
+      where: {
+        id: {
+          in: userIds,
+        },
+      },
+    });
+  }
 }

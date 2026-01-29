@@ -7,11 +7,18 @@ export class RedemptionRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(data: CreatePromotionRedemptionRequest) {
-    return this.prismaService.promotionRedemption.create({
+    const redemption = await this.prismaService.promotionRedemption.create({
       data: {
         ...data,
         usedAt: new Date(),
       },
     });
+    await this.prismaService.promotion.update({
+      where: { id: data.promotionId },
+      data: {
+        usedCount: { increment: 1 },
+      },
+    });
+    return redemption;
   }
 }

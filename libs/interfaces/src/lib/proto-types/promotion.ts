@@ -22,6 +22,8 @@ export interface GetManyPromotionsRequest {
   discountType?: string | undefined;
   page: number;
   limit: number;
+  includeUsed?: boolean | undefined;
+  userId?: string | undefined;
 }
 
 export interface GetPromotionRequest {

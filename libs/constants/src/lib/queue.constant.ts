@@ -89,6 +89,22 @@ enum PromotionQueueTopics {
   CREATE_REDEMPTION = 'create_redemption',
 }
 
+enum ReviewQueueTopics {
+  CREATE_REVIEW = 'review.created',
+  UPDATE_REVIEW = 'review.updated',
+  DELETE_REVIEW = 'review.deleted',
+
+  CREATE_REPLY = 'reply.created',
+  UPDATE_REPLY = 'reply.updated',
+  DELETE_REPLY = 'reply.deleted',
+}
+
+enum ReportQueueTopics {
+  CREATE_REPORT = 'report.created',
+  UPDATE_STATUS = 'report.status-updated',
+  DELETE_REPORT = 'report.deleted',
+}
+
 export const QueueTopics = {
   CATEGORY: CategoryQueueTopics,
   PRODUCT: ProductQueueTopics,
@@ -102,4 +118,6 @@ export const QueueTopics = {
   PAYMENT: PaymentQueueTopics,
   MEDIA: MediaQueueTopics,
   PROMOTION: PromotionQueueTopics,
+  REVIEW: ReviewQueueTopics,
+  REPORT: ReportQueueTopics,
 } as const;

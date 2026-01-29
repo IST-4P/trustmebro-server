@@ -24,6 +24,8 @@ message GetManyPromotionsRequest {
   optional string discountType = 8;
   int32 page = 9;
   int32 limit = 10;
+  optional bool includeUsed = 11;
+  optional string userId = 12;
 }
 
 message GetPromotionRequest {

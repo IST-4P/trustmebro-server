@@ -32,7 +32,7 @@ export class UserService implements OnModuleInit {
   }
 
   async getManyUsers(data: GetManyUsersRequest): Promise<GetManyUsersResponse> {
-    return firstValueFrom(this.userAccessService.getManyUser(data));
+    return firstValueFrom(this.userAccessService.getManyUsers(data));
   }
 
   async updateUser(data: UpdateUserRequest) {

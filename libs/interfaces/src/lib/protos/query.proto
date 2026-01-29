@@ -25,6 +25,12 @@ service QueryService {
 
   rpc GetManyVideos(GetManyVideosRequest) returns (GetManyVideosResponse);
   rpc GetVideo(GetVideoRequest) returns (VideoResponse);
+
+  rpc GetManyProductReviews(GetManyProductReviewsRequest) returns (GetManyProductReviewsResponse);
+  rpc GetReview(GetReviewRequest) returns (ReviewItem);
+
+  rpc GetReport(GetReportRequest) returns (ReportResponse);
+  rpc GetManyReports(GetManyReportsRequest) returns (GetManyReportsResponse);
 }
 
 //====================================== Category ======================================//
@@ -282,13 +288,15 @@ message GetManyOrdersRequest {
 
 message OrderSummary {
   string id = 1;
-  string shopId = 2;
-  string shopName = 3;
-  string status = 4;
-  int32 itemTotal = 5;
-  int32 grandTotal = 6;
-  string firstProductImage = 7;
-  string firstProductName = 8;
+  string code = 2;
+  string shopId = 3;
+  string shopName = 4;
+  string status = 5;
+  int32 itemTotal = 6;
+  int32 grandTotal = 7;
+  string firstProductImage = 8;
+  string firstProductName = 9;
+  string createdAt = 10;
 }
 
 message GetManyOrdersResponse {
@@ -411,4 +419,115 @@ message GetManyVideosResponse {
   int32 totalItems = 3;
   int32 totalPages = 4;
   repeated VideoBasicInfo videos = 5;
+}
+
+//====================================== Reviews ======================================//
+//==================== GetManyProductReviewsRequest ====================//
+message GetManyProductReviewsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string productId = 4;
+  int32 rating = 5;
+  optional string userId = 6;
+  optional string shopId = 7;
+}
+
+//==================== GetReviewRequest ====================//
+message GetReviewRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message ReviewReply {
+  string id = 1;
+  string reviewId = 2;
+  string shopId = 3;
+  string content = 4;
+  string createdAt = 5;
+}
+
+message ReviewItem {
+  string id = 1;
+  string userId = 2;
+  int32 rating = 3;
+  string content = 4;
+  repeated string medias = 5;
+  optional ReviewReply reply = 6;
+  string createdAt = 7;
+  optional string updatedAt = 8;
+  string productId = 9;
+  optional string username = 10;
+  optional string avatar = 11;
+  string productName = 12;
+}
+
+message ProductRatingStats {
+  string productId = 1;
+  double averageRating = 2;
+  int32 totalReviews = 3;
+  int32 oneStarCount = 4;
+  int32 twoStarCount = 5;
+  int32 threeStarCount = 6;
+  int32 fourStarCount = 7;
+  int32 fiveStarCount = 8;
+}
+
+message GetManyProductReviewsResponse {
+  repeated ReviewItem reviews = 1;
+  optional ProductRatingStats rating = 2;
+  int32 page = 3;
+  int32 limit = 4;
+  int32 totalItems = 5;
+  int32 totalPages = 6;
+}
+
+//====================================== Report ======================================//
+//==================== GetReportRequest ====================//
+message GetReportRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
+message ReportResponse {
+  string id = 1;
+  string reporterId = 2;
+  string targetId = 3;
+  string targetType = 4;
+  string category = 5;
+  string title = 6;
+  string description = 7;
+  string status = 8;
+  optional string note = 9;
+  string createdAt = 10;
+  optional string updatedAt = 11;
+}
+
+//==================== GetManyReportsRequest ====================//
+message GetManyReportsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string reporterId = 4;
+  optional string targetId = 5;
+  optional string targetType = 6;
+  optional string category = 7;
+  optional string status = 8;
+}
+
+message ReportListItem {
+  string id = 1;
+  string reporterId = 2;
+  string targetType = 3;
+  string category = 4;
+  string title = 5;
+  string status = 6;
+}
+
+message GetManyReportsResponse {
+  repeated ReportListItem reports = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
 }

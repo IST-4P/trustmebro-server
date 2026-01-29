@@ -26,6 +26,7 @@ namespace Review.Api.Mapping
                    .MapFrom(src => src.Medias.Count > 0 ? src.Medias.ToList() : new List<string>()))
           .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
       CreateMap<CreateReplyRequest, CreateReplyRequestDto>();
+      CreateMap<UpdateReplyRequest, UpdateReplyRequestDto>();
 
 
       //Dto to Entity
@@ -45,6 +46,27 @@ namespace Review.Api.Mapping
       CreateMap<Review.Domain.Entities.SellerRating, SellerRatingDto>();
 
       //Dto to Grpc
+      CreateMap<ReviewResponseClientDto, Review.Grpc.Review>()
+          .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+          .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+          .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+          .ForMember(dest => dest.OrderItemId, opt => opt.MapFrom(src => src.OrderItemId))
+          .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+          .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+          .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content ?? string.Empty))
+          .ForMember(dest => dest.Medias, opt => opt.MapFrom(src => src.Medias ?? new List<string>()))
+          .ForMember(dest => dest.Replies, opt => opt.MapFrom(src => src.Replies))
+          .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt.ToString("O")))
+          .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt.ToString("O")));
+
+      CreateMap<ReviewReplyDto, ReviewReply>()
+          .ForMember(dest => dest.Id, opt => opt.Ignore())
+          .ForMember(dest => dest.ReviewId, opt => opt.MapFrom(src => src.ReviewId))
+          .ForMember(dest => dest.SellerId, opt => opt.MapFrom(src => src.SellerId))
+          .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+          .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+          .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
+
       CreateMap<ProductRatingDto, ProductRatingStats>();
       CreateMap<SellerRatingDto, SellerRatingStats>();
 

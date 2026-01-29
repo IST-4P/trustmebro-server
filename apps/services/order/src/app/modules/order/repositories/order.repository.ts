@@ -171,7 +171,6 @@ export class OrderRepository {
   async dashboardSeller(data: DashboardSellerRequest) {
     const whereBase = {
       shopId: data.shopId,
-      userId: data.userId,
     };
 
     const [statusCounts, revenueAgg] = await Promise.all([

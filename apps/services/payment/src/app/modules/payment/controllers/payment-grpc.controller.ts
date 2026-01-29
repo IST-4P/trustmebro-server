@@ -3,6 +3,7 @@ import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interce
 import {
   CreatePaymentRequest,
   GetManyPaymentsRequest,
+  GetPaymentRequest,
   UpdatePaymentStatusRequest,
 } from '@common/interfaces/models/payment';
 import { Controller, UseInterceptors } from '@nestjs/common';
@@ -17,6 +18,11 @@ export class PaymentGrpcController {
   @GrpcMethod(GrpcServiceName.PAYMENT_SERVICE, 'GetManyPayments')
   getManyPayments(data: GetManyPaymentsRequest) {
     return this.paymentService.list(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.PAYMENT_SERVICE, 'GetPayment')
+  getPayment(data: GetPaymentRequest) {
+    return this.paymentService.getOne(data);
   }
 
   @GrpcMethod(GrpcServiceName.PAYMENT_SERVICE, 'CreatePayment')

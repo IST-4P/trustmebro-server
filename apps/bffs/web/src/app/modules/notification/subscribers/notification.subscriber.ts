@@ -1,6 +1,5 @@
 import { RedisConfiguration } from '@common/configurations/redis.config';
 import { RedisChannel } from '@common/constants/redis.constant';
-import { NotificationResponse } from '@common/interfaces/models/notification';
 import {
   Injectable,
   MessageEvent,
@@ -14,7 +13,7 @@ import { Observable, Subject } from 'rxjs';
 export class NotificationSubscriber implements OnModuleInit, OnModuleDestroy {
   private subscriber = createClient({ url: RedisConfiguration.REDIS_URL });
   private readonly subject = new Subject<
-    MessageEvent & { data: NotificationResponse }
+    MessageEvent & { data: { unreadCount: number; userId: string } }
   >();
 
   async onModuleInit() {
@@ -23,7 +22,10 @@ export class NotificationSubscriber implements OnModuleInit, OnModuleDestroy {
     await this.subscriber.subscribe(
       RedisChannel.NOTIFICATION_CHANNEL,
       (message) => {
-        const notification = JSON.parse(message) as NotificationResponse;
+        const notification = JSON.parse(message) as {
+          unreadCount: number;
+          userId: string;
+        };
         this.subject.next({
           data: notification,
           type: 'notification',
@@ -39,7 +41,9 @@ export class NotificationSubscriber implements OnModuleInit, OnModuleDestroy {
     this.subject.complete();
   }
 
-  stream(): Observable<MessageEvent & { data: NotificationResponse }> {
+  stream(): Observable<
+    MessageEvent & { data: { unreadCount: number; userId: string } }
+  > {
     return this.subject.asObservable();
   }
 }

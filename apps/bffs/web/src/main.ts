@@ -26,7 +26,12 @@ async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
 
   app.enableCors({
-    origin: true, // Cho phép tất cả origin khi dùng credentials
+    origin: [
+      'https://tusd.hacmieu.xyz',
+      'https://boatless-feebly-leslie.ngrok-free.dev',
+      'https://korbin-malacological-densely.ngrok-free.dev',
+      'https://uncoachable-buffable-talisha.ngrok-free.dev',
+    ],
     credentials: true, // Cho phép gửi cookies/credentials
   });
 

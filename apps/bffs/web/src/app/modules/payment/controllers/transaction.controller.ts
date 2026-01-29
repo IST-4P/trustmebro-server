@@ -5,7 +5,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionWriteService } from '../services/transaction-write.service';
 
-@Controller('payment/transaction')
+@Controller('transaction')
 @ApiTags('Payment')
 export class TransactionController {
   constructor(

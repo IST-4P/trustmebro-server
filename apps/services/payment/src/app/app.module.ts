@@ -2,6 +2,7 @@ import { RedisConfiguration } from '@common/configurations/redis.config';
 import { QueueService } from '@common/constants/queue.constant';
 import { KafkaModule } from '@common/kafka/kafka.module';
 import { LoggerModule } from '@common/observability/logger';
+import { RedisModule } from '@common/redis/redis/redis.module';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { RemovePaymentCronJob } from './cornjobs/remove-payment.cronjob';
@@ -14,6 +15,7 @@ import { PrismaModule } from './prisma/prisma.module';
 @Module({
   imports: [
     PrismaModule,
+    RedisModule,
     KafkaModule.register(QueueService.PAYMENT_SERVICE),
     LoggerModule.forRoot('payment'),
     BullModule.forRoot({

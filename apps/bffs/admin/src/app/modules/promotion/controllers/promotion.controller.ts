@@ -27,6 +27,11 @@ class GetPromotionBodyDto extends OmitType(GetPromotionRequestDto, [
   'code',
 ] as const) {}
 
+class GetManyPromotionsBodyDto extends OmitType(GetManyPromotionsRequestDto, [
+  'includeUsed',
+  'userId',
+] as const) {}
+
 class DeletePromotionBodyDto extends OmitType(DeletePromotionRequestDto, [
   'deletedById',
 ] as const) {}
@@ -39,12 +44,13 @@ export class PromotionController {
   @Get()
   @ApiOkResponse({ type: GetManyPromotionsResponseDto })
   async getManyPromotions(
-    @Query() queries: GetManyPromotionsRequestDto,
+    @Query() queries: GetManyPromotionsBodyDto,
     @ProcessId() processId: string
   ) {
     return this.promotionService.getManyPromotions({
       ...queries,
       processId,
+      includeUsed: true,
     });
   }
 

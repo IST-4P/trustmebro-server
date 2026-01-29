@@ -188,6 +188,26 @@ export interface UserBasicInfo {
   roleName: string;
 }
 
+/** ==================== GetManyInformationUsers ====================// */
+export interface GetManyInformationUsersRequest {
+  processId?: string | undefined;
+  userIds: string[];
+}
+
+export interface GetManyInformationUsersResponse {
+  users: { [key: string]: UserInformation };
+}
+
+export interface GetManyInformationUsersResponse_UsersEntry {
+  key: string;
+  value: UserInformation | undefined;
+}
+
+export interface UserInformation {
+  username: string;
+  avatar?: string | undefined;
+}
+
 /** ==================== GetShop ====================// */
 export interface GetShopRequest {
   processId?: string | undefined;
@@ -347,13 +367,15 @@ export interface UserAccessServiceClient {
 
   getUser(request: GetUserRequest): Observable<UserResponse>;
 
-  getManyUser(request: GetManyUsersRequest): Observable<GetManyUsersResponse>;
+  getManyUsers(request: GetManyUsersRequest): Observable<GetManyUsersResponse>;
 
   updateUser(request: UpdateUserRequest): Observable<UserResponse>;
 
   createUser(request: CreateUserRequest): Observable<UserResponse>;
 
   checkParticipantExists(request: CheckParticipantExistsRequest): Observable<CheckParticipantExistsResponse>;
+
+  getManyInformationUsers(request: GetManyInformationUsersRequest): Observable<GetManyInformationUsersResponse>;
 
   getShop(request: GetShopRequest): Observable<ShopResponse>;
 
@@ -397,7 +419,7 @@ export interface UserAccessServiceController {
 
   getUser(request: GetUserRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
-  getManyUser(
+  getManyUsers(
     request: GetManyUsersRequest,
   ): Promise<GetManyUsersResponse> | Observable<GetManyUsersResponse> | GetManyUsersResponse;
 
@@ -411,6 +433,13 @@ export interface UserAccessServiceController {
     | Promise<CheckParticipantExistsResponse>
     | Observable<CheckParticipantExistsResponse>
     | CheckParticipantExistsResponse;
+
+  getManyInformationUsers(
+    request: GetManyInformationUsersRequest,
+  ):
+    | Promise<GetManyInformationUsersResponse>
+    | Observable<GetManyInformationUsersResponse>
+    | GetManyInformationUsersResponse;
 
   getShop(request: GetShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 
@@ -452,10 +481,11 @@ export function UserAccessServiceControllerMethods() {
       "changePassword",
       "sendOtp",
       "getUser",
-      "getManyUser",
+      "getManyUsers",
       "updateUser",
       "createUser",
       "checkParticipantExists",
+      "getManyInformationUsers",
       "getShop",
       "createShop",
       "updateShop",

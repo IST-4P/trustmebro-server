@@ -1,5 +1,6 @@
 import { PromotionStatusValues } from '@common/constants/promotion.constant';
 import { ProcessId } from '@common/decorators/process-id.decorator';
+import { UserData } from '@common/decorators/user-data.decorator';
 import {
   GetManyPromotionsRequestDto,
   GetManyPromotionsResponseDto,
@@ -20,6 +21,8 @@ class GetManyPromotionsBodyDto extends OmitType(GetManyPromotionsRequestDto, [
   'status',
   'startsAt',
   'endsAt',
+  'includeUsed',
+  'userId',
 ] as const) {}
 
 @Controller('promotion')
@@ -31,12 +34,15 @@ export class PromotionController {
   @ApiOkResponse({ type: GetManyPromotionsResponseDto })
   async getManyPromotions(
     @Query() queries: GetManyPromotionsBodyDto,
-    @ProcessId() processId: string
+    @ProcessId() processId: string,
+    @UserData('userId') userId: string
   ) {
     return this.promotionService.getManyPromotions({
       ...queries,
       processId,
       status: PromotionStatusValues.ACTIVE,
+      includeUsed: false,
+      userId,
     });
   }
 
