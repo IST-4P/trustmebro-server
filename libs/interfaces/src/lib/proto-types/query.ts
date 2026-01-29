@@ -366,6 +366,17 @@ export interface VideoResponse {
   authorId: string;
   authorUsername?: string | undefined;
   authorAvatar?: string | undefined;
+  productId?: string | undefined;
+}
+
+/** ==================== GetRandomVideosRequest ====================// */
+export interface GetRandomVideosRequest {
+  processId?: string | undefined;
+  limit: number;
+}
+
+export interface GetRandomVideosResponse {
+  videos: VideoResponse[];
 }
 
 /** ==================== GetManyVideosRequest ====================// */
@@ -389,6 +400,7 @@ export interface VideoBasicInfo {
   likeCount: number;
   commentCount: number;
   authorId: string;
+  productId?: string | undefined;
 }
 
 export interface GetManyVideosResponse {
@@ -561,6 +573,8 @@ export interface QueryServiceClient {
 
   getVideo(request: GetVideoRequest): Observable<VideoResponse>;
 
+  getFeed(request: GetRandomVideosRequest): Observable<GetRandomVideosResponse>;
+
   getManyProductReviews(request: GetManyProductReviewsRequest): Observable<GetManyProductReviewsResponse>;
 
   getReview(request: GetReviewRequest): Observable<ReviewItem>;
@@ -625,6 +639,10 @@ export interface QueryServiceController {
 
   getVideo(request: GetVideoRequest): Promise<VideoResponse> | Observable<VideoResponse> | VideoResponse;
 
+  getFeed(
+    request: GetRandomVideosRequest,
+  ): Promise<GetRandomVideosResponse> | Observable<GetRandomVideosResponse> | GetRandomVideosResponse;
+
   getManyProductReviews(
     request: GetManyProductReviewsRequest,
   ): Promise<GetManyProductReviewsResponse> | Observable<GetManyProductReviewsResponse> | GetManyProductReviewsResponse;
@@ -656,6 +674,7 @@ export function QueryServiceControllerMethods() {
       "dashboardOrders",
       "getManyVideos",
       "getVideo",
+      "getFeed",
       "getManyProductReviews",
       "getReview",
       "getReport",

@@ -36,6 +36,7 @@ async function bootstrap() {
       'https://trustmebro.hacmieu.xyz',
       'https://localhost:3000',
       'https://wishfully-unfactional-noble.ngrok-free.dev',
+      'http://localhost:5173',
     ],
     credentials: true, // Cho phép gửi cookies/credentials
   });

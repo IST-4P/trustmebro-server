@@ -20,6 +20,7 @@ export const GetVideoResponseSchema = z.object({
   likeCount: z.number(),
   commentCount: z.number(),
   authorId: z.uuid(),
+  productId: z.uuid().optional(),
   authorUsername: z.string().nullable(),
   authorAvatar: z.string().nullable(),
 });
@@ -38,6 +39,7 @@ export const GetManyVideosResponseSchema = PaginationQueryResponseSchema.extend(
         likeCount: true,
         commentCount: true,
         authorId: true,
+        productId: true,
       })
     ),
   }

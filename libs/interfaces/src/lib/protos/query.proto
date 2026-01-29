@@ -26,6 +26,7 @@ service QueryService {
 
   rpc GetManyVideos(GetManyVideosRequest) returns (GetManyVideosResponse);
   rpc GetVideo(GetVideoRequest) returns (VideoResponse);
+  rpc GetFeed(GetRandomVideosRequest) returns (GetRandomVideosResponse);
 
   rpc GetManyProductReviews(GetManyProductReviewsRequest) returns (GetManyProductReviewsResponse);
   rpc GetReview(GetReviewRequest) returns (ReviewItem);
@@ -389,6 +390,17 @@ message VideoResponse {
   string authorId = 15;
   optional string authorUsername = 16;
   optional string authorAvatar = 17;
+  optional string productId = 18;
+}
+
+//==================== GetRandomVideosRequest ====================//
+message GetRandomVideosRequest {
+  optional string processId = 1;
+  int32 limit = 2;
+}
+
+message GetRandomVideosResponse {
+  repeated VideoResponse videos = 1;
 }
 
 //==================== GetManyVideosRequest ====================//
@@ -412,6 +424,7 @@ message VideoBasicInfo {
   int32 likeCount = 8;
   int32 commentCount = 9;
   string authorId = 10;
+  optional string productId = 11;
 }
 
 message GetManyVideosResponse {

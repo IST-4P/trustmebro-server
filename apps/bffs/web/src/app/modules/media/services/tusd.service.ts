@@ -109,6 +109,7 @@ export class TusdService {
       storageKey: body.Event.Upload.Storage.Key,
       size: body.Event.Upload.Size,
       filetype: body.Event.Upload.MetaData.filetype,
+      productId: body.Event.Upload.MetaData.productId,
     });
   }
 

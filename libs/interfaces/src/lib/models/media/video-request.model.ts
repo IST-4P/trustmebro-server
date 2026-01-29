@@ -15,6 +15,7 @@ export const CreateVideoRequestSchema = VideoSchema.pick({
   userId: true,
   filetype: true,
   title: true,
+  productId: true,
 }).extend({
   processId: z.uuid().optional(),
 });
@@ -45,6 +46,7 @@ export const ProcessVideoRequestSchema = z.object({
   storageKey: z.string(),
   processId: z.uuid().optional(),
   userId: z.uuid(),
+  productId: z.string().optional(),
 });
 
 export const GetManyVideosRequestSchema = VideoSchema.pick({
@@ -59,9 +61,17 @@ export const GetManyVideosRequestSchema = VideoSchema.pick({
     limit: PaginationQueryRequestSchema.shape.limit,
   });
 
+export const GetRandomVideosRequestSchema = z.object({
+  limit: z.coerce.number(),
+  processId: z.uuid().optional(),
+});
+
 export type GetVideoRequest = z.infer<typeof GetVideoRequestSchema>;
 export type GetManyVideosRequest = z.infer<typeof GetManyVideosRequestSchema>;
 export type CreateVideoRequest = z.infer<typeof CreateVideoRequestSchema>;
 export type UpdateVideoRequest = z.infer<typeof UpdateVideoRequestSchema>;
 export type DeleteVideoRequest = z.infer<typeof DeleteVideoRequestSchema>;
 export type ProcessVideoRequest = z.infer<typeof ProcessVideoRequestSchema>;
+export type GetRandomVideosRequest = z.infer<
+  typeof GetRandomVideosRequestSchema
+>;

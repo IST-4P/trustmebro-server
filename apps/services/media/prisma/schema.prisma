@@ -68,6 +68,7 @@ model Video {
     storageKey    String
     size          Int
     userId        String
+    productId     String?
     filetype      String
     status        VideoStatus @default(UPLOADING)
 

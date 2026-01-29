@@ -12,6 +12,7 @@ export const TusdWebhookRequestSchema = z.object({
       MetaData: z.object({
         filename: z.string(),
         filetype: z.string(),
+        productId: z.string(),
       }),
       IsPartial: z.boolean(),
       IsFinal: z.boolean(),

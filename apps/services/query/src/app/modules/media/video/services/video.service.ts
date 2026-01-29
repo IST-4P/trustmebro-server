@@ -1,6 +1,7 @@
 import {
   GetManyVideosRequest,
   GetManyVideosResponse,
+  GetRandomVideosRequest,
   GetVideoRequest,
   GetVideoResponse,
   VideoResponse,
@@ -30,6 +31,17 @@ export class VideoService {
       throw new NotFoundException('Error.VideoNotFound');
     }
     return video;
+  }
+
+  async getFeed(data: GetRandomVideosRequest) {
+    const videos = (await this.videoRepository.getRandom(
+      data
+    )) as VideoResponse[];
+    console.log(videos);
+    if (videos.length === 0) {
+      throw new NotFoundException('Error.VideosNotFound');
+    }
+    return { videos };
   }
 
   upsert(data: VideoResponse & { username: string; avatar: string }) {
