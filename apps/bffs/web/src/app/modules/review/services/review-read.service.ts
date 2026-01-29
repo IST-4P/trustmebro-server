@@ -1,9 +1,11 @@
 import {
   GetManyProductReviewsRequest,
   GetManyProductReviewsResponse,
+  GetReviewRequest,
   QUERY_SERVICE_NAME,
   QUERY_SERVICE_PACKAGE_NAME,
   QueryServiceClient,
+  ReviewItem,
 } from '@common/interfaces/proto-types/query';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -21,6 +23,10 @@ export class ReviewReadService implements OnModuleInit {
   onModuleInit() {
     this.queryService =
       this.queryClient.getService<QueryServiceClient>(QUERY_SERVICE_NAME);
+  }
+
+  async getReview(data: GetReviewRequest): Promise<ReviewItem> {
+    return firstValueFrom(this.queryService.getReview(data));
   }
 
   async getManyProductReviews(

@@ -83,8 +83,13 @@ export class ReviewRepository {
   }
 
   async getReview(data: GetReviewRequest) {
-    return this.prismaService.reviewView.findUnique({
-      where: { id: data.id },
+    const whereClause: Prisma.ReviewViewWhereInput = {
+      id: data.id || undefined,
+      orderId: data.orderId || undefined,
+      orderItemId: data.orderItemId || undefined,
+    };
+    return this.prismaService.reviewView.findFirst({
+      where: whereClause,
     });
   }
 

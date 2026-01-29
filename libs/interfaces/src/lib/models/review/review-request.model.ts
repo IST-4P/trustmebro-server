@@ -15,7 +15,9 @@ export const GetManyProductReviewsRequestSchema =
 
 export const GetReviewRequestSchema = z
   .object({
-    id: z.uuid(),
+    id: z.uuid().optional(),
+    orderId: z.uuid().optional(),
+    orderItemId: z.uuid().optional(),
     processId: z.uuid().optional(),
   })
   .strict();

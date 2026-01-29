@@ -428,7 +428,9 @@ export interface GetManyProductReviewsRequest {
 /** ==================== GetReviewRequest ====================// */
 export interface GetReviewRequest {
   processId?: string | undefined;
-  id: string;
+  id?: string | undefined;
+  orderId?: string | undefined;
+  orderItemId?: string | undefined;
 }
 
 export interface ReviewReply {

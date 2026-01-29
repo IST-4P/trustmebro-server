@@ -450,7 +450,9 @@ message GetManyProductReviewsRequest {
 //==================== GetReviewRequest ====================//
 message GetReviewRequest {
   optional string processId = 1;
-  string id = 2;
+  optional string id = 2;
+  optional string orderId = 3;
+  optional string orderItemId = 4;
 }
 
 message ReviewReply {
