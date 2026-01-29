@@ -26,6 +26,7 @@ async function bootstrap() {
     origin: [
       'https://uncoachable-buffable-talisha.ngrok-free.dev',
       'https://tusd.hacmieu.xyz',
+      'https://trustmebro-admin.vercel.app',
     ],
     credentials: true,
   });

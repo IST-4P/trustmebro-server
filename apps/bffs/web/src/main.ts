@@ -31,6 +31,10 @@ async function bootstrap() {
       'https://boatless-feebly-leslie.ngrok-free.dev',
       'https://korbin-malacological-densely.ngrok-free.dev',
       'https://uncoachable-buffable-talisha.ngrok-free.dev',
+      'https://trustmebro-admin.vercel.app',
+      'https://trustmebro-seller.vercel.app',
+      'https://trustmebro.hacmieu.xyz',
+      'https://localhost:3000',
     ],
     credentials: true, // Cho phép gửi cookies/credentials
   });
