@@ -74,6 +74,11 @@ export const UpdateRoleRequestSchema = UserSchema.pick({
   })
   .strict();
 
+export const GetManyInformationUsersRequestSchema = z.object({
+  userIds: z.array(z.uuid()),
+  processId: z.string().optional(),
+});
+
 export type GetUserRequest = z.infer<typeof GetUserRequestSchema>;
 export type GetManyUsersRequest = z.infer<typeof GetManyUsersRequestSchema>;
 export type CreateUserRequest = z.infer<typeof CreateUserRequestSchema>;
@@ -82,3 +87,6 @@ export type CheckParticipantExistsRequest = z.infer<
 >;
 export type UpdateUserRequest = z.infer<typeof UpdateUserRequestSchema>;
 export type UpdateRoleRequest = z.infer<typeof UpdateRoleRequestSchema>;
+export type GetManyInformationUsersRequest = z.infer<
+  typeof GetManyInformationUsersRequestSchema
+>;

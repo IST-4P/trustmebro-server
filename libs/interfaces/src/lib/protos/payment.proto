@@ -6,6 +6,7 @@ service PaymentService {
   rpc Receiver(WebhookTransactionRequest) returns (WebhookTransactionResponse);
 
   rpc GetManyPayments(GetManyPaymentsRequest) returns (GetManyPaymentsResponse);
+  rpc GetPayment(GetPaymentRequest) returns (PaymentResponse);
   rpc CreatePayment(CreatePaymentRequest) returns (PaymentResponse);
   rpc UpdatePaymentStatus(UpdatePaymentStatusRequest) returns (PaymentResponse);
 }
@@ -32,7 +33,15 @@ message WebhookTransactionResponse {
   string paymentCode = 2;
   string userId = 3;
   string paymentId = 4;
+} 
+
+//==================== GetPayment ====================//
+message GetPaymentRequest {
+  optional string processId = 1;
+  string id = 2;
+  string userId = 3;
 }
+
 //==================== CreatePayment ====================//
 message CreatePaymentRequest {
   optional string processId = 1;
@@ -59,6 +68,7 @@ message PaymentResponse {
   string deletedAt = 11;
   string createdAt = 12;
   string updatedAt = 13;
+  optional string qrCode = 14;
 }
 
 //==================== GetManyPayments ====================//

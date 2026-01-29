@@ -1,5 +1,8 @@
 import { PaymentStatusValues } from '@common/constants/payment.constant';
-import { GetManyPaymentsRequest } from '@common/interfaces/models/payment';
+import {
+  GetManyPaymentsRequest,
+  GetPaymentRequest,
+} from '@common/interfaces/models/payment';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/payment';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -43,6 +46,15 @@ export class PaymentRepository {
     };
   }
 
+  getOne(data: GetPaymentRequest) {
+    return this.prismaService.payment.findUnique({
+      where: {
+        id: data.id,
+        userId: data?.userId ?? undefined,
+      },
+    });
+  }
+
   create(data: Prisma.PaymentCreateInput) {
     return this.prismaService.payment.create({
       data,
@@ -53,9 +65,11 @@ export class PaymentRepository {
     return this.prismaService.payment.update({
       where: {
         id: data.id as string,
-        updatedById: data?.updatedById as string,
       },
-      data,
+      data: {
+        status: data.status,
+        updatedById: data.updatedById as string,
+      },
     });
   }
 

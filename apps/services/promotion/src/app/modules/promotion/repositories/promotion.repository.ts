@@ -94,7 +94,6 @@ export class PromotionRepository {
     return this.prismaService.promotion.update({
       where: {
         id: data.id as string,
-        updatedById: data?.updatedById as string,
       },
       data,
     });

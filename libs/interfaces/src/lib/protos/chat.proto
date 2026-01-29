@@ -12,6 +12,12 @@ service ChatService {
 
 //============================================= Conversation =============================================//
 
+message Participant {
+  string id = 1;
+  string username = 2;
+  string avatar = 3;
+}
+
 message ReadStatusItem {
   bool isRead = 1;
   string lastSeenMessageId = 2;
@@ -28,6 +34,7 @@ message ConversationResponse {
   map<string, ReadStatusItem> readStatus = 7;
   string createdAt = 8;
   string updatedAt = 9;
+  repeated Participant participants = 10;
 }
 
 // ============================== CreateConversation ================================= //
@@ -52,6 +59,7 @@ message ConversationItem {
   optional string lastMessageAt = 5;
   optional string lastSenderId = 6;
   map<string, ReadStatusItem> readStatus = 7;
+  repeated Participant participants = 10;
 }
 
 message GetManyConversationsResponse {

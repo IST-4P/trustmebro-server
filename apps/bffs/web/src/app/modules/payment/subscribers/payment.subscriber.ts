@@ -1,5 +1,6 @@
 import { RedisConfiguration } from '@common/configurations/redis.config';
 import { RedisChannel } from '@common/constants/redis.constant';
+import { WebhookTransactionResponse } from '@common/interfaces/models/payment/transaction';
 import {
   Injectable,
   MessageEvent,
@@ -10,28 +11,22 @@ import { createClient } from 'redis';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable()
-export class NotificationSubscriber implements OnModuleInit, OnModuleDestroy {
+export class PaymentSubscriber implements OnModuleInit, OnModuleDestroy {
   private subscriber = createClient({ url: RedisConfiguration.REDIS_URL });
   private readonly subject = new Subject<
-    MessageEvent & { data: { unreadCount: number; userId: string } }
+    MessageEvent & { data: WebhookTransactionResponse }
   >();
 
   async onModuleInit() {
     await this.subscriber.connect();
 
-    await this.subscriber.subscribe(
-      RedisChannel.NOTIFICATION_CHANNEL,
-      (message) => {
-        const notification = JSON.parse(message) as {
-          unreadCount: number;
-          userId: string;
-        };
-        this.subject.next({
-          data: notification,
-          type: 'notification',
-        });
-      }
-    );
+    await this.subscriber.subscribe(RedisChannel.PAYMENT_CHANNEL, (message) => {
+      const payment = JSON.parse(message) as WebhookTransactionResponse;
+      this.subject.next({
+        data: payment,
+        type: 'payment',
+      });
+    });
   }
 
   async onModuleDestroy() {
@@ -41,9 +36,7 @@ export class NotificationSubscriber implements OnModuleInit, OnModuleDestroy {
     this.subject.complete();
   }
 
-  stream(): Observable<
-    MessageEvent & { data: { unreadCount: number; userId: string } }
-  > {
+  stream(): Observable<MessageEvent & { data: WebhookTransactionResponse }> {
     return this.subject.asObservable();
   }
 }

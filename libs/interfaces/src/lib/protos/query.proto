@@ -27,6 +27,7 @@ service QueryService {
   rpc GetVideo(GetVideoRequest) returns (VideoResponse);
 
   rpc GetManyProductReviews(GetManyProductReviewsRequest) returns (GetManyProductReviewsResponse);
+  rpc GetReview(GetReviewRequest) returns (ReviewItem);
 
   rpc GetReport(GetReportRequest) returns (ReportResponse);
   rpc GetManyReports(GetManyReportsRequest) returns (GetManyReportsResponse);
@@ -287,13 +288,15 @@ message GetManyOrdersRequest {
 
 message OrderSummary {
   string id = 1;
-  string shopId = 2;
-  string shopName = 3;
-  string status = 4;
-  int32 itemTotal = 5;
-  int32 grandTotal = 6;
-  string firstProductImage = 7;
-  string firstProductName = 8;
+  string code = 2;
+  string shopId = 3;
+  string shopName = 4;
+  string status = 5;
+  int32 itemTotal = 6;
+  int32 grandTotal = 7;
+  string firstProductImage = 8;
+  string firstProductName = 9;
+  string createdAt = 10;
 }
 
 message GetManyOrdersResponse {
@@ -430,6 +433,12 @@ message GetManyProductReviewsRequest {
   optional string shopId = 7;
 }
 
+//==================== GetReviewRequest ====================//
+message GetReviewRequest {
+  optional string processId = 1;
+  string id = 2;
+}
+
 message ReviewReply {
   string id = 1;
   string reviewId = 2;
@@ -448,6 +457,9 @@ message ReviewItem {
   string createdAt = 7;
   optional string updatedAt = 8;
   string productId = 9;
+  optional string username = 10;
+  optional string avatar = 11;
+  string productName = 12;
 }
 
 message ProductRatingStats {

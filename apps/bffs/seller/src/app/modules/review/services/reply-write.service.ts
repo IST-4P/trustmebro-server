@@ -6,9 +6,15 @@ import {
   ReviewServiceClient,
   UpdateReplyRequest,
 } from '@common/interfaces/proto-types/review';
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { ReviewReadService } from './review-read.service';
 
 @Injectable()
 export class ReplyWriteService implements OnModuleInit {
@@ -16,7 +22,8 @@ export class ReplyWriteService implements OnModuleInit {
 
   constructor(
     @Inject(REVIEW_SERVICE_PACKAGE_NAME)
-    private reviewClient: ClientGrpc
+    private reviewClient: ClientGrpc,
+    private readonly reviewReadService: ReviewReadService
   ) {}
 
   onModuleInit() {
@@ -25,6 +32,13 @@ export class ReplyWriteService implements OnModuleInit {
   }
 
   async createReply(data: CreateReplyRequest) {
+    const review = await this.reviewReadService.getReview({
+      id: data.reviewId,
+    });
+
+    if (review.reply) {
+      throw new BadRequestException('Error.ReplyAlreadyExists');
+    }
     const createdReply = await firstValueFrom(
       this.reviewService.createReply(data)
     );

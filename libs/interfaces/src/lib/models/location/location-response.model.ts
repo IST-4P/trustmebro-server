@@ -11,7 +11,7 @@ export const GetManyDistrictsResponseSchema = z.array(
   z.object({
     id: z.number().int(),
     name: z.string(),
-    provinceId: z.number().int(),
+    provinceId: z.coerce.number().int(),
   })
 );
 
@@ -20,6 +20,6 @@ export const GetManyWardsResponseSchema = z.array(
     id: z.number().int(),
     name: z.string(),
     districtId: z.number().int(),
-    provinceId: z.number().int(),
+    provinceId: z.coerce.number().int(),
   })
 );

@@ -56,7 +56,7 @@ message VideoResponse {
 message UpdateVideoRequest {
   optional string processId = 1;
   string id = 2;
-  string status = 3;
+  optional string status = 3;
   optional string updatedById = 4;
 }
 

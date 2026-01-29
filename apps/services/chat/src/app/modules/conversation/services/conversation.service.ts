@@ -47,7 +47,43 @@ export class ConversationService implements OnModuleInit {
     if (conversations.totalItems === 0) {
       throw new NotFoundException('Error.ConversationsNotFound');
     }
-    return conversations;
+
+    const participantIds = [
+      ...new Set(
+        conversations.conversations.flatMap(
+          (conversation) => conversation.participantIds
+        )
+      ),
+    ];
+
+    const { users } = await firstValueFrom(
+      this.userAccessService.getManyInformationUsers({
+        userIds: participantIds,
+      })
+    );
+
+    const enrichedConversations = conversations.conversations.map(
+      (conversation) => {
+        const participants = conversation.participantIds.map((id) => {
+          const user = users[id];
+          return {
+            id,
+            username: user?.username ?? 'Unknown',
+            avatar: user?.avatar ?? '',
+          };
+        });
+
+        return {
+          ...conversation,
+          participants,
+        };
+      }
+    );
+
+    return {
+      ...conversations,
+      conversations: enrichedConversations,
+    };
   }
 
   async create({

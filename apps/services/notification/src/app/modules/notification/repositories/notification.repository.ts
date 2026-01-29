@@ -6,6 +6,15 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class NotificationRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  getUnreadCount(userId: string) {
+    return this.prismaService.notification.count({
+      where: {
+        userId,
+        isRead: false,
+      },
+    });
+  }
+
   create(data: Prisma.NotificationCreateInput) {
     return this.prismaService.notification.create({
       data,

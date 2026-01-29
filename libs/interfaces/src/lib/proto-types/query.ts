@@ -264,6 +264,7 @@ export interface GetManyOrdersRequest {
 
 export interface OrderSummary {
   id: string;
+  code: string;
   shopId: string;
   shopName: string;
   status: string;
@@ -271,6 +272,7 @@ export interface OrderSummary {
   grandTotal: number;
   firstProductImage: string;
   firstProductName: string;
+  createdAt: string;
 }
 
 export interface GetManyOrdersResponse {
@@ -411,6 +413,12 @@ export interface GetManyProductReviewsRequest {
   shopId?: string | undefined;
 }
 
+/** ==================== GetReviewRequest ====================// */
+export interface GetReviewRequest {
+  processId?: string | undefined;
+  id: string;
+}
+
 export interface ReviewReply {
   id: string;
   reviewId: string;
@@ -429,6 +437,9 @@ export interface ReviewItem {
   createdAt: string;
   updatedAt?: string | undefined;
   productId: string;
+  username?: string | undefined;
+  avatar?: string | undefined;
+  productName: string;
 }
 
 export interface ProductRatingStats {
@@ -536,6 +547,8 @@ export interface QueryServiceClient {
 
   getManyProductReviews(request: GetManyProductReviewsRequest): Observable<GetManyProductReviewsResponse>;
 
+  getReview(request: GetReviewRequest): Observable<ReviewItem>;
+
   getReport(request: GetReportRequest): Observable<ReportResponse>;
 
   getManyReports(request: GetManyReportsRequest): Observable<GetManyReportsResponse>;
@@ -596,6 +609,8 @@ export interface QueryServiceController {
     request: GetManyProductReviewsRequest,
   ): Promise<GetManyProductReviewsResponse> | Observable<GetManyProductReviewsResponse> | GetManyProductReviewsResponse;
 
+  getReview(request: GetReviewRequest): Promise<ReviewItem> | Observable<ReviewItem> | ReviewItem;
+
   getReport(request: GetReportRequest): Promise<ReportResponse> | Observable<ReportResponse> | ReportResponse;
 
   getManyReports(
@@ -621,6 +636,7 @@ export function QueryServiceControllerMethods() {
       "getManyVideos",
       "getVideo",
       "getManyProductReviews",
+      "getReview",
       "getReport",
       "getManyReports",
     ];

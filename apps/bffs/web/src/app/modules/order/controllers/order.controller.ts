@@ -16,6 +16,8 @@ import { OrderWriteService } from '../services/order-write.service';
 class GetManyOrdersBodyDto extends OmitType(GetManyOrdersRequestDto, [
   'userId',
   'processId',
+  'shopId',
+  'paymentId',
 ]) {}
 class GetOrderBodyDto extends OmitType(GetOrderRequestDto, [
   'userId',

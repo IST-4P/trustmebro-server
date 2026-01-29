@@ -13,6 +13,13 @@ export const GetManyProductReviewsRequestSchema =
     })
     .strict();
 
+export const GetReviewRequestSchema = z
+  .object({
+    id: z.uuid(),
+    processId: z.uuid().optional(),
+  })
+  .strict();
+
 export const CreateProductReviewRequestSchema = z
   .object({
     orderItemId: z.uuid(),
@@ -52,3 +59,4 @@ export type UpdateProductReviewsRequest = z.infer<
 export type DeleteProductReviewRequest = z.infer<
   typeof DeleteProductReviewRequestSchema
 >;
+export type GetReviewRequest = z.infer<typeof GetReviewRequestSchema>;

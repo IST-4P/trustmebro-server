@@ -1,4 +1,7 @@
-import { GetManyProductReviewsRequest } from '@common/interfaces/models/review';
+import {
+  GetManyProductReviewsRequest,
+  GetReviewRequest,
+} from '@common/interfaces/models/review';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/query';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -38,6 +41,7 @@ export class ReviewRepository {
           content: true,
           medias: true,
           reply: true,
+          createdAt: true,
         },
       }),
       data.productId
@@ -49,14 +53,34 @@ export class ReviewRepository {
           })
         : null,
     ]);
+
+    const productIds = reviews.map((review) => review.productId);
+    const products = await this.prismaService.productView.findMany({
+      where: { id: { in: productIds } },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
     return {
-      reviews,
+      reviews: reviews.map((review) => ({
+        ...review,
+        productName: products.find((product) => product.id === review.productId)
+          ?.name,
+      })),
       rating,
       totalItems,
       page: data.page,
       limit: data.limit,
       totalPages: Math.ceil(totalItems / data.limit),
     };
+  }
+
+  async getReview(data: GetReviewRequest) {
+    return this.prismaService.reviewView.findUnique({
+      where: { id: data.id },
+    });
   }
 
   async create(data: Prisma.ReviewViewCreateInput) {

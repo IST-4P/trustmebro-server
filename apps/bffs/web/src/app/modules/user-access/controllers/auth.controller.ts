@@ -25,9 +25,9 @@ const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: BaseConfiguration.NODE_ENV === 'production', // true cho production, false cho dev
   sameSite: BaseConfiguration.NODE_ENV === 'production' ? 'none' : 'lax',
-  // ...(BaseConfiguration.NODE_ENV !== 'development' && {
-  //   domain: '.hacmieu.xyz',
-  // }),
+  ...(BaseConfiguration.NODE_ENV !== 'development' && {
+    domain: '.hacmieu.xyz',
+  }),
   path: '/',
 };
 

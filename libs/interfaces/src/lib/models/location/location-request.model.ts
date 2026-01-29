@@ -2,14 +2,14 @@ import z from 'zod';
 
 export const GetManyDistrictsRequestSchema = z
   .object({
-    provinceId: z.number().int(),
+    provinceId: z.coerce.number().int(),
     processId: z.uuid().optional(),
   })
   .strict();
 
 export const GetManyWardsRequestSchema = z
   .object({
-    districtId: z.number().int(),
+    districtId: z.coerce.number().int(),
     processId: z.uuid().optional(),
   })
   .strict();

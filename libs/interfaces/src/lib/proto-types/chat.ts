@@ -10,6 +10,12 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "CHAT_SERVICE";
 
+export interface Participant {
+  id: string;
+  username: string;
+  avatar: string;
+}
+
 export interface ReadStatusItem {
   isRead: boolean;
   lastSeenMessageId: string;
@@ -26,6 +32,7 @@ export interface ConversationResponse {
   readStatus: { [key: string]: ReadStatusItem };
   createdAt: string;
   updatedAt: string;
+  participants: Participant[];
 }
 
 export interface ConversationResponse_ReadStatusEntry {
@@ -55,6 +62,7 @@ export interface ConversationItem {
   lastMessageAt?: string | undefined;
   lastSenderId?: string | undefined;
   readStatus: { [key: string]: ReadStatusItem };
+  participants: Participant[];
 }
 
 export interface ConversationItem_ReadStatusEntry {
