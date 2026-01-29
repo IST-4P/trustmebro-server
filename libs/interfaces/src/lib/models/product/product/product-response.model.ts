@@ -20,6 +20,7 @@ export const GetManyProductsResponseSchema =
         status: true,
         averageRate: true,
         soldCount: true,
+        ratingCount: true,
       })
     ),
   });

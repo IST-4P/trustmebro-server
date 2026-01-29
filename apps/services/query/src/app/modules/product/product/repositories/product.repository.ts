@@ -6,7 +6,7 @@ import {
   GetManyProductsRequest,
   GetProductRequest,
 } from '@common/interfaces/models/product';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma-client/query';
 import { PrismaService } from '../../../../prisma/prisma.service';
 
@@ -89,8 +89,27 @@ export class ProductRepository {
         },
       }),
     ]);
+
+    const productIds = products.map((product) => product.id);
+    const productRatings = await this.prismaService.productRatingView.findMany({
+      where: {
+        productId: {
+          in: productIds,
+        },
+      },
+    });
+    const productWithRating = products.map((product) => {
+      const rating = productRatings.find(
+        (rating) => rating.productId === product.id
+      );
+      return {
+        ...product,
+        averageRate: rating?.averageRating || 0,
+        ratingCount: rating?.totalReviews || 0,
+      };
+    });
     return {
-      products,
+      products: productWithRating,
       totalItems,
       page: data.page,
       limit: data.limit,
@@ -99,9 +118,25 @@ export class ProductRepository {
   }
 
   async findById(data: GetProductRequest) {
-    return this.prismaService.productView.findUnique({
+    const product = await this.prismaService.productView.findUnique({
       where: data,
     });
+    if (!product) {
+      throw new NotFoundException('Error.ProductNotFound');
+    }
+
+    const productRating = await this.prismaService.productRatingView.findUnique(
+      {
+        where: {
+          productId: product.id,
+        },
+      }
+    );
+    return {
+      ...product,
+      averageRate: productRating?.averageRating || 0,
+      ratingCount: productRating?.totalReviews || 0,
+    };
   }
 
   create(data: Prisma.ProductViewCreateInput) {

@@ -1,3 +1,4 @@
+import { OrderStatusValues } from '@common/constants/order.constant';
 import {
   GetManyOrdersRequest,
   GetOrderRequest,
@@ -79,5 +80,48 @@ export class OrderRepository {
     return this.prismaService.orderView.delete({
       where: { id: data.id as string },
     });
+  }
+
+  async dashboard() {
+    const orders$ = this.prismaService.orderView.groupBy({
+      by: ['status'],
+      _count: {
+        id: true,
+      },
+    });
+
+    const totalRevenue$ = this.prismaService.orderView.aggregate({
+      _sum: {
+        grandTotal: true,
+      },
+    });
+
+    const totalItems$ = this.prismaService.orderView.count();
+
+    const [orders, totalRevenue, totalItems] = await Promise.all([
+      orders$,
+      totalRevenue$,
+      totalItems$,
+    ]);
+
+    return {
+      orderComplete:
+        orders.find((order) => order.status === OrderStatusValues.COMPLETED)
+          ?._count.id || 0,
+      orderPending:
+        orders.find((order) => order.status === OrderStatusValues.PENDING)
+          ?._count.id || 0,
+      orderCancelled:
+        orders.find((order) => order.status === OrderStatusValues.CANCELLED)
+          ?._count.id || 0,
+      orderConfirmed:
+        orders.find((order) => order.status === OrderStatusValues.CONFIRMED)
+          ?._count.id || 0,
+      orderShipping:
+        orders.find((order) => order.status === OrderStatusValues.SHIPPING)
+          ?._count.id || 0,
+      totalRevenue: totalRevenue._sum.grandTotal,
+      totalOrders: totalItems,
+    };
   }
 }

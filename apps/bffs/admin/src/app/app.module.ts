@@ -10,6 +10,7 @@ import { LoggerModule } from '@common/observability/logger';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ClientsModule } from '@nestjs/microservices';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { HealthModule } from './modules/health/health.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
@@ -39,6 +40,7 @@ import { UserAccessModule } from './modules/user-access/user-access.module';
     PromotionModule,
     ReviewModule,
     ReportModule,
+    DashboardModule,
   ],
   providers: [
     AccessTokenGuard,

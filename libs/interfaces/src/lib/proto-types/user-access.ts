@@ -233,6 +233,22 @@ export interface ShopResponse {
   updatedAt: string;
 }
 
+/** ==================== GetManyShops ====================// */
+export interface GetManyShopsRequest {
+  processId?: string | undefined;
+  page: number;
+  limit: number;
+  userId?: string | undefined;
+}
+
+export interface GetManyShopsResponse {
+  shops: ShopResponse[];
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
 /** ==================== CreateShop ====================// */
 export interface CreateShopRequest {
   processId?: string | undefined;
@@ -379,6 +395,8 @@ export interface UserAccessServiceClient {
 
   getShop(request: GetShopRequest): Observable<ShopResponse>;
 
+  getManyShops(request: GetManyShopsRequest): Observable<GetManyShopsResponse>;
+
   createShop(request: CreateShopRequest): Observable<ShopResponse>;
 
   updateShop(request: UpdateShopRequest): Observable<ShopResponse>;
@@ -443,6 +461,10 @@ export interface UserAccessServiceController {
 
   getShop(request: GetShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 
+  getManyShops(
+    request: GetManyShopsRequest,
+  ): Promise<GetManyShopsResponse> | Observable<GetManyShopsResponse> | GetManyShopsResponse;
+
   createShop(request: CreateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
 
   updateShop(request: UpdateShopRequest): Promise<ShopResponse> | Observable<ShopResponse> | ShopResponse;
@@ -487,6 +509,7 @@ export function UserAccessServiceControllerMethods() {
       "checkParticipantExists",
       "getManyInformationUsers",
       "getShop",
+      "getManyShops",
       "createShop",
       "updateShop",
       "validateShops",

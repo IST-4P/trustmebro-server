@@ -117,6 +117,7 @@ export const CreateProductRequestSchema = ProductSchema.pick({
 export const UpdateProductRequestSchema = CreateProductRequestSchema.safeExtend(
   {
     id: z.uuid(),
+    soldCount: z.number().optional(),
   }
 ).strict();
 

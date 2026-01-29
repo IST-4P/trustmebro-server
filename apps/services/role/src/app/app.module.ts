@@ -9,7 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
-    KafkaModule.register(QueueService.QUERY_SERVICE),
+    KafkaModule.register(QueueService.ROLE_SERVICE),
     PrismaModule,
     LoggerModule.forRoot('role'),
     HealthModule,

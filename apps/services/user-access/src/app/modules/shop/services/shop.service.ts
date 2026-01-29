@@ -2,8 +2,11 @@ import { PrismaErrorValues } from '@common/constants/prisma.constant';
 import { DefaultRoleNameValues } from '@common/constants/user.constant';
 import {
   CreateShopRequest,
+  GetManyShopsRequest,
+  GetManyShopsResponse,
   GetShopRequest,
   ShopResponse,
+  UpdateShopRatingRequest,
   UpdateShopRequest,
   ValidateShopsRequest,
   ValidateShopsResponse,
@@ -48,6 +51,14 @@ export class ShopService implements OnModuleInit {
     return shop;
   }
 
+  async list(data: GetManyShopsRequest): Promise<GetManyShopsResponse> {
+    const shops = await this.shopRepository.list(data);
+    if (shops.totalItems === 0) {
+      throw new NotFoundException('Error.ShopsNotFound');
+    }
+    return shops;
+  }
+
   async create({
     processId,
     ...data
@@ -72,6 +83,26 @@ export class ShopService implements OnModuleInit {
   }: UpdateShopRequest): Promise<ShopResponse> {
     try {
       const shop = await this.shopRepository.update(data);
+      return shop;
+    } catch (error) {
+      if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {
+        throw new NotFoundException('Error.ShopNotFound');
+      }
+
+      if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
+        throw new NotFoundException('Error.ShopAlreadyExists');
+      }
+
+      throw error;
+    }
+  }
+
+  async updateRating({
+    processId,
+    ...data
+  }: UpdateShopRatingRequest): Promise<ShopResponse> {
+    try {
+      const shop = await this.shopRepository.updateRating(data);
       return shop;
     } catch (error) {
       if (error.code === PrismaErrorValues.RECORD_NOT_FOUND) {

@@ -2,6 +2,7 @@ import { GrpcClientProvider } from '@common/configurations/grpc.config';
 import { GrpcService } from '@common/constants/grpc.constant';
 import { Global, Module } from '@nestjs/common';
 import { ClientsModule } from '@nestjs/microservices';
+import { ShopConsumerController } from './controllers/shop-consumer.controller';
 import { ShopGrpcController } from './controllers/shop-grpc.controller';
 import { ShopRepository } from './repositories/shop.repository';
 import { ShopService } from './services/shop.service';
@@ -11,7 +12,7 @@ import { ShopService } from './services/shop.service';
   imports: [
     ClientsModule.register([GrpcClientProvider(GrpcService.ROLE_SERVICE)]),
   ],
-  controllers: [ShopGrpcController],
+  controllers: [ShopGrpcController, ShopConsumerController],
   providers: [ShopRepository, ShopService],
   exports: [ShopService],
 })

@@ -22,6 +22,7 @@ service QueryService {
 
   rpc GetManyOrders(GetManyOrdersRequest) returns (GetManyOrdersResponse);
   rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+  rpc DashboardOrders(Empty) returns (DashboardOrdersResponse);
 
   rpc GetManyVideos(GetManyVideosRequest) returns (GetManyVideosResponse);
   rpc GetVideo(GetVideoRequest) returns (VideoResponse);
@@ -531,3 +532,18 @@ message GetManyReportsResponse {
   int32 totalItems = 4;
   int32 totalPages = 5;
 }
+
+//====================================== Dashboard =====================================//
+message DashboardOrdersResponse {
+  int32 orderComplete = 1;
+  int32 orderPending = 2;
+  int32 orderCancelled = 3;
+  int32 orderConfirmed = 4;
+  int32 orderShipping = 5;
+  double totalRevenue = 6;
+  int32 totalOrders = 7;
+}
+
+message Empty {}
+
+

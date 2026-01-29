@@ -2,6 +2,7 @@ import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   CreateShopRequest,
+  GetManyShopsRequest,
   GetShopRequest,
   UpdateShopRequest,
   ValidateShopsRequest,
@@ -33,5 +34,10 @@ export class ShopGrpcController {
   @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'ValidateShops')
   validateShops(data: ValidateShopsRequest) {
     return this.shopService.validateShops(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.USER_ACCESS_SERVICE, 'GetManyShops')
+  getManyShops(data: GetManyShopsRequest) {
+    return this.shopService.list(data);
   }
 }

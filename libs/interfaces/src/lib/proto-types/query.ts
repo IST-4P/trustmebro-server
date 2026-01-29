@@ -514,6 +514,20 @@ export interface GetManyReportsResponse {
   totalPages: number;
 }
 
+/** ====================================== Dashboard =====================================// */
+export interface DashboardOrdersResponse {
+  orderComplete: number;
+  orderPending: number;
+  orderCancelled: number;
+  orderConfirmed: number;
+  orderShipping: number;
+  totalRevenue: number;
+  totalOrders: number;
+}
+
+export interface Empty {
+}
+
 export const QUERY_SERVICE_PACKAGE_NAME = "QUERY_SERVICE";
 
 export interface QueryServiceClient {
@@ -540,6 +554,8 @@ export interface QueryServiceClient {
   getManyOrders(request: GetManyOrdersRequest): Observable<GetManyOrdersResponse>;
 
   getOrder(request: GetOrderRequest): Observable<GetOrderResponse>;
+
+  dashboardOrders(request: Empty): Observable<DashboardOrdersResponse>;
 
   getManyVideos(request: GetManyVideosRequest): Observable<GetManyVideosResponse>;
 
@@ -599,6 +615,10 @@ export interface QueryServiceController {
 
   getOrder(request: GetOrderRequest): Promise<GetOrderResponse> | Observable<GetOrderResponse> | GetOrderResponse;
 
+  dashboardOrders(
+    request: Empty,
+  ): Promise<DashboardOrdersResponse> | Observable<DashboardOrdersResponse> | DashboardOrdersResponse;
+
   getManyVideos(
     request: GetManyVideosRequest,
   ): Promise<GetManyVideosResponse> | Observable<GetManyVideosResponse> | GetManyVideosResponse;
@@ -633,6 +653,7 @@ export function QueryServiceControllerMethods() {
       "getManyNotifications",
       "getManyOrders",
       "getOrder",
+      "dashboardOrders",
       "getManyVideos",
       "getVideo",
       "getManyProductReviews",
