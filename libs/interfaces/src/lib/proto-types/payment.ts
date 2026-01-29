@@ -99,6 +99,15 @@ export interface UpdatePaymentStatusRequest {
   updatedById: string;
 }
 
+/** ==================== DashboardPayment ==================== */
+export interface DashboardPaymentRequest {
+  processId?: string | undefined;
+}
+
+export interface DashboardPaymentResponse {
+  totalAmount: number;
+}
+
 export const PAYMENT_SERVICE_PACKAGE_NAME = "PAYMENT_SERVICE";
 
 export interface PaymentServiceClient {
@@ -111,6 +120,8 @@ export interface PaymentServiceClient {
   createPayment(request: CreatePaymentRequest): Observable<PaymentResponse>;
 
   updatePaymentStatus(request: UpdatePaymentStatusRequest): Observable<PaymentResponse>;
+
+  dashboardPayment(request: DashboardPaymentRequest): Observable<DashboardPaymentResponse>;
 }
 
 export interface PaymentServiceController {
@@ -131,11 +142,22 @@ export interface PaymentServiceController {
   updatePaymentStatus(
     request: UpdatePaymentStatusRequest,
   ): Promise<PaymentResponse> | Observable<PaymentResponse> | PaymentResponse;
+
+  dashboardPayment(
+    request: DashboardPaymentRequest,
+  ): Promise<DashboardPaymentResponse> | Observable<DashboardPaymentResponse> | DashboardPaymentResponse;
 }
 
 export function PaymentServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["receiver", "getManyPayments", "getPayment", "createPayment", "updatePaymentStatus"];
+    const grpcMethods: string[] = [
+      "receiver",
+      "getManyPayments",
+      "getPayment",
+      "createPayment",
+      "updatePaymentStatus",
+      "dashboardPayment",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PaymentService", method)(constructor.prototype[method], method, descriptor);

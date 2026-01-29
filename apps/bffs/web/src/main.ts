@@ -35,6 +35,7 @@ async function bootstrap() {
       'https://trustmebro-seller.vercel.app',
       'https://trustmebro.hacmieu.xyz',
       'https://localhost:3000',
+      'https://wishfully-unfactional-noble.ngrok-free.dev',
     ],
     credentials: true, // Cho phép gửi cookies/credentials
   });

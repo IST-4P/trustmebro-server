@@ -34,4 +34,9 @@ export class PaymentGrpcController {
   updatePaymentStatus(data: UpdatePaymentStatusRequest) {
     return this.paymentService.updateStatus(data);
   }
+
+  @GrpcMethod(GrpcServiceName.PAYMENT_SERVICE, 'DashboardPayment')
+  dashboard() {
+    return this.paymentService.dashboard();
+  }
 }
