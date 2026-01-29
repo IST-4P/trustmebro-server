@@ -254,7 +254,7 @@ export class OrderService implements OnModuleInit {
       id: paymentId,
       processId,
       userId,
-      code: generateCode('PAYMENT'),
+      code: generateCode('PMC'),
       orderId: createdOrders.map((order) => order.id),
       method: data.paymentMethod,
       status: PaymentStatusValues.PENDING,
