@@ -244,6 +244,7 @@ message UpdateProductRequest {
   repeated SKUInput skus = 21;
   repeated AttributeProduct attributes = 22;
   string id = 23;
+  optional bool isApproved = 24;
 }
 
 //==================== DeleteProductRequest ====================//

@@ -219,6 +219,7 @@ export interface UpdateProductRequest {
   skus: SKUInput[];
   attributes: AttributeProduct[];
   id: string;
+  isApproved?: boolean | undefined;
 }
 
 /** ==================== DeleteProductRequest ====================// */
