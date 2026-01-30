@@ -24,7 +24,6 @@ export class CategoryRepository {
     return this.prismaService.category.update({
       where: {
         id: data.id as string,
-        updatedById: data?.updatedById as string,
       },
       data,
       include: {

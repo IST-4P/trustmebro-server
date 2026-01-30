@@ -16,7 +16,6 @@ export class BrandRepository {
     return this.prismaService.brand.update({
       where: {
         id: data.id as string,
-        updatedById: data?.updatedById as string,
       },
       data,
     });
