@@ -5,6 +5,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { ImageController } from './controllers/image.controller';
 import { PlaybackController } from './controllers/playback.controller';
 import { TusdController } from './controllers/tusd.controller';
+import { VideoController } from './controllers/video.controller';
 import { ImageService } from './services/image.service';
 import { PlaybackService } from './services/playback.service';
 import { TusdService } from './services/tusd.service';
@@ -12,9 +13,17 @@ import { VideoService } from './services/video.service';
 
 @Module({
   imports: [
-    ClientsModule.register([GrpcClientProvider(GrpcService.MEDIA_SERVICE)]),
+    ClientsModule.register([
+      GrpcClientProvider(GrpcService.MEDIA_SERVICE),
+      GrpcClientProvider(GrpcService.QUERY_SERVICE),
+    ]),
   ],
-  controllers: [ImageController, TusdController, PlaybackController],
+  controllers: [
+    ImageController,
+    TusdController,
+    PlaybackController,
+    VideoController,
+  ],
   providers: [ImageService, TusdService, VideoService, PlaybackService],
 })
 export class MediaModule {}

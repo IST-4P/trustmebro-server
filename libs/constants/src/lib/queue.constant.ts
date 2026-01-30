@@ -7,6 +7,7 @@ export enum QueueService {
   ORDER_SERVICE = 'order',
   PAYMENT_SERVICE = 'payment',
   MEDIA_SERVICE = 'media',
+  ROLE_SERVICE = 'role',
 }
 
 export enum QueueGroups {
@@ -53,6 +54,7 @@ enum ShipsFromQueueTopics {
 
 enum UserAccessQueueTopics {
   SEND_OTP = 'send_otp',
+  UPDATE_SHOP = 'update_shop',
 }
 
 enum NotificationQueueTopics {

@@ -82,6 +82,11 @@ builder.Services.AddGrpcClient<Query.QueryService.QueryServiceClient>(o =>
 builder.Services.AddKeycloakAuthentication(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+var kafkaUrl = Environment.GetEnvironmentVariable("KAFKA_URL");
+if (!string.IsNullOrEmpty(kafkaUrl))
+{
+    builder.Configuration["Kafka:BootstrapServers"] = kafkaUrl;
+}
 builder.Services.AddKafka(builder.Configuration);
 // Core
 builder.Services.AddAutoMapper(typeof(ReviewMappingProfile));

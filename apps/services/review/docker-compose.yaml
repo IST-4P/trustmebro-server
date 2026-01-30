@@ -8,6 +8,8 @@ services:
       - .env
     environment:
       - REVIEW_SERVICE_GRPC_URL=0.0.0.0:5011
+      - QUERY_SERVICE_GRPC_URL=http://query:5004
+      - KAFKA_URL=kafka:9092
     # ports:
     #   - "3002:3002"
     # depends_on:

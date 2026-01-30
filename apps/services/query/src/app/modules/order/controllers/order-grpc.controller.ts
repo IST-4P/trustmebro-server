@@ -22,4 +22,9 @@ export class OrderGrpcController {
   getOrder(data: GetOrderRequest) {
     return this.orderService.findById(data);
   }
+
+  @GrpcMethod(GrpcServiceName.QUERY_SERVICE, 'DashboardOrders')
+  dashboard() {
+    return this.orderService.dashboard();
+  }
 }

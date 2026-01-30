@@ -28,7 +28,7 @@ export class CategoryService {
         createdCategory
       );
       this.cacheManager.del(
-        generateCategoryCacheKey(createdCategory.parentCategoryId ?? '')
+        generateCategoryCacheKey(createdCategory.parentCategoryId ?? 'parent')
       );
       return createdCategory;
     } catch (error) {
@@ -46,7 +46,7 @@ export class CategoryService {
         updatedCategory
       );
       this.cacheManager.del(
-        generateCategoryCacheKey(updatedCategory.parentCategoryId ?? '')
+        generateCategoryCacheKey(updatedCategory.parentCategoryId ?? 'parent')
       );
       return updatedCategory;
     } catch (error) {
@@ -67,7 +67,7 @@ export class CategoryService {
         id: deletedCategory.id,
       });
       this.cacheManager.del(
-        generateCategoryCacheKey(deletedCategory.parentCategoryId ?? '')
+        generateCategoryCacheKey(deletedCategory.parentCategoryId ?? 'parent')
       );
       return deletedCategory;
     } catch (error) {

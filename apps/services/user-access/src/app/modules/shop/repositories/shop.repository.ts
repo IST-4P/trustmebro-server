@@ -1,6 +1,8 @@
 import {
   CreateShopRequest,
+  GetManyShopsRequest,
   GetShopRequest,
+  UpdateShopRatingRequest,
   UpdateShopRequest,
   ValidateShopsRequest,
 } from '@common/interfaces/models/user-access';
@@ -22,6 +24,34 @@ export class ShopRepository {
     });
   }
 
+  async list(data: GetManyShopsRequest) {
+    const skip = (data.page - 1) * data.limit;
+    const take = data.limit;
+
+    const [totalItems, shops] = await Promise.all([
+      this.prismaService.shop.count({
+        where: {
+          isOpen: data?.isOpen || undefined,
+        },
+      }),
+      this.prismaService.shop.findMany({
+        where: {
+          isOpen: data?.isOpen || undefined,
+        },
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+    return {
+      shops,
+      totalItems,
+      page: data.page,
+      limit: data.limit,
+      totalPages: Math.ceil(totalItems / data.limit),
+    };
+  }
+
   create({ ownerId, ...data }: CreateShopRequest) {
     return this.prismaService.shop.create({
       data: {
@@ -39,6 +69,15 @@ export class ShopRepository {
     return this.prismaService.shop.update({
       where: { id, ownerId },
       data,
+    });
+  }
+
+  updateRating(data: UpdateShopRatingRequest) {
+    return this.prismaService.shop.update({
+      where: { id: data.id },
+      data: {
+        rating: data.rating,
+      },
     });
   }
 

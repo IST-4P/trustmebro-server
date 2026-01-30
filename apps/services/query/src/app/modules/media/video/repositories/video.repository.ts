@@ -1,5 +1,6 @@
 import {
   GetManyVideosRequest,
+  GetRandomVideosRequest,
   GetVideoRequest,
 } from '@common/interfaces/models/media';
 import { Injectable, Logger } from '@nestjs/common';
@@ -60,6 +61,16 @@ export class VideoRepository {
     return this.prismaService.videoView.findUnique({
       where: data,
     });
+  }
+
+  async getRandom(data: GetRandomVideosRequest) {
+    return this.prismaService.$queryRaw`
+      SELECT *
+      FROM "VideoView"
+      WHERE status = 'READY'::"VideoStatus"
+      ORDER BY RANDOM()
+      LIMIT ${data.limit}
+    `;
   }
 
   async upsert(data: Prisma.VideoViewCreateInput) {

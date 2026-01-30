@@ -1,14 +1,19 @@
+import { QueueTopics } from '@common/constants/queue.constant';
 import {
   GetManyProductReviewsRequest,
   GetReviewRequest,
 } from '@common/interfaces/models/review';
+import { KafkaService } from '@common/kafka/kafka.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma-client/query';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class ReviewRepository {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly kafkaService: KafkaService
+  ) {}
 
   async list(data: GetManyProductReviewsRequest) {
     const skip = (data.page - 1) * data.limit;
@@ -78,8 +83,13 @@ export class ReviewRepository {
   }
 
   async getReview(data: GetReviewRequest) {
-    return this.prismaService.reviewView.findUnique({
-      where: { id: data.id },
+    const whereClause: Prisma.ReviewViewWhereInput = {
+      id: data.id || undefined,
+      orderId: data.orderId || undefined,
+      orderItemId: data.orderItemId || undefined,
+    };
+    return this.prismaService.reviewView.findFirst({
+      where: whereClause,
     });
   }
 
@@ -179,6 +189,11 @@ export class ReviewRepository {
     const threeStarCount = reviews.filter((r) => r.rating === 3).length;
     const fourStarCount = reviews.filter((r) => r.rating === 4).length;
     const fiveStarCount = reviews.filter((r) => r.rating === 5).length;
+
+    this.kafkaService.emit(QueueTopics.USER_ACCESS.UPDATE_SHOP, {
+      id: shopId,
+      rating: averageRating,
+    });
 
     // Upsert ShopRatingView
     await prisma.shopRatingView.upsert({

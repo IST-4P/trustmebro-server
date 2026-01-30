@@ -1,6 +1,7 @@
 import {
-  GetUserRequest,
-  UpdateUserRequest,
+  GetManyShopsRequest,
+  GetManyShopsResponse,
+  GetShopRequest,
   USER_ACCESS_SERVICE_NAME,
   USER_ACCESS_SERVICE_PACKAGE_NAME,
   UserAccessServiceClient,
@@ -10,7 +11,7 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class UserService implements OnModuleInit {
+export class ShopService implements OnModuleInit {
   private userAccessService!: UserAccessServiceClient;
 
   constructor(
@@ -25,11 +26,11 @@ export class UserService implements OnModuleInit {
       );
   }
 
-  async getUser(data: GetUserRequest) {
-    return firstValueFrom(this.userAccessService.getUser(data));
+  async getShop(data: GetShopRequest) {
+    return firstValueFrom(this.userAccessService.getShop(data));
   }
 
-  async updateUser(data: UpdateUserRequest) {
-    return firstValueFrom(this.userAccessService.updateUser(data));
+  async getManyShops(data: GetManyShopsRequest): Promise<GetManyShopsResponse> {
+    return firstValueFrom(this.userAccessService.getManyShops(data));
   }
 }

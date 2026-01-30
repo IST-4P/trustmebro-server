@@ -78,4 +78,11 @@ export class PaymentService {
       throw error;
     }
   }
+
+  async dashboard() {
+    const result = await this.paymentRepository.dashboard();
+    return {
+      totalAmount: result,
+    };
+  }
 }

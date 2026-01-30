@@ -7,6 +7,7 @@ export const VideoSchema = BaseSchema.extend({
   storageKey: z.string(),
   size: z.number().int().nonnegative(),
   userId: z.uuid(),
+  productId: z.uuid().optional(),
   filetype: z.string(),
   status: VideoStatusEnums,
   duration: z.number().int().default(0),

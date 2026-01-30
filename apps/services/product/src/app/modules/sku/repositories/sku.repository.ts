@@ -7,10 +7,15 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class SKURepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getProduct(data: { id: string }) {
-    return this.prismaService.product.findUnique({
+  updateProduct(data: { id: string; soldCount: number }) {
+    return this.prismaService.product.update({
       where: {
         id: data.id,
+      },
+      data: {
+        soldCount: {
+          increment: data.soldCount,
+        },
       },
       include: {
         skus: {

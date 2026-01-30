@@ -38,8 +38,9 @@ export class SKUService {
             userId: data.userId,
           });
 
-          const product = await this.sKURepository.getProduct({
+          const product = await this.sKURepository.updateProduct({
             id: item.productId,
+            soldCount: item.quantity,
           });
           this.kafkaService.emit(QueueTopics.PRODUCT.UPDATE_PRODUCT, product);
         })
@@ -54,8 +55,9 @@ export class SKUService {
       await this.sKURepository.increaseStock(data);
       await Promise.all(
         data.items.map(async (item) => {
-          const product = await this.sKURepository.getProduct({
+          const product = await this.sKURepository.updateProduct({
             id: item.productId,
+            soldCount: -item.quantity,
           });
           this.kafkaService.emit(QueueTopics.PRODUCT.UPDATE_PRODUCT, product);
         })

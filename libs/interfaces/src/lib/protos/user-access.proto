@@ -19,6 +19,7 @@ service UserAccessService {
   rpc GetManyInformationUsers(GetManyInformationUsersRequest) returns (GetManyInformationUsersResponse);
 
   rpc GetShop(GetShopRequest) returns (ShopResponse);
+  rpc GetManyShops(GetManyShopsRequest) returns (GetManyShopsResponse);
   rpc CreateShop(CreateShopRequest) returns (ShopResponse);
   rpc UpdateShop(UpdateShopRequest) returns (ShopResponse);
   rpc ValidateShops(ValidateShopsRequest) returns (ValidateShopsResponse);
@@ -241,6 +242,22 @@ message ShopResponse {
   string deletedAt = 13;
   string createdAt = 14;
   string updatedAt = 15;
+}
+
+//==================== GetManyShops ====================//
+message GetManyShopsRequest {
+  optional string processId = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  optional string userId = 4;
+}
+
+message GetManyShopsResponse {
+  repeated ShopResponse shops = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 totalItems = 4;
+  int32 totalPages = 5;
 }
 
 //==================== CreateShop ====================//

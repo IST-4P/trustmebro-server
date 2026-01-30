@@ -2,6 +2,7 @@ import { GrpcServiceName } from '@common/constants/grpc.constant';
 import { GrpcLoggingInterceptor } from '@common/interceptors/grpcLogging.interceptor';
 import {
   GetManyVideosRequest,
+  GetRandomVideosRequest,
   GetVideoRequest,
 } from '@common/interfaces/models/media';
 import { Controller, UseInterceptors } from '@nestjs/common';
@@ -21,5 +22,10 @@ export class VideoGrpcController {
   @GrpcMethod(GrpcServiceName.QUERY_SERVICE, 'GetVideo')
   getVideo(data: GetVideoRequest) {
     return this.videoService.findById(data);
+  }
+
+  @GrpcMethod(GrpcServiceName.QUERY_SERVICE, 'GetFeed')
+  getFeed(data: GetRandomVideosRequest) {
+    return this.videoService.getFeed(data);
   }
 }

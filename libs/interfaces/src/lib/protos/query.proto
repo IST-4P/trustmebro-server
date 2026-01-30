@@ -22,9 +22,11 @@ service QueryService {
 
   rpc GetManyOrders(GetManyOrdersRequest) returns (GetManyOrdersResponse);
   rpc GetOrder(GetOrderRequest) returns (GetOrderResponse);
+  rpc DashboardOrders(Empty) returns (DashboardOrdersResponse);
 
   rpc GetManyVideos(GetManyVideosRequest) returns (GetManyVideosResponse);
   rpc GetVideo(GetVideoRequest) returns (VideoResponse);
+  rpc GetFeed(GetRandomVideosRequest) returns (GetRandomVideosResponse);
 
   rpc GetManyProductReviews(GetManyProductReviewsRequest) returns (GetManyProductReviewsResponse);
   rpc GetReview(GetReviewRequest) returns (ReviewItem);
@@ -221,6 +223,7 @@ message GetManyProductsRequest {
   optional double maxPrice = 10;
   optional string sortBy = 11;
   optional string orderBy = 12;
+  optional bool isApproved = 13;
 }
 
 message GetManyProductsResponse {
@@ -388,6 +391,17 @@ message VideoResponse {
   string authorId = 15;
   optional string authorUsername = 16;
   optional string authorAvatar = 17;
+  optional string productId = 18;
+}
+
+//==================== GetRandomVideosRequest ====================//
+message GetRandomVideosRequest {
+  optional string processId = 1;
+  int32 limit = 2;
+}
+
+message GetRandomVideosResponse {
+  repeated VideoResponse videos = 1;
 }
 
 //==================== GetManyVideosRequest ====================//
@@ -411,6 +425,7 @@ message VideoBasicInfo {
   int32 likeCount = 8;
   int32 commentCount = 9;
   string authorId = 10;
+  optional string productId = 11;
 }
 
 message GetManyVideosResponse {
@@ -436,7 +451,9 @@ message GetManyProductReviewsRequest {
 //==================== GetReviewRequest ====================//
 message GetReviewRequest {
   optional string processId = 1;
-  string id = 2;
+  optional string id = 2;
+  optional string orderId = 3;
+  optional string orderItemId = 4;
 }
 
 message ReviewReply {
@@ -531,3 +548,18 @@ message GetManyReportsResponse {
   int32 totalItems = 4;
   int32 totalPages = 5;
 }
+
+//====================================== Dashboard =====================================//
+message DashboardOrdersResponse {
+  int32 orderComplete = 1;
+  int32 orderPending = 2;
+  int32 orderCancelled = 3;
+  int32 orderConfirmed = 4;
+  int32 orderShipping = 5;
+  double totalRevenue = 6;
+  int32 totalOrders = 7;
+}
+
+message Empty {}
+
+

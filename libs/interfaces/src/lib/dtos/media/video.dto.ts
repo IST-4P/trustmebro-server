@@ -3,6 +3,7 @@ import {
   DeleteVideoRequestSchema,
   GetManyVideosRequestSchema,
   GetManyVideosResponseSchema,
+  GetRandomVideosRequestSchema,
   GetVideoRequestSchema,
   GetVideoResponseSchema,
   UpdateVideoRequestSchema,
@@ -14,6 +15,10 @@ export class GetManyVideosRequestDto extends createZodDto(
 ) {}
 
 export class GetVideoRequestDto extends createZodDto(GetVideoRequestSchema) {}
+
+export class GetRandomVideosRequestDto extends createZodDto(
+  GetRandomVideosRequestSchema.omit({ processId: true })
+) {}
 
 export class UpdateVideoRequestDto extends createZodDto(
   UpdateVideoRequestSchema.omit({ processId: true })

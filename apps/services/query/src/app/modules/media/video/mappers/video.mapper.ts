@@ -14,6 +14,7 @@ export const VideoMapper = (
     duration: data.duration,
     width: data.width,
     height: data.height,
+    productId: data.productId,
 
     title: data.title,
     likeCount: data.likeCount,

@@ -34,11 +34,14 @@ export class ProductController {
     @Query() queries: GetManyProductsRequestDto,
     @ProcessId() processId: string
   ) {
+    const isApproved =
+      (queries.isApproved as unknown as string) === 'true' ? true : false;
     return this.productReadService.getManyProducts({
       ...queries,
       processId,
       brandIds: queries.brandIds ?? [],
       categories: queries.categories ?? [],
+      isApproved,
     });
   }
 

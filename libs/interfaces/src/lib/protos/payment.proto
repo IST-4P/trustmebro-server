@@ -9,6 +9,7 @@ service PaymentService {
   rpc GetPayment(GetPaymentRequest) returns (PaymentResponse);
   rpc CreatePayment(CreatePaymentRequest) returns (PaymentResponse);
   rpc UpdatePaymentStatus(UpdatePaymentStatusRequest) returns (PaymentResponse);
+  rpc DashboardPayment(DashboardPaymentRequest) returns (DashboardPaymentResponse);
 }
 
 
@@ -100,4 +101,14 @@ message UpdatePaymentStatusRequest {
   string status = 3;
   string updatedById = 4;
 }
+
+//==================== DashboardPayment ====================
+message DashboardPaymentRequest {
+  optional string processId = 1;
+}
+
+message DashboardPaymentResponse {
+  int32 totalAmount = 1;
+}
+
 

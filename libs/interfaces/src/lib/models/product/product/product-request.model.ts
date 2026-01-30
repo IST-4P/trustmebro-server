@@ -33,6 +33,7 @@ export const GetManyProductsRequestSchema = z
     maxPrice: z.coerce.number().int().positive(),
     shopId: z.uuid(),
     provinceId: z.number().int(),
+    isApproved: z.coerce.boolean(),
   })
   .partial()
   .extend({
@@ -117,6 +118,8 @@ export const CreateProductRequestSchema = ProductSchema.pick({
 export const UpdateProductRequestSchema = CreateProductRequestSchema.safeExtend(
   {
     id: z.uuid(),
+    soldCount: z.number().optional(),
+    isApproved: z.boolean().optional(),
   }
 ).strict();
 
