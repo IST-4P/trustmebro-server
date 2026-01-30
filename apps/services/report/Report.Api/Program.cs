@@ -64,6 +64,11 @@ builder.Services.AddDbContext<ReportDbContext>(options =>
   }
 });
 
+var kafkaUrl = Environment.GetEnvironmentVariable("KAFKA_URL");
+if (!string.IsNullOrEmpty(kafkaUrl))
+{
+    builder.Configuration["Kafka:BootstrapServers"] = kafkaUrl;
+}
 builder.Services.AddKafka(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(ReportMappingProfile));
 builder.Services.AddScoped<IReportRepository, ReportRepository>();

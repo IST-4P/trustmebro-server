@@ -62,12 +62,15 @@ export class ProductController {
     @ProcessId() processId: string,
     @UserData('shopId') shopId: string
   ) {
+    const isApproved =
+      (queries.isApproved as unknown as string) === 'true' ? true : false;
     return this.productReadService.getManyProducts({
       ...queries,
       shopId,
       processId,
       brandIds: queries.brandIds ?? [],
       categories: queries.categories ?? [],
+      isApproved,
     });
   }
 

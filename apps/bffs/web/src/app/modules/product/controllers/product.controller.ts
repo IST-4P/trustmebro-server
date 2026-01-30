@@ -12,6 +12,7 @@ import { ProductReadService } from '../services/product-read.service';
 
 class GetManyProductsBodyDto extends OmitType(GetManyProductsRequestDto, [
   'processId',
+  'isApproved',
 ] as const) {}
 class GetProductBodyDto extends OmitType(GetProductRequestDto, [
   'processId',
@@ -35,6 +36,7 @@ export class ProductController {
       processId,
       brandIds: queries.brandIds ?? [],
       categories: queries.categories ?? [],
+      isApproved: true,
     });
   }
 

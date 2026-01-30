@@ -25,7 +25,9 @@ export class CategoryService {
     ...data
   }: GetManyCategoriesRequest): Promise<GetManyCategoriesResponse> {
     // Check cache
-    const cacheKey = generateCategoryCacheKey(data.parentCategoryId ?? '');
+    const cacheKey = generateCategoryCacheKey(
+      data.parentCategoryId ?? 'parent'
+    );
     const cacheData = await this.cacheManager.get<GetManyCategoriesResponse>(
       cacheKey
     );
@@ -54,14 +56,21 @@ export class CategoryService {
   }
 
   create(data: CategoryResponse) {
+    this.cacheManager.del(
+      generateCategoryCacheKey(data.parentCategoryId ?? 'parent')
+    );
     return this.categoryRepository.create(CategoryMapper(data));
   }
 
   update(data: CategoryResponse) {
+    this.cacheManager.del(
+      generateCategoryCacheKey(data.parentCategoryId ?? 'parent')
+    );
     return this.categoryRepository.update(CategoryMapper(data));
   }
 
   delete(data: { id: string }) {
+    this.cacheManager.del(generateCategoryCacheKey('parent'));
     return this.categoryRepository.delete({ id: data.id });
   }
 }

@@ -28,6 +28,7 @@ async function bootstrap() {
       'https://tusd.hacmieu.xyz',
       'https://trustmebro-admin.vercel.app',
       'https://generally-together-goldfish.ngrok-free.app',
+      'http://localhost:5173',
     ],
     credentials: true,
   });

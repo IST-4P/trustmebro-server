@@ -22,6 +22,10 @@ export class ProductRepository {
       shopId: data.shopId ? data.shopId : undefined,
     };
 
+    if (data.isApproved) {
+      where.isApproved = data.isApproved;
+    }
+
     if (data.name) {
       where.name = {
         contains: data.name,

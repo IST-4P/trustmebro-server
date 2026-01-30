@@ -8,6 +8,7 @@ services:
       - .env
     environment:
       - REPORT_SERVICE_GRPC_URL=0.0.0.0:5010
+      - KAFKA_URL=kafka:9092
     # ports:
     #   - "3002:3002"
     # depends_on:

@@ -223,6 +223,7 @@ message GetManyProductsRequest {
   optional double maxPrice = 10;
   optional string sortBy = 11;
   optional string orderBy = 12;
+  optional bool isApproved = 13;
 }
 
 message GetManyProductsResponse {
