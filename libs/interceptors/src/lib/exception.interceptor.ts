@@ -114,10 +114,35 @@ export class ExceptionInterceptor implements NestInterceptor {
           error.message ||
           error ||
           HTTP_MESSAGE.INTERNAL_SERVER_ERROR;
-        const code =
+
+        // Fix: Map gRPC status codes (or other non-HTTP codes) to HTTP status codes
+        let code =
           error?.response?.statusCode ||
           error.code ||
           HttpStatus.INTERNAL_SERVER_ERROR;
+
+        if (typeof code === 'number' && (code < 100 || code > 599)) {
+          // Mapping common gRPC codes to HTTP status
+          switch (code) {
+            case 3: // INVALID_ARGUMENT
+              code = HttpStatus.BAD_REQUEST;
+              break;
+            case 5: // NOT_FOUND
+              code = HttpStatus.NOT_FOUND;
+              break;
+            case 7: // PERMISSION_DENIED
+              code = HttpStatus.FORBIDDEN;
+              break;
+            case 16: // UNAUTHENTICATED
+              code = HttpStatus.UNAUTHORIZED;
+              break;
+            default:
+              code = HttpStatus.INTERNAL_SERVER_ERROR;
+              break;
+          }
+        } else if (typeof code !== 'number') {
+          code = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
 
         const response = error?.response;
         const data = response ? { ...response } : null;
@@ -126,7 +151,6 @@ export class ExceptionInterceptor implements NestInterceptor {
           delete data.statusCode;
         }
 
-        // Logger.error(error);
         Logger.error(
           `HTTP >> Error process '${processId}' >> message: '${message}' >> code: '${code}'`
         );

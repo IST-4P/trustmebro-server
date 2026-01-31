@@ -37,18 +37,26 @@ export class ReviewWriteService implements OnModuleInit {
         orderId: data.orderId,
         orderItemId: data.orderItemId,
       });
-      console.log(checkReview);
+
       if (checkReview) {
         throw new BadRequestException('Error.ReviewAlreadyExists');
       }
-      const createdReview = await firstValueFrom(
-        this.reviewService.createReview(data)
-      );
-      console.log({ createdReview });
-      return createdReview.review;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      // If error is not NOT_FOUND (5), rethrow it
+      if (error?.code !== 5) {
+        console.error('Error checking review existence:', error);
+        throw error;
+      }
+      // If code is 5 (Not Found), we proceed to creation
     }
+
+    const createdReview = await firstValueFrom(
+      this.reviewService.createReview(data)
+    );
+    return createdReview.review;
   }
 
   async updateReview(data: UpdateReviewRequest) {

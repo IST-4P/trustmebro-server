@@ -12,7 +12,7 @@ import {
   UserAccessServiceClient,
 } from '@common/interfaces/proto-types/user-access';
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import {
   CreateReviewMapper,
@@ -64,7 +64,14 @@ export class ReviewService {
   }
 
   async getReview(data: GetReviewRequest): Promise<ReviewResponse> {
-    return this.reviewRepository.getReview(data);
+    const review = await this.reviewRepository.getReview(data);
+    if (!review) {
+      throw new RpcException({
+        code: 5,
+        message: 'Review not found',
+      });
+    }
+    return review;
   }
 
   create(data: CreateReviewResponse) {
