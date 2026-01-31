@@ -28,6 +28,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://tusd.hacmieu.xyz',
+      'https://trustmebro.hacmieu.xyz',
       'https://boatless-feebly-leslie.ngrok-free.dev',
       'https://korbin-malacological-densely.ngrok-free.dev',
       'https://uncoachable-buffable-talisha.ngrok-free.dev',
