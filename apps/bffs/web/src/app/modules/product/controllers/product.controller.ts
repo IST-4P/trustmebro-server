@@ -31,11 +31,20 @@ export class ProductController {
     @Query() queries: GetManyProductsBodyDto,
     @ProcessId() processId: string
   ) {
+    let categoryIds: string[] = [];
+
+    if (Array.isArray(queries.categories)) {
+      categoryIds = queries.categories;
+    } else if (typeof queries.categories === 'string') {
+      categoryIds = [queries.categories];
+    }
+
+    categoryIds.push('');
     return this.productReadService.getManyProducts({
       ...queries,
       processId,
       brandIds: queries.brandIds ?? [],
-      categories: queries.categories ?? [],
+      categories: categoryIds,
       isApproved: true,
     });
   }
