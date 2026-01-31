@@ -30,6 +30,7 @@ async function bootstrap() {
       'https://tusd.hacmieu.xyz',
       'https://korbin-malacological-densely.ngrok-free.dev',
       'https://uncoachable-buffable-talisha.ngrok-free.dev',
+      'https://generally-together-goldfish.ngrok-free.app',
       'https://trustmebro-seller.vercel.app',
     ],
     credentials: true,
