@@ -108,8 +108,12 @@ export class ConversationService implements OnModuleInit {
       return createdConversation;
     } catch (error) {
       if (error.code === PrismaErrorValues.UNIQUE_CONSTRAINT_VIOLATION) {
-        throw new BadRequestException('Error.ConversationAlreadyExists');
+        const conversation = await this.conversationRepository.get(
+          data.participantIds.sort()
+        );
+        return conversation;
       }
+
       throw error;
     }
   }

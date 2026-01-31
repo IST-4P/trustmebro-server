@@ -47,6 +47,12 @@ export class ConversationRepository {
     };
   }
 
+  get(participantIds: string[]) {
+    return this.prismaService.conversation.findUnique({
+      where: { participantIds },
+    });
+  }
+
   create(data: Prisma.ConversationCreateInput) {
     return this.prismaService.conversation.create({
       data,
