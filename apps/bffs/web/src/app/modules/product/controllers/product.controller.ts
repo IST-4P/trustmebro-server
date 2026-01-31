@@ -39,7 +39,7 @@ export class ProductController {
       categoryIds = [queries.categories];
     }
 
-    categoryIds.push('');
+    // categoryIds.push('');
     return this.productReadService.getManyProducts({
       ...queries,
       processId,
